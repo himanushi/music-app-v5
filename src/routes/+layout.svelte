@@ -1,45 +1,50 @@
 <script lang="ts">
-	import Header from '$lib/header/Header.svelte';
-	import '../app.css';
+  import "../app.css";
+  import Header from "$lib/header/Header.svelte";
+
+  const a = {
+    aa: 1,
+    bb: 2,
+  };
 </script>
 
 <Header />
 
 <main>
-	<slot />
+  <slot />
 </main>
 
 <footer>
-	<p>visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to learn SvelteKit</p>
+  <p>visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to learn SvelteKit</p>
 </footer>
 
 <style>
-	main {
-		flex: 1;
-		display: flex;
-		flex-direction: column;
-		padding: 1rem;
-		width: 100%;
-		max-width: 1024px;
-		margin: 0 auto;
-		box-sizing: border-box;
-	}
+  main {
+    display: flex;
+    box-sizing: border-box;
+    flex: 1;
+    flex-direction: column;
+    width: 100%;
+    max-width: 1024px;
+    margin: 0 auto;
+    padding: 1rem;
+  }
 
-	footer {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		padding: 40px;
-	}
+  footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+  }
 
-	footer a {
-		font-weight: bold;
-	}
+  footer a {
+    font-weight: bold;
+  }
 
-	@media (min-width: 480px) {
-		footer {
-			padding: 40px 0;
-		}
-	}
+  @media (min-width: 480px) {
+    footer {
+      padding: 40px 0;
+    }
+  }
 </style>
