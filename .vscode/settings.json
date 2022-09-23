@@ -5,6 +5,7 @@
   "scss.validate": false,
   "svelte.plugin.css.enable": false,
   "stylelint.enable": true,
+  "svelte.plugin.svelte.useNewTransformation": false,
 
   // svelte, javascript, typescript, json
   "editor.formatOnSave": false,
@@ -34,6 +35,7 @@
     "routify",
     "roxi",
     "stylelint",
+    "sveltejs",
     "upsert",
     "xstate"
   ]
