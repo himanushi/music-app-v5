@@ -1,57 +1,93 @@
 <script lang="ts">
-  import Counter from "$lib/Counter.svelte";
+  // const initialize = async () => {
+  //   // setupConfig({ mode: "ios" });
+  //   // await defineCustomElements(window);
+  //   ready = true;
+  //   console.log("done");
+  // };
+
+  // initialize();
 </script>
 
-<svelte:head>
-  <title>Home</title>
-  <meta name="description" content="Svelte demo app" />
-</svelte:head>
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Header</ion-title>
+  </ion-toolbar>
+</ion-header>
 
-<section>
-  <h1>
-    <span class="welcome">
-      <picture>
-        <source srcset="svelte-welcome.webp" type="image/webp" />
-        <img alt="Welcome" src="svelte-welcome.png" />
-      </picture>
-    </span>
+<ion-content class="ion-padding">
+  <ion-item>
+    <ion-icon name="add-circle-outline" color="main" />
+    <ion-label color="main">Main Content</ion-label>
+  </ion-item>
+  <ion-item>
+    <ion-icon name="add-circle-outline" color="primary" />
+    <ion-label color="primary">Main Content</ion-label>
+  </ion-item>
+  <ion-item>
+    <ion-icon name="add-circle-outline" color="primary" />
+    <ion-label color="primary">Main Content</ion-label>
+  </ion-item>
+  <ion-item>
+    <ion-icon name="add-circle-outline" color="primary" />
+    <ion-label color="primary">Main Content</ion-label>
+  </ion-item>
+  <ion-item>
+    <ion-icon name="add-circle-outline" color="primary" />
+    <ion-label color="primary">Main Content</ion-label>
+  </ion-item>
+  <ion-item>
+    <ion-icon name="add-circle-outline" color="primary" />
+    <ion-label color="primary">Main Content</ion-label>
+  </ion-item>
+  <ion-item>
+    <ion-icon name="add-circle-outline" color="primary" />
+    <ion-label color="primary">Main Content</ion-label>
+  </ion-item>
+  <ion-item>
+    <ion-icon name="add-circle-outline" color="primary" />
+    <ion-label color="primary">Main Content</ion-label>
+  </ion-item>
+  <ion-item>
+    <ion-icon name="add-circle-outline" color="primary" />
+    <ion-label color="primary">Main Content</ion-label>
+  </ion-item>
+  <ion-item>
+    <ion-icon name="add-circle-outline" color="primary" />
+    <ion-label color="primary">Main Content</ion-label>
+  </ion-item>
+  <ion-item>
+    <ion-icon name="add-circle-outline" color="primary" />
+    <ion-label color="primary">Main Content</ion-label>
+  </ion-item>
+  <ion-item>
+    <ion-icon name="add-circle-outline" color="primary" />
+    <ion-label color="primary">Main Content</ion-label>
+  </ion-item>
+  <ion-item>
+    <ion-icon name="add-circle-outline" color="primary" />
+    <ion-label color="primary">Main Content</ion-label>
+  </ion-item>
+  <ion-item>
+    <ion-icon name="add-circle-outline" color="primary" />
+    <ion-label color="primary">Main Content</ion-label>
+  </ion-item>
+  <ion-item>
+    <ion-icon name="add-circle-outline" color="primary" />
+    <ion-label color="primary">Main Content</ion-label>
+  </ion-item>
+  <ion-item>
+    <ion-icon name="add-circle-outline" color="primary" />
+    <ion-label color="primary">Main Content</ion-label>
+  </ion-item>
+  <ion-item>
+    <ion-icon name="add-circle-outline" color="primary" />
+    <ion-label color="black">Main Content</ion-label>
+  </ion-item>
+</ion-content>
 
-    to your new<br />SvelteKit app
-  </h1>
-
-  <h2>
-    try editing <strong>src/routes/+page.svelte</strong>
-  </h2>
-
-  <Counter />
-</section>
-
-<style>
-  section {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-
-  h1 {
-    width: 100%;
-  }
-
-  .welcome {
-    display: block;
-    position: relative;
-    width: 100%;
-    height: 0;
-    padding: 0 0 calc(100% * 495 / 2048) 0;
-  }
-
-  .welcome img {
-    display: block;
-    position: absolute;
-    top: 0;
-    width: 100%;
-    height: 100%;
-  }
-</style>
+<ion-footer>
+  <ion-toolbar color="main">
+    <ion-title>Footer</ion-title>
+  </ion-toolbar>
+</ion-footer>

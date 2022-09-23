@@ -1,15 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <script
+      type="module"
+      src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"
+    ></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" />
+    <script>
+      window.Ionic = { config: { mode: "ios" } };
+    </script>
     <meta charset="utf-8" />
     <link rel="icon" href="%sveltekit.assets%/favicon.png" />
+    <meta name="color-scheme" content="dark" />
     <meta
       name="viewport"
       content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
     %sveltekit.head%
   </head>
-  <body>
+  <body class="dark">
     <div>%sveltekit.body%</div>
   </body>
 </html>
