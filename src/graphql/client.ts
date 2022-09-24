@@ -3,7 +3,7 @@ import type { RequestHandler } from "@apollo/client/core";
 import { setContext } from "@apollo/client/link/context";
 import { asyncMap } from "@apollo/client/utilities";
 import { Capacitor } from "@capacitor/core";
-import { store } from "~/store/ionic";
+import { store } from "~/store/store";
 
 const uri = "http://localhost:3000/graphql";
 
@@ -73,7 +73,7 @@ const cache = new InMemoryCache({
   },
 });
 
-export default new ApolloClient({
+export const client = new ApolloClient({
   cache,
   link,
 });

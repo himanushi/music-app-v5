@@ -8,7 +8,6 @@ generates:
       - typescript-operations
       - typed-document-node
     config:
-      # typescript
       enumsAsTypes: true
       immutableTypes: true
       addUnderscoreToArgsType: true
@@ -16,3 +15,4 @@ generates:
         PositiveNumber: number
         ISO8601DateTime: string
       skipTypename: true
+      useTypeImports: true
