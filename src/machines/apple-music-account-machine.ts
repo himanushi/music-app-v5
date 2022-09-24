@@ -5,36 +5,32 @@
 import type { PluginListenerHandle } from "@capacitor/core";
 import type { AuthorizationStatusDidChangeListener } from "capacitor-plugin-musickit";
 import { CapacitorMusicKit } from "capacitor-plugin-musickit";
-import type { Sender } from "xstate";
-import { assign, interpret, Machine as machine } from "xstate";
+import { assign, interpret, createMachine } from "xstate";
 
-export type accountContext = {
+type Context = {
   config?: MusicKit.Config;
 };
 
-export type accountSchema = {
-  states: {
-    idle: {};
-    checking: {};
-    authorized: {};
-    unauthorized: {};
-  };
-};
-
-export type accountEvent =
+type Event =
   | { type: "SET_TOKEN"; config: MusicKit.Config }
   | { type: "CHECKING" }
   | { type: "LOGIN_OR_LOGOUT" }
   | { type: "LOGIN" }
   | { type: "LOGOUT" };
 
-export const accountMachine = machine<accountContext, accountSchema, accountEvent>(
+type State =
+  | { value: "idle"; context: Context & { config: undefined } }
+  | { value: "checking"; context: Context }
+  | { value: "authorized"; context: Context }
+  | { value: "unauthorized"; context: Context };
+
+export const accountMachine = createMachine<Context, Event, State>(
   {
+    context: { config: undefined },
+
     id: "apple-music-account",
 
     initial: "idle",
-
-    context: { config: undefined },
 
     states: {
       idle: {
@@ -43,9 +39,10 @@ export const accountMachine = machine<accountContext, accountSchema, accountEven
             actions: "setConfig",
             target: "checking",
           },
-          CHECKING: "checking",
+          CHECKING: {
+            target: "checking",
+          },
         },
-        meta: { label: "initializing" },
       },
 
       checking: {
@@ -67,8 +64,12 @@ export const accountMachine = machine<accountContext, accountSchema, accountEven
               },
         },
         on: {
-          LOGIN: "authorized",
-          LOGOUT: "unauthorized",
+          LOGIN: {
+            target: "authorized",
+          },
+          LOGOUT: {
+            target: "unauthorized",
+          },
         },
 
         meta: { label: "loading" },
@@ -76,9 +77,7 @@ export const accountMachine = machine<accountContext, accountSchema, accountEven
 
       authorized: {
         invoke: {
-          id: "authorize",
-
-          src: () => (callback: Sender<accountEvent>) => {
+          src: () => (callback) => {
             const changeStatus: AuthorizationStatusDidChangeListener = (state) => {
               if (state.result !== "authorized") {
                 callback("LOGOUT");
@@ -99,21 +98,22 @@ export const accountMachine = machine<accountContext, accountSchema, accountEven
               }
             };
           },
+          id: "authorize",
         },
-
         on: {
-          LOGIN_OR_LOGOUT: { actions: "logout" },
-          LOGOUT: "unauthorized",
+          LOGIN_OR_LOGOUT: {
+            actions: "logout",
+          },
+          LOGOUT: {
+            target: "unauthorized",
+          },
         },
-
         meta: { label: "ログアウト" },
       },
 
       unauthorized: {
         invoke: {
-          id: "unauthorize",
-
-          src: () => (callback: Sender<accountEvent>) => {
+          src: () => (callback) => {
             const changeStatus: AuthorizationStatusDidChangeListener = (state) => {
               if (state.result === "authorized") {
                 callback("LOGIN");
@@ -134,13 +134,16 @@ export const accountMachine = machine<accountContext, accountSchema, accountEven
               }
             };
           },
+          id: "unauthorize",
         },
-
         on: {
-          LOGIN_OR_LOGOUT: { actions: "login" },
-          LOGIN: "authorized",
+          LOGIN_OR_LOGOUT: {
+            actions: "login",
+          },
+          LOGIN: {
+            target: "authorized",
+          },
         },
-
         meta: { label: "ログイン" },
       },
     },
