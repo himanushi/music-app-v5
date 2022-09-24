@@ -1,8 +1,10 @@
 <script lang="ts">
   import "~/theme/variables.css";
   import "~/theme/custom.css";
+  import Initializer from "~/components/initializer/initializer.svelte";
 </script>
 
+<Initializer />
 <ion-app>
   <ion-header>
     <ion-toolbar>
