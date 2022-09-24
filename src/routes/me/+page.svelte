@@ -1,9 +1,11 @@
 <script lang="ts">
-  import { CapacitorAppleMusic } from "capacitor-plugin-applemusic";
+  import { mergeMeta } from "~/lib/xstate/merge-meta";
+  import { accountService as account } from "~/machines/apple-music-account-machine";
 
-  const onClick = () => CapacitorAppleMusic.authorize();
+  $: meta = mergeMeta<{ label: string }>($account.meta);
+  const onClick = () => account.send("LOGIN_OR_LOGOUT");
 </script>
 
 <ion-item on:click={onClick}>
-  <ion-label> ログイン </ion-label>
+  <ion-label> Apple Music {meta.label} </ion-label>
 </ion-item>
