@@ -38,6 +38,7 @@
     "smacss",
     "stylelint",
     "sveltejs",
+    "Typegen",
     "upsert",
     "xstate"
   ]
