@@ -78,6 +78,8 @@ module.exports = {
       },
     ],
 
+    "@typescript-eslint/ban-types": "off",
+
     // ファイルの最大行数を制限しない
     "max-lines": "off",
 
