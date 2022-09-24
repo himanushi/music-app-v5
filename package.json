@@ -10,11 +10,11 @@
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
   },
   "devDependencies": {
+    "@capacitor/cli": "^4.3.0",
     "@graphql-codegen/cli": "^2.12.1",
     "@graphql-codegen/typed-document-node": "^2.3.3",
     "@graphql-codegen/typescript": "^2.7.3",
     "@graphql-codegen/typescript-operations": "^2.5.3",
-    "@graphql-codegen/typescript-react-apollo": "^3.3.3",
     "@graphql-typed-document-node/core": "^3.1.1",
     "@sveltejs/adapter-static": "^1.0.0-next.43",
     "@sveltejs/kit": "next",
@@ -44,9 +44,11 @@
   "type": "module",
   "dependencies": {
     "@apollo/client": "^3.6.9",
-    "@capacitor/storage": "^1.2.5",
+    "@capacitor/core": "^4.3.0",
+    "@capacitor/preferences": "^4.0.1",
     "@ionic/core": "^6.2.8",
-    "capacitor-plugin-applemusic": "^0.0.61",
-    "graphql": "^16.6.0"
+    "capacitor-plugin-musickit": "^0.0.4",
+    "graphql": "^16.6.0",
+    "xstate": "^4.33.6"
   }
 }
