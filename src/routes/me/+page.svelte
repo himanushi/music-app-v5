@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { mergeMeta } from "~/lib/xstate/merge-meta";
+  import { mergeMeta } from "~/lib/mergeMeta";
   import { accountService as account } from "~/machines/apple-music-account-machine";
 
   $: meta = mergeMeta<{ label: string }>($account.meta);
