@@ -11,6 +11,9 @@ const config = {
     alias: {
       "~": "src",
     },
+    files: {
+      appTemplate: "src/index.html",
+    },
     prerender: { entries: [] },
   },
   preprocess: preprocess(),
