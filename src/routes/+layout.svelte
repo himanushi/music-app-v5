@@ -1,22 +1,22 @@
 <script lang="ts">
   import "~/theme/variables.css";
   import "~/theme/custom.css";
+  import ChangePage from "./change-page.svelte";
+  import Content from "./content.svelte";
+  import Footer from "./footer.svelte";
   import Initializer from "~/components/initializer/initializer.svelte";
 </script>
 
+<ChangePage />
 <Initializer />
 <ion-app>
-  <ion-header>
+  <ion-header collapse="condense" translucent={true}>
     <ion-toolbar>
-      <ion-title>Header</ion-title>
+      <ion-title>ゲーム音楽 Light</ion-title>
     </ion-toolbar>
   </ion-header>
-  <ion-content>
+  <Content>
     <slot />
-  </ion-content>
-  <ion-footer>
-    <ion-toolbar color="main">
-      <ion-title>Footer</ion-title>
-    </ion-toolbar>
-  </ion-footer>
+  </Content>
+  <Footer />
 </ion-app>

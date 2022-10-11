@@ -4,10 +4,7 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
-    "preview": "vite preview",
-    "generate": "npx graphql-codegen --config=codegen.yml",
-    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
+    "generate": "npx graphql-codegen --config=codegen.yml"
   },
   "devDependencies": {
     "@capacitor/cli": "^4.3.0",
@@ -46,9 +43,10 @@
   "dependencies": {
     "@apollo/client": "^3.6.9",
     "@capacitor/core": "^4.3.0",
+    "@capacitor/ios": "^4.3.0",
     "@capacitor/preferences": "^4.0.1",
     "@ionic/core": "^6.2.8",
-    "capacitor-plugin-musickit": "^0.0.10",
+    "capacitor-plugin-musickit": "^0.0.15",
     "graphql": "^16.6.0",
     "xstate": "^4.33.6"
   }

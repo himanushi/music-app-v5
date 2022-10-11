@@ -4,5 +4,13 @@
     "stylelint-config-prettier",
     "stylelint-config-property-sort-order-smacss"
   ],
-  "customSyntax": "postcss-html"
+  "customSyntax": "postcss-html",
+  "rules": {
+    "value-keyword-case": [
+      "lower",
+      {
+        "ignoreKeywords": ["$dummyValue"]
+      }
+    ]
+  }
 }

@@ -12,6 +12,7 @@ const version = 1;
 type Context = {
   currentTrack?: TrackResult;
   currentPlaybackNo: number;
+  queueTracks: TrackResult[];
   trackIds: string[];
   version: number;
 };
@@ -19,11 +20,14 @@ type Context = {
 type Event =
   | { type: "SET_CURRENT_TRACK"; currentTrack?: TrackResult }
   | { type: "SET_CURRENT_PLAYBACK_NO"; currentPlaybackNo: number }
+  | { type: "SET_QUEUE_TRACKS"; queueTracks: TrackResult[] }
   | { type: "REPLACE_AND_PLAY"; trackIds: string[]; currentPlaybackNo: number }
   | { type: "LOADING" }
   | { type: "WAITING" }
   | { type: "PLAY_OR_PAUSE" }
   | { type: "PLAY" }
+  | { type: "NEXT_PLAY" }
+  | { type: "PREVIOUS_PLAY" }
   | { type: "PLAYING" }
   | { type: "PAUSE" }
   | { type: "PAUSED" }
@@ -68,6 +72,7 @@ export const playerMachine = createMachine<Context, Event, State>(
     context: {
       currentTrack: undefined,
       currentPlaybackNo: -1,
+      queueTracks: [],
       trackIds: [],
       version,
     },
@@ -81,6 +86,8 @@ export const playerMachine = createMachine<Context, Event, State>(
         target: `#${id}.loading.queueing`,
         actions: ["setTrackIds", "setCurrentPlaybackNo"],
       },
+      NEXT_PLAY: { actions: "nextPlay" },
+      PREVIOUS_PLAY: { actions: "previousPlay" },
     },
 
     invoke: {
@@ -133,9 +140,20 @@ export const playerMachine = createMachine<Context, Event, State>(
           fetching: {
             entry: ["playIndex"],
             invoke: {
-              src: () => (callback) => setEvents(callback, [["playing", "PLAYING"]]),
+              src: () => (callback) => {
+                (async () => {
+                  callback({
+                    type: "SET_QUEUE_TRACKS",
+                    queueTracks: (await CapacitorMusicKit.getQueueTracks()).tracks,
+                  });
+                })();
+                return setEvents(callback, [["playing", "PLAYING"]]);
+              },
             },
-            on: { PLAYING: `#${id}.playing` },
+            on: {
+              PLAYING: `#${id}.playing`,
+              SET_QUEUE_TRACKS: { actions: "setQueueTracks" },
+            },
           },
 
           waiting: {
@@ -150,15 +168,16 @@ export const playerMachine = createMachine<Context, Event, State>(
       playing: {
         invoke: [
           {
-            src: () => (callback) => {
+            src: (context) => (callback) => {
               (async () => {
+                const index = (await CapacitorMusicKit.getCurrentIndex()).index;
                 callback({
                   type: "SET_CURRENT_PLAYBACK_NO",
-                  currentPlaybackNo: (await CapacitorMusicKit.getCurrentIndex()).index,
+                  currentPlaybackNo: index,
                 });
                 callback({
                   type: "SET_CURRENT_TRACK",
-                  currentTrack: (await CapacitorMusicKit.getCurrentTrack()).track,
+                  currentTrack: context.queueTracks[index],
                 });
                 callback("MEMORY");
               })();
@@ -216,6 +235,10 @@ export const playerMachine = createMachine<Context, Event, State>(
     actions: {
       play: () => CapacitorMusicKit.play({}),
 
+      nextPlay: () => CapacitorMusicKit.nextPlay(),
+
+      previousPlay: () => CapacitorMusicKit.previousPlay(),
+
       playIndex: (context) => CapacitorMusicKit.play({ index: context.currentPlaybackNo }),
 
       pause: () => CapacitorMusicKit.pause(),
@@ -226,12 +249,17 @@ export const playerMachine = createMachine<Context, Event, State>(
         currentTrack: (_, event) => "context" in event ? event.context.currentTrack : undefined,
         currentPlaybackNo: (_, event) =>
           "context" in event ? event.context.currentPlaybackNo : -1,
+        queueTracks: (_, event) => "context" in event ? event.context.queueTracks : [],
         trackIds: (_, event) => "context" in event ? event.context.trackIds : [],
         version: (_, event) => "context" in event ? event.context.version : version,
       }),
 
       setTrackIds: assign({
         trackIds: (_, event) => "trackIds" in event ? event.trackIds : [],
+      }),
+
+      setQueueTracks: assign({
+        queueTracks: (_, event) => "queueTracks" in event ? event.queueTracks : [],
       }),
 
       setCurrentPlaybackNo: assign({
