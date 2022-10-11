@@ -28,7 +28,7 @@ export const accountMachine = createMachine<Context, Event, State>(
   {
     context: { config: undefined },
 
-    id: "apple-music-account",
+    id: "AppleMusicAccount",
 
     initial: "idle",
 

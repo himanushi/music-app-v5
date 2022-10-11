@@ -13,10 +13,13 @@ export type LibraryAlbum = {
   artworkUrl?: string;
 };
 
+const version = 1;
+
 export type Context = {
   hasNext: boolean;
   offset: number;
   albums: LibraryAlbum[];
+  version: number;
 };
 
 export type Event = { type: "LOAD" } | { type: "IDLE" } | { type: "LOADING" };
@@ -31,7 +34,7 @@ export type State =
       context: Context;
     };
 
-export const id = "apple-music-library-albums";
+export const id = "AppleMusicLibraryAlbums";
 
 const limit = 100;
 
@@ -45,6 +48,7 @@ export const libraryAlbumsMachine = createMachine<Context, Event, State>(
       hasNext: true,
       offset: 0,
       albums: [],
+      version,
     },
 
     states: {
