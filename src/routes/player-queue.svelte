@@ -2,7 +2,10 @@
   import { fade } from "svelte/transition";
   import SquareImage from "~/components/square-image.svelte";
   import { convertImageUrl } from "~/lib/convertImageUrl";
+  import { matches } from "~/lib/matches";
   import { playerService } from "~/machines/apple-music-player-machine";
+
+  const playOrPause = () => playerService.send("PLAY_OR_PAUSE");
 
   const decide = (
     event: CustomEvent & {
@@ -27,13 +30,15 @@
       });
     }
   };
+
+  $: loading = matches($playerService, ["loading"]);
 </script>
 
 <ion-content style="padding: 10px 0" color="dark-gray" in:fade>
   <ion-reorder-group disabled={false} on:ionItemReorder={decide}>
     {#each $playerService.context.queueTracks as track, index}
       <ion-item-sliding>
-        <ion-item color="dark-gray">
+        <ion-item color={$playerService.context.currentPlaybackNo === index ? "main" : "dark-gray"}>
           <ion-reorder slot="start">
             <ion-icon name="reorder-two" />
           </ion-reorder>
@@ -51,8 +56,19 @@
             on:click|preventDefault|stopPropagation
           >
             {#if $playerService.context.currentPlaybackNo === index}
-              <ion-button>
-                <ion-icon name="musical-note" slot="icon-only" color="main" />
+              <ion-button
+                color="black"
+                disabled={loading || !$playerService.context.currentTrack}
+                size="large"
+                on:click={playOrPause}
+              >
+                {#if matches($playerService, ["playing"])}
+                  <ion-icon name="pause" slot="icon-only" color="main" />
+                {:else if loading}
+                  <ion-icon name="sync" slot="icon-only" color="main" />
+                {:else}
+                  <ion-icon name="play" slot="icon-only" color="main" />
+                {/if}
               </ion-button>
             {:else}
               <ion-button on:click={() => play(index)}>

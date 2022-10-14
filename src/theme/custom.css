@@ -4,7 +4,7 @@
 
 .thumbnail-button {
   position: absolute;
-  left: calc(var(--padding-start) + var(--ion-safe-area-left, 0px) + 47px);
+  left: calc(var(--padding-start) + var(--ion-safe-area-left, 0px) + 44px);
 }
 
 .md .tabs-bottom {
