@@ -1,8 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable no-shadow */
 /* eslint-disable no-use-before-define */
 /* eslint-disable no-unused-vars */
-
+/* eslint-disable no-shadow */
 // ver: 3.2136.9-prerelease
 declare namespace MusicKit {
   interface Config {
@@ -13,9 +11,22 @@ declare namespace MusicKit {
     };
   }
 
-  function configure(config: Config): MusicKitInstance;
+  function configure(config: Config): Promise<MusicKitInstance>;
   function getInstance(): MusicKitInstance;
   function formatMediaTime(seconds: number, separator?: string): string;
+
+  interface PlaybackStateDidChange {
+    eventName: "playbackStateDidChange";
+    callback: (data: { oldState: number; state: number }) => void;
+  }
+  interface NowPlayingItemDidChange {
+    eventName: "nowPlayingItemDidChange";
+    callback: (data: { item?: CurrentItem }) => void;
+  }
+  interface AuthorizationStatusDidChange {
+    eventName: "authorizationStatusDidChange";
+    callback: (data: { authorizationStatus: number }) => void;
+  }
 
   interface MusicKitInstance {
     api: API;
@@ -45,12 +56,25 @@ declare namespace MusicKit {
     currentPlaybackDuration: number;
     isPlaying: boolean;
     queue: Queue;
+    nowPlayingItemIndex: number;
+    repeatMode: number;
 
-    addEventListener(eventName: string, callback: (result: any) => any): void;
+    addEventListener(
+      eventName: PlaybackStateDidChange["eventName"],
+      callback: PlaybackStateDidChange["callback"]
+    ): void;
+    addEventListener(
+      eventName: NowPlayingItemDidChange["eventName"],
+      callback: NowPlayingItemDidChange["callback"]
+    ): void;
+    addEventListener(
+      eventName: AuthorizationStatusDidChange["eventName"],
+      callback: AuthorizationStatusDidChange["callback"]
+    ): void;
     removeEventListener(eventName: string, callback: (result: any) => any): void;
     addToLibrary(e: any, t?: any): Promise<any>;
     authorize(): Promise<string>;
-    changeToMediaAtIndex(e: any): Promise<any>;
+    changeToMediaAtIndex(index: number): Promise<any>;
     cleanup(): Promise<any>;
     clearQueue(): Promise<any>;
     deferPlayback(): Promise<any>;
@@ -61,8 +85,8 @@ declare namespace MusicKit {
     playNext(e: any, t: any): Promise<any>;
     seekBackward(): Promise<any>;
     seekForward(): Promise<any>;
-    seekToTime(e: any): Promise<any>;
-    setQueue(e: any): Promise<any>;
+    seekToTime(playbackTime: number): Promise<any>;
+    setQueue(e: any): Promise<Queue>;
     skipToNextItem(): Promise<any>;
     skipToPreviousItem(): Promise<any>;
     stop(): Promise<any>;
@@ -134,15 +158,12 @@ declare namespace MusicKit {
     href: string;
     attributes: {
       name: string;
+      discNumber: number;
+      trackNumber: number;
       durationInMillis: number;
       artwork?: { url: string };
       albumName: string;
-      playParams: {
-        id: string;
-        purchasedId?: string;
-        isLibrary: boolean;
-        kind: "album" | "song";
-      };
+      playParams: PlayParams;
       previews: { url: string }[];
     };
     relationships: {
@@ -186,10 +207,7 @@ declare namespace MusicKit {
     hasLyrics: boolean;
     isrc: string;
     name: string;
-    playParams: {
-      id: string;
-      kind: string;
-    };
+    playParams: PlayParams;
     previews: {
       url: string;
     }[];
@@ -269,6 +287,7 @@ declare namespace MusicKit {
     position: number;
     previousPlayableItem?: MediaItem;
     previousPlayableItemIndex?: number;
+    currentItem?: CurrentItem;
 
     addEventListener(eventName: string, callback: (result: any) => any): void;
     removeEventListener(eventName: string, callback: (result: any) => any): void;
@@ -281,6 +300,46 @@ declare namespace MusicKit {
     shuffle(e: any): Promise<any>;
     unshuffle(e: any): Promise<any>;
     reset(): Promise<any>;
+  }
+
+  interface PlayParams {
+    id: string;
+    kind: "album" | "song";
+    isLibrary: boolean;
+    reporting: boolean;
+    catalogId?: string;
+    purchasedId?: string;
+  }
+
+  interface CurrentItem {
+    assetURL: string;
+    attributes: {
+      albumName: string;
+      artistName: string;
+      artwork?: { width: number; height: number; url: string };
+      composerName: string;
+      discNumber: number;
+      durationInMillis: number;
+      genreNames: string[];
+      isrc: string;
+      name: string;
+      playParams: PlayParams;
+      previews: { url?: string }[];
+      releaseDate: string;
+      trackNumber: number;
+    };
+    bingeWatching: boolean;
+    flavor: string;
+    hlsMetadata: any;
+    id: string;
+    keyURLs: {
+      "hls-key-cert-url": string;
+      "hls-key-server-url": string;
+      "widevine-cert-url": string;
+    };
+    playbackType: number;
+    relationships: any;
+    type: "song";
   }
 
   interface MediaItem {
@@ -317,10 +376,7 @@ declare namespace MusicKit {
     isRestricted: boolean;
     isUnavailable: boolean;
     isrc: string;
-    playParams: {
-      id: string;
-      kind: string;
-    };
+    playParams: PlayParams;
     playRawAssetURL: boolean;
     playbackDuration: number;
     playlistArtworkURL: string;
