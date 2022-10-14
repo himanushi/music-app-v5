@@ -2,27 +2,29 @@
 /* eslint-disable sort-keys */
 /* eslint-disable sort-keys-fix/sort-keys-fix */
 
-import { CapacitorMusicKit } from "capacitor-plugin-musickit";
-import { assign, send, createMachine } from "xstate";
+import {
+  CapacitorMusicKit,
+  type AlbumResult,
+  type GetLibraryAlbumsResult,
+} from "capacitor-plugin-musickit";
+import { assign, send, createMachine, interpret } from "xstate";
 import type { DoneInvokeEvent } from "xstate";
 import { store } from "~/store/store";
-
-export type LibraryAlbum = {
-  libraryId: string;
-  name: string;
-  artworkUrl?: string;
-};
 
 const version = 1;
 
 export type Context = {
   hasNext: boolean;
   offset: number;
-  albums: LibraryAlbum[];
+  albums: AlbumResult[];
   version: number;
 };
 
-export type Event = { type: "LOAD" } | { type: "IDLE" } | { type: "LOADING" };
+export type Event =
+  | { type: "LOAD" }
+  | { type: "IDLE" }
+  | { type: "LOADING" }
+  | { type: "REMEMBER"; context: Context };
 
 export type State =
   | {
@@ -30,7 +32,15 @@ export type State =
       context: Context;
     }
   | {
+      value: "checking";
+      context: Context;
+    }
+  | {
       value: "loading";
+      context: Context;
+    }
+  | {
+      value: "done";
       context: Context;
     };
 
@@ -53,7 +63,21 @@ export const libraryAlbumsMachine = createMachine<Context, Event, State>(
 
     states: {
       idle: {
+        invoke: {
+          src: () => (callback) => {
+            (async () => {
+              const context = await store.get<Context>(id);
+              if (context && context.version === version) {
+                callback({
+                  type: "REMEMBER",
+                  context,
+                });
+              }
+            })();
+          },
+        },
         on: {
+          REMEMBER: { actions: "remember" },
           LOAD: "checking",
         },
       },
@@ -65,6 +89,9 @@ export const libraryAlbumsMachine = createMachine<Context, Event, State>(
             {
               cond: (context) => context.hasNext,
               target: "loading",
+            },
+            {
+              target: "done",
             },
           ],
         },
@@ -83,16 +110,11 @@ export const libraryAlbumsMachine = createMachine<Context, Event, State>(
           onDone: {
             target: "checking",
             actions: assign({
-              albums: (
-                context,
-                event: DoneInvokeEvent<
-                  Awaited<ReturnType<typeof CapacitorMusicKit.getLibraryAlbums>>
-                >,
-              ) => [
+              albums: (context, event: DoneInvokeEvent<GetLibraryAlbumsResult>) => [
                 ...context.albums,
                 ...event.data.albums.map((album) => ({
-                  libraryId: album.id,
-                  name: album.title,
+                  id: album.id,
+                  name: album.name,
                   artworkUrl: album.artworkUrl,
                 })),
               ],
@@ -105,11 +127,22 @@ export const libraryAlbumsMachine = createMachine<Context, Event, State>(
         },
         on: {},
       },
+
+      done: {},
     },
   },
   {
     actions: {
       memory: (context) => store.set(id, context),
+
+      remember: assign({
+        hasNext: (_, event) => "context" in event ? event.context.hasNext : false,
+        offset: (_, event) => "context" in event ? event.context.offset : 0,
+        albums: (_, event) => "context" in event ? event.context.albums : [],
+        version: (_, event) => "context" in event ? event.context.version : version,
+      }),
     },
   },
 );
+
+export const libraryAlbumsService = interpret(libraryAlbumsMachine).start();

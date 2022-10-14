@@ -37,12 +37,16 @@
 
   {#if result?.album}
     <CenterItem>
-      <SquareImage src={convertImageUrl({ px: 300,
-        url: result.album.artworkUrl })} />
+      <SquareImage
+        src={convertImageUrl({
+          px: 500,
+          url: result.album.artworkUrl,
+        })}
+      />
     </CenterItem>
     <ion-item>
       <ion-label>
-        {result.album.title}
+        {result.album.name}
       </ion-label>
     </ion-item>
     <ion-item>
@@ -59,7 +63,7 @@
         <ion-note slot="start">
           {item.trackNumber}
         </ion-note>
-        <ion-label>{item.title}</ion-label>
+        <ion-label>{item.name}</ion-label>
       </ion-item>
     </VirtualScroll>
   {/if}

@@ -43,6 +43,7 @@ export const accountMachine = createMachine<Context, Event, State>(
             target: "checking",
           },
         },
+        meta: { label: "idle" },
       },
 
       checking: {

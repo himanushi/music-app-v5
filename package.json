@@ -4,7 +4,9 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
-    "generate": "npx graphql-codegen --config=codegen.yml"
+    "generate": "npx graphql-codegen --config=codegen.yml",
+    "ionic:build": "run-s build",
+    "ios:build": "ionic capacitor build ios"
   },
   "devDependencies": {
     "@capacitor/cli": "^4.3.0",
@@ -23,6 +25,7 @@
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-sort-keys-fix": "^1.1.2",
     "eslint-plugin-svelte": "^2.8.0",
+    "npm-run-all": "^4.1.5",
     "postcss-html": "^1.5.0",
     "prettier": "^2.6.2",
     "prettier-plugin-svelte": "^2.7.0",
@@ -35,6 +38,7 @@
     "svelte": "^3.46.0",
     "svelte-check": "^2.9.0",
     "svelte-preprocess": "^4.10.6",
+    "svelte-range-slider-pips": "^2.0.3",
     "tslib": "^2.3.1",
     "typescript": "^4.7.4",
     "vite": "^3.1.0"
@@ -45,8 +49,8 @@
     "@capacitor/core": "^4.3.0",
     "@capacitor/ios": "^4.3.0",
     "@capacitor/preferences": "^4.0.1",
-    "@ionic/core": "^6.2.8",
-    "capacitor-plugin-musickit": "^0.0.15",
+    "@ionic/core": "^6.3.1",
+    "capacitor-plugin-musickit": "^0.0.21",
     "graphql": "^16.6.0",
     "xstate": "^4.33.6"
   }

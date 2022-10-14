@@ -2,9 +2,9 @@
 /* eslint-disable sort-keys */
 /* eslint-disable sort-keys-fix/sort-keys-fix */
 import type { PluginListenerHandle } from "@capacitor/core";
-import type { PlaybackStates, TrackResult } from "capacitor-plugin-musickit";
+import type { GetQueueTracksResult, PlaybackStates, TrackResult } from "capacitor-plugin-musickit";
 import { CapacitorMusicKit } from "capacitor-plugin-musickit";
-import { assign, interpret, createMachine } from "xstate";
+import { assign, interpret, createMachine, type DoneInvokeEvent } from "xstate";
 import { store } from "~/store/store";
 
 const version = 1;
@@ -14,6 +14,8 @@ type Context = {
   currentPlaybackNo: number;
   queueTracks: TrackResult[];
   trackIds: string[];
+  seek: number;
+  repeatMode: "none" | "all";
   version: number;
 };
 
@@ -21,6 +23,14 @@ type Event =
   | { type: "SET_CURRENT_TRACK"; currentTrack?: TrackResult }
   | { type: "SET_CURRENT_PLAYBACK_NO"; currentPlaybackNo: number }
   | { type: "SET_QUEUE_TRACKS"; queueTracks: TrackResult[] }
+  | {
+      type: "MOVE_QUEUE_TRACKS";
+      from: number;
+      to: number;
+    }
+  | { type: "SET_SEEK"; seek: number }
+  | { type: "CHANGE_SEEK"; seek: number }
+  | { type: "SWITCH_REPEAT_MODE" }
   | { type: "REPLACE_AND_PLAY"; trackIds: string[]; currentPlaybackNo: number }
   | { type: "LOADING" }
   | { type: "WAITING" }
@@ -65,6 +75,20 @@ const setEvents = (callback: any, events: string[][]) => {
   };
 };
 
+// ref: https://stackoverflow.com/questions/5306680/move-an-array-element-from-one-array-position-to-another
+const move = <T>(array: (T | undefined)[], old_index: number, new_index: number) => {
+  const arr = [...array];
+  if (new_index >= arr.length) {
+    let count = new_index - arr.length + 1;
+    // eslint-disable-next-line no-plusplus
+    while (count--) {
+      arr.push(undefined);
+    }
+  }
+  arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
+  return arr as T[];
+};
+
 const id = "AppleMusicPlayer";
 
 export const playerMachine = createMachine<Context, Event, State>(
@@ -74,6 +98,8 @@ export const playerMachine = createMachine<Context, Event, State>(
       currentPlaybackNo: -1,
       queueTracks: [],
       trackIds: [],
+      seek: 0,
+      repeatMode: "none",
       version,
     },
 
@@ -86,25 +112,14 @@ export const playerMachine = createMachine<Context, Event, State>(
         target: `#${id}.loading.queueing`,
         actions: ["setTrackIds", "setCurrentPlaybackNo"],
       },
+      MOVE_QUEUE_TRACKS: {
+        target: `#${id}.loading.onlyQueueing`,
+        actions: "moveQueueTracks",
+      },
+      CHANGE_SEEK: { actions: "changeSeek" },
+      SWITCH_REPEAT_MODE: { actions: "switchRepeatMode" },
       NEXT_PLAY: { actions: "nextPlay" },
       PREVIOUS_PLAY: { actions: "previousPlay" },
-    },
-
-    invoke: {
-      src: () => () => {
-        let listener: PluginListenerHandle;
-        (async () => {
-          listener = await CapacitorMusicKit.addListener("playbackStateDidChange", (result) => {
-            console.log(result.result);
-          });
-        })();
-
-        return () => {
-          if (listener) {
-            listener.remove();
-          }
-        };
-      },
     },
 
     states: {
@@ -131,28 +146,60 @@ export const playerMachine = createMachine<Context, Event, State>(
       loading: {
         states: {
           queueing: {
+            entry: ["stop"],
             invoke: {
               src: (context) => CapacitorMusicKit.setQueue({ ids: context.trackIds }),
-              onDone: "fetching",
+              onDone: "setQueueing",
+              onError: `#${id}.stopped`,
+            },
+          },
+          setQueueing: {
+            invoke: {
+              src: () => CapacitorMusicKit.getQueueTracks(),
+              onDone: {
+                target: "fetching",
+                actions: assign({
+                  queueTracks: (_, event: DoneInvokeEvent<GetQueueTracksResult>) =>
+                    event.data.tracks,
+                }),
+              },
               onError: `#${id}.stopped`,
             },
           },
           fetching: {
             entry: ["playIndex"],
             invoke: {
-              src: () => (callback) => {
-                (async () => {
-                  callback({
-                    type: "SET_QUEUE_TRACKS",
-                    queueTracks: (await CapacitorMusicKit.getQueueTracks()).tracks,
-                  });
-                })();
-                return setEvents(callback, [["playing", "PLAYING"]]);
-              },
+              src: () => (callback) => setEvents(callback, [["playing", "PLAYING"]]),
             },
             on: {
               PLAYING: `#${id}.playing`,
-              SET_QUEUE_TRACKS: { actions: "setQueueTracks" },
+            },
+          },
+
+          onlyQueueing: {
+            entry: ["stop"],
+            invoke: {
+              src: ({ trackIds }) => {
+                console.log({ trackIds });
+                return CapacitorMusicKit.setQueue({ ids: trackIds });
+              },
+              onDone: "setOnlyQueueing",
+              onError: `#${id}.stopped`,
+            },
+          },
+          setOnlyQueueing: {
+            invoke: {
+              src: () => CapacitorMusicKit.getQueueTracks(),
+              onDone: {
+                target: `#${id}.stopped`,
+                actions: assign({
+                  queueTracks: (_, event: DoneInvokeEvent<GetQueueTracksResult>) => {
+                    console.log(event.data.tracks);
+                    return event.data.tracks;
+                  },
+                }),
+              },
+              onError: `#${id}.stopped`,
             },
           },
 
@@ -168,29 +215,47 @@ export const playerMachine = createMachine<Context, Event, State>(
       playing: {
         invoke: [
           {
-            src: (context) => (callback) => {
-              (async () => {
-                const index = (await CapacitorMusicKit.getCurrentIndex()).index;
-                callback({
-                  type: "SET_CURRENT_PLAYBACK_NO",
-                  currentPlaybackNo: index,
-                });
-                callback({
-                  type: "SET_CURRENT_TRACK",
-                  currentTrack: context.queueTracks[index],
-                });
-                callback("MEMORY");
-              })();
-
-              return setEvents(callback, [
+            src: () => (callback) =>
+              setEvents(callback, [
+                ["playing", "PLAYING"],
                 ["waiting", "WAITING"],
                 ["paused", "PAUSED"],
                 ["completed", "STOPPED"],
-              ]);
+              ]),
+          },
+          {
+            src: () => (callback) => {
+              (async () => {
+                callback({
+                  type: "SET_CURRENT_PLAYBACK_NO",
+                  currentPlaybackNo: (await CapacitorMusicKit.getCurrentIndex()).index,
+                });
+                callback({
+                  type: "SET_CURRENT_TRACK",
+                  currentTrack: (await CapacitorMusicKit.getCurrentTrack()).track,
+                });
+                callback("MEMORY");
+              })();
+            },
+          },
+          {
+            src: () => (callback) => {
+              const interval = setInterval(async () => {
+                const seek = (await CapacitorMusicKit.getCurrentPlaybackTime()).time * 1000;
+                callback({
+                  type: "SET_SEEK",
+                  seek,
+                });
+              }, 1000);
+
+              return () => {
+                clearInterval(interval);
+              };
             },
           },
         ],
         on: {
+          PLAYING: "playbackDuplication",
           LOADING: "loading",
           PAUSED: "paused",
           STOPPED: "stopped",
@@ -198,9 +263,14 @@ export const playerMachine = createMachine<Context, Event, State>(
           PLAY_OR_PAUSE: { actions: "pause" },
           SET_CURRENT_PLAYBACK_NO: { actions: "setCurrentPlaybackNo" },
           SET_CURRENT_TRACK: { actions: "setCurrentTrack" },
+          SET_SEEK: { actions: "setSeek" },
           MEMORY: { actions: "memory" },
         },
       },
+
+      // playing の invoke を再実行したいため、一度 playbackDuplication を経由する
+      // To re-execute the invoke of playing, we will go through playbackDuplication once.
+      playbackDuplication: { after: { 0: [{ target: "playing" }] } },
 
       paused: {
         invoke: {
@@ -243,6 +313,11 @@ export const playerMachine = createMachine<Context, Event, State>(
 
       pause: () => CapacitorMusicKit.pause(),
 
+      stop: () => CapacitorMusicKit.stop(),
+
+      changeSeek: (_, event) =>
+        "seek" in event ? CapacitorMusicKit.seekToTime({ time: event.seek / 1000 }) : undefined,
+
       memory: (context) => store.set(id, context),
 
       remember: assign({
@@ -258,10 +333,6 @@ export const playerMachine = createMachine<Context, Event, State>(
         trackIds: (_, event) => "trackIds" in event ? event.trackIds : [],
       }),
 
-      setQueueTracks: assign({
-        queueTracks: (_, event) => "queueTracks" in event ? event.queueTracks : [],
-      }),
-
       setCurrentPlaybackNo: assign({
         currentPlaybackNo: (_, event) =>
           "currentPlaybackNo" in event ? event.currentPlaybackNo : -1,
@@ -269,6 +340,39 @@ export const playerMachine = createMachine<Context, Event, State>(
 
       setCurrentTrack: assign({
         currentTrack: (_, event) => "currentTrack" in event ? event.currentTrack : undefined,
+      }),
+
+      setSeek: assign({
+        seek: (_, event) => "seek" in event ? event.seek : 0,
+      }),
+
+      switchRepeatMode: assign({
+        repeatMode: (context) => {
+          const mode: "none" | "all" | "one" = context.repeatMode === "none" ? "all" : "none";
+          CapacitorMusicKit.setRepeatMode({ mode });
+          return mode;
+        },
+      }),
+
+      moveQueueTracks: assign({
+        currentPlaybackNo: ({ currentPlaybackNo }, event) => {
+          if ("from" in event && "to" in event) {
+            if (currentPlaybackNo === event.from) {
+              return event.to;
+            } else if (event.from < currentPlaybackNo && currentPlaybackNo <= event.to) {
+              return currentPlaybackNo - 1;
+            } else if (event.from > currentPlaybackNo && currentPlaybackNo >= event.to) {
+              return currentPlaybackNo + 1;
+            }
+          }
+          return currentPlaybackNo;
+        },
+        trackIds: ({ trackIds }, event) => {
+          if ("from" in event && "to" in event) {
+            return move(trackIds, event.from, event.to);
+          }
+          return trackIds;
+        },
       }),
     },
   },

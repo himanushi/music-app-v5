@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { Components } from "@ionic/core";
+  import BackButton from "./back-button.svelte";
   import { scrollElement } from "~/store/scroll-element";
 
   let content: Components.IonContent;
@@ -10,12 +11,13 @@
   }
 </script>
 
-<ion-content bind:this={content} fullscreen>
+<ion-content bind:this={content}>
   <slot />
+  <BackButton />
 </ion-content>
 
 <style>
   ion-content {
-    --padding-bottom: 76px;
+    --padding-bottom: 150px;
   }
 </style>

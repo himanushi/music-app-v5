@@ -1,8 +1,11 @@
 <script lang="ts">
+  import { fade } from "svelte/transition";
   import SquareImage from "~/components/square-image.svelte";
   import { convertImageUrl } from "~/lib/convertImageUrl";
   import { matches } from "~/lib/matches";
   import { playerService } from "~/machines/apple-music-player-machine";
+
+  export let switchBreakpoint: () => void;
 
   const playOrPause = () => playerService.send("PLAY_OR_PAUSE");
 
@@ -11,8 +14,8 @@
   $: loading = matches($playerService, ["loading"]);
 </script>
 
-<ion-footer translucent={true}>
-  <ion-toolbar color="main">
+<ion-header scrolling="none" in:fade>
+  <ion-toolbar on:click={switchBreakpoint}>
     {#if $playerService.context.currentTrack}
       <ion-thumbnail slot="start">
         <SquareImage
@@ -23,7 +26,7 @@
         />
       </ion-thumbnail>
       <ion-title>
-        {$playerService.context.currentTrack.title}
+        {$playerService.context.currentTrack.name}
       </ion-title>
     {:else}
       <ion-thumbnail slot="start">
@@ -31,18 +34,24 @@
       </ion-thumbnail>
     {/if}
     <ion-buttons slot="end">
-      <ion-button disabled={loading || !$playerService.context.currentTrack} on:click={playOrPause}>
+      <ion-button
+        disabled={loading || !$playerService.context.currentTrack}
+        on:click|preventDefault|stopPropagation={playOrPause}
+      >
         {#if matches($playerService, ["playing"])}
-          <ion-icon name="pause" />
+          <ion-icon name="pause" slot="icon-only" />
         {:else if loading}
-          <ion-icon name="sync" />
+          <ion-icon name="sync" slot="icon-only" />
         {:else}
-          <ion-icon name="play" />
+          <ion-icon name="play" slot="icon-only" />
         {/if}
       </ion-button>
-      <ion-button disabled={loading || !$playerService.context.currentTrack} on:click={nextPlay}>
-        <ion-icon name="play-forward" />
+      <ion-button
+        disabled={loading || !$playerService.context.currentTrack}
+        on:click|preventDefault|stopPropagation={nextPlay}
+      >
+        <ion-icon name="play-forward" slot="icon-only" />
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
-</ion-footer>
+</ion-header>

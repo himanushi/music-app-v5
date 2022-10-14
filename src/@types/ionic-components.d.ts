@@ -2,6 +2,8 @@
 import { JSX as LocalJSX } from "@ionic/core";
 
 type IonicAllEventNames =
+  | "onDidDismiss"
+  | "onDidPresent"
   | "onIonActionSheetDidDismiss"
   | "onIonActionSheetDidPresent"
   | "onIonActionSheetWillDismiss"
@@ -12,12 +14,14 @@ type IonicAllEventNames =
   | "onIonAlertWillPresent"
   | "onIonBackdropTap"
   | "onIonBlur"
+  | "onIonBreakpointDidChange"
   | "onIonCancel"
   | "onIonChange"
   | "onIonClear"
   | "onIonCollapsedClick"
   | "onIonDidClose"
   | "onIonDidOpen"
+  | "onIonDismiss"
   | "onIonDrag"
   | "onIonError"
   | "onIonFocus"
@@ -27,6 +31,8 @@ type IonicAllEventNames =
   | "onIonInput"
   | "onIonInputModeChange"
   | "onIonItemReorder"
+  | "onIonKnobMoveEnd"
+  | "onIonKnobMoveStart"
   | "onIonLoadingDidDismiss"
   | "onIonLoadingDidPresent"
   | "onIonLoadingWillDismiss"
@@ -63,13 +69,13 @@ type IonicAllEventNames =
   | "onIonSlidePrevStart"
   | "onIonSlideReachEnd"
   | "onIonSlideReachStart"
-  | "onIonSlidesDidLoad"
   | "onIonSlideTap"
   | "onIonSlideTouchEnd"
   | "onIonSlideTouchStart"
   | "onIonSlideTransitionEnd"
   | "onIonSlideTransitionStart"
   | "onIonSlideWillChange"
+  | "onIonSlidesDidLoad"
   | "onIonSplitPaneVisible"
   | "onIonStart"
   | "onIonSwipe"
@@ -80,11 +86,15 @@ type IonicAllEventNames =
   | "onIonToastWillDismiss"
   | "onIonToastWillPresent"
   | "onIonWillClose"
-  | "onIonWillOpen";
+  | "onIonWillOpen"
+  | "onWillDismiss"
+  | "onWillPresent";
 
 type IgnoreUnknown<T> = T extends Function ? T : never;
 
 type ConvertIonicEvents<T extends {}> = Partial<{
+  ondidDismiss: IgnoreUnknown<T["onDidDismiss"]>;
+  ondidPresent: IgnoreUnknown<T["onDidPresent"]>;
   onionActionSheetDidDismiss: IgnoreUnknown<T["onIonActionSheetDidDismiss"]>;
   onionActionSheetDidPresent: IgnoreUnknown<T["onIonActionSheetDidPresent"]>;
   onionActionSheetWillDismiss: IgnoreUnknown<T["onIonActionSheetWillDismiss"]>;
@@ -95,12 +105,14 @@ type ConvertIonicEvents<T extends {}> = Partial<{
   onionAlertWillPresent: IgnoreUnknown<T["onIonAlertWillPresent"]>;
   onionBackdropTap: IgnoreUnknown<T["onIonBackdropTap"]>;
   onionBlur: IgnoreUnknown<T["onIonBlur"]>;
+  onionBreakpointDidChange: IgnoreUnknown<T["onIonBreakpointDidChange"]>;
   onionCancel: IgnoreUnknown<T["onIonCancel"]>;
   onionChange: IgnoreUnknown<T["onIonChange"]>;
   onionClear: IgnoreUnknown<T["onIonClear"]>;
   onionCollapsedClick: IgnoreUnknown<T["onIonCollapsedClick"]>;
   onionDidClose: IgnoreUnknown<T["onIonDidClose"]>;
   onionDidOpen: IgnoreUnknown<T["onIonDidOpen"]>;
+  onionDismiss: IgnoreUnknown<T["onIonDismiss"]>;
   onionDrag: IgnoreUnknown<T["onIonDrag"]>;
   onionError: IgnoreUnknown<T["onIonError"]>;
   onionFocus: IgnoreUnknown<T["onIonFocus"]>;
@@ -110,6 +122,8 @@ type ConvertIonicEvents<T extends {}> = Partial<{
   onionInput: IgnoreUnknown<T["onIonInput"]>;
   onionInputModeChange: IgnoreUnknown<T["onIonInputModeChange"]>;
   onionItemReorder: IgnoreUnknown<T["onIonItemReorder"]>;
+  onionKnobMoveEnd: IgnoreUnknown<T["onIonKnobMoveEnd"]>;
+  onionKnobMoveStart: IgnoreUnknown<T["onIonKnobMoveStart"]>;
   onionLoadingDidDismiss: IgnoreUnknown<T["onIonLoadingDidDismiss"]>;
   onionLoadingDidPresent: IgnoreUnknown<T["onIonLoadingDidPresent"]>;
   onionLoadingWillDismiss: IgnoreUnknown<T["onIonLoadingWillDismiss"]>;
@@ -146,13 +160,13 @@ type ConvertIonicEvents<T extends {}> = Partial<{
   onionSlidePrevStart: IgnoreUnknown<T["onIonSlidePrevStart"]>;
   onionSlideReachEnd: IgnoreUnknown<T["onIonSlideReachEnd"]>;
   onionSlideReachStart: IgnoreUnknown<T["onIonSlideReachStart"]>;
-  onionSlidesDidLoad: IgnoreUnknown<T["onIonSlidesDidLoad"]>;
   onionSlideTap: IgnoreUnknown<T["onIonSlideTap"]>;
   onionSlideTouchEnd: IgnoreUnknown<T["onIonSlideTouchEnd"]>;
   onionSlideTouchStart: IgnoreUnknown<T["onIonSlideTouchStart"]>;
   onionSlideTransitionEnd: IgnoreUnknown<T["onIonSlideTransitionEnd"]>;
   onionSlideTransitionStart: IgnoreUnknown<T["onIonSlideTransitionStart"]>;
   onionSlideWillChange: IgnoreUnknown<T["onIonSlideWillChange"]>;
+  onionSlidesDidLoad: IgnoreUnknown<T["onIonSlidesDidLoad"]>;
   onionSplitPaneVisible: IgnoreUnknown<T["onIonSplitPaneVisible"]>;
   onionStart: IgnoreUnknown<T["onIonStart"]>;
   onionSwipe: IgnoreUnknown<T["onIonSwipe"]>;
@@ -164,6 +178,8 @@ type ConvertIonicEvents<T extends {}> = Partial<{
   onionToastWillPresent: IgnoreUnknown<T["onIonToastWillPresent"]>;
   onionWillClose: IgnoreUnknown<T["onIonWillClose"]>;
   onionWillOpen: IgnoreUnknown<T["onIonWillOpen"]>;
+  onwillDismiss: IgnoreUnknown<T["onWillDismiss"]>;
+  onwillPresent: IgnoreUnknown<T["onWillPresent"]>;
 }>;
 
 declare global {

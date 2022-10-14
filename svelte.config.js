@@ -11,10 +11,14 @@ const config = {
     alias: {
       "~": "src",
     },
-    files: {
-      appTemplate: "src/index.html",
-    },
     prerender: { entries: [] },
+  },
+  onwarn: (warning, handler) => {
+    // ref: https://github.com/sveltejs/language-tools/issues/650#issuecomment-1181354795
+    if (warning.code.startsWith("a11y-")) {
+      return;
+    }
+    handler(warning);
   },
   preprocess: preprocess(),
 };
