@@ -12,6 +12,8 @@
   const nextPlay = () => playerService.send("NEXT_PLAY");
 
   $: loading = matches($playerService, ["loading"]);
+
+  $: console.log($playerService.context.currentTrack?.name);
 </script>
 
 <ion-header scrolling="none" in:fade>

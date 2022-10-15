@@ -50,7 +50,8 @@
     "@capacitor/ios": "^4.3.0",
     "@capacitor/preferences": "^4.0.1",
     "@ionic/core": "^6.3.1",
-    "capacitor-plugin-musickit": "^0.0.22",
+    "@xstate/inspect": "^0.7.0",
+    "capacitor-plugin-musickit": "^0.0.24",
     "graphql": "^16.6.0",
     "xstate": "^4.33.6"
   }

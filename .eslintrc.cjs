@@ -103,6 +103,8 @@ module.exports = {
 
     "no-duplicate-imports": "off",
 
+    "no-extra-parens": "off",
+
     // マジックナンバーを許可する
     "no-magic-numbers": "off",
 

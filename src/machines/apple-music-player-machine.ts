@@ -2,7 +2,11 @@
 /* eslint-disable sort-keys */
 /* eslint-disable sort-keys-fix/sort-keys-fix */
 import type { PluginListenerHandle } from "@capacitor/core";
-import type { GetQueueTracksResult, PlaybackStates, TrackResult } from "capacitor-plugin-musickit";
+import type {
+  GetQueueTracksResult,
+  PlaybackStateDidChangeListener,
+  TrackResult,
+} from "capacitor-plugin-musickit";
 import { CapacitorMusicKit } from "capacitor-plugin-musickit";
 import { assign, interpret, createMachine, type DoneInvokeEvent } from "xstate";
 import { store } from "~/store/store";
@@ -51,9 +55,9 @@ type State =
 
 const setEvents = (callback: any, events: string[][]) => {
   // eslint-disable-next-line no-unused-vars
-  const didChange: (state: { result: PlaybackStates }) => any = (state) => {
+  const didChange: PlaybackStateDidChangeListener = ({ state }) => {
     events.forEach((event) => {
-      if (state.result === event[0]) {
+      if (state === event[0]) {
         callback(event[1]);
       }
     });
@@ -117,8 +121,6 @@ export const playerMachine = createMachine<Context, Event, State>(
       NEXT_PLAY: { actions: "nextPlay" },
       PREVIOUS_PLAY: { actions: "previousPlay" },
     },
-
-    invoke: { src: "nowPlayingItemDidChange" },
 
     states: {
       idle: {
@@ -203,6 +205,22 @@ export const playerMachine = createMachine<Context, Event, State>(
                 ["completed", "STOPPED"],
               ]),
           },
+          {
+            src: () => (callback) => {
+              (async () => {
+                callback({
+                  type: "SET_CURRENT_PLAYBACK_NO",
+                  currentPlaybackNo: (await CapacitorMusicKit.getCurrentIndex()).index,
+                });
+                callback({
+                  type: "SET_CURRENT_TRACK",
+                  currentTrack: (await CapacitorMusicKit.getCurrentTrack()).track,
+                });
+                callback("MEMORY");
+              })();
+            },
+          },
+          { src: "nowPlayingItemDidChange" },
           { src: "ticktack" },
         ],
         on: {
@@ -211,9 +229,9 @@ export const playerMachine = createMachine<Context, Event, State>(
           STOPPED: "stopped",
           WAITING: `#${id}.loading.waiting`,
           PLAY_OR_PAUSE: { actions: "pause" },
+          SET_SEEK: { actions: "setSeek" },
           SET_CURRENT_PLAYBACK_NO: { actions: "setCurrentPlaybackNo" },
           SET_CURRENT_TRACK: { actions: "setCurrentTrack" },
-          SET_SEEK: { actions: "setSeek" },
           MEMORY: { actions: "memory" },
         },
       },
@@ -268,16 +286,16 @@ export const playerMachine = createMachine<Context, Event, State>(
       memory: (context) => store.set(id, context),
 
       remember: assign({
-        currentTrack: (_, event) => "context" in event ? event.context.currentTrack : undefined,
+        currentTrack: (_, event) => ("context" in event ? event.context.currentTrack : undefined),
         currentPlaybackNo: (_, event) =>
           "context" in event ? event.context.currentPlaybackNo : -1,
-        queueTracks: (_, event) => "context" in event ? event.context.queueTracks : [],
-        trackIds: (_, event) => "context" in event ? event.context.trackIds : [],
-        version: (_, event) => "context" in event ? event.context.version : version,
+        queueTracks: (_, event) => ("context" in event ? event.context.queueTracks : []),
+        trackIds: (_, event) => ("context" in event ? event.context.trackIds : []),
+        version: (_, event) => ("context" in event ? event.context.version : version),
       }),
 
       setTrackIds: assign({
-        trackIds: (_, event) => "trackIds" in event ? event.trackIds : [],
+        trackIds: (_, event) => ("trackIds" in event ? event.trackIds : []),
       }),
 
       setCurrentPlaybackNo: assign({
@@ -286,11 +304,11 @@ export const playerMachine = createMachine<Context, Event, State>(
       }),
 
       setCurrentTrack: assign({
-        currentTrack: (_, event) => "currentTrack" in event ? event.currentTrack : undefined,
+        currentTrack: (_, event) => ("currentTrack" in event ? event.currentTrack : undefined),
       }),
 
       setSeek: assign({
-        seek: (_, event) => "seek" in event ? event.seek : 0,
+        seek: (_, event) => ("seek" in event ? event.seek : 0),
       }),
 
       switchRepeatMode: assign({
@@ -339,17 +357,20 @@ export const playerMachine = createMachine<Context, Event, State>(
       nowPlayingItemDidChange: () => (callback) => {
         let listener: PluginListenerHandle;
         (async () => {
-          listener = await CapacitorMusicKit.addListener("nowPlayingItemDidChange", async () => {
-            callback({
-              type: "SET_CURRENT_PLAYBACK_NO",
-              currentPlaybackNo: (await CapacitorMusicKit.getCurrentIndex()).index,
-            });
-            callback({
-              type: "SET_CURRENT_TRACK",
-              currentTrack: (await CapacitorMusicKit.getCurrentTrack()).track,
-            });
-            callback("MEMORY");
-          });
+          listener = await CapacitorMusicKit.addListener(
+            "nowPlayingItemDidChange",
+            ({ index, track }) => {
+              callback({
+                type: "SET_CURRENT_PLAYBACK_NO",
+                currentPlaybackNo: index,
+              });
+              callback({
+                type: "SET_CURRENT_TRACK",
+                currentTrack: track,
+              });
+              callback("MEMORY");
+            },
+          );
         })();
 
         return () => {

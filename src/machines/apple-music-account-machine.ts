@@ -79,8 +79,8 @@ export const accountMachine = createMachine<Context, Event, State>(
       authorized: {
         invoke: {
           src: () => (callback) => {
-            const changeStatus: AuthorizationStatusDidChangeListener = (state) => {
-              if (state.result !== "authorized") {
+            const changeStatus: AuthorizationStatusDidChangeListener = ({ status }) => {
+              if (status !== "authorized") {
                 callback("LOGOUT");
               }
             };
@@ -115,8 +115,8 @@ export const accountMachine = createMachine<Context, Event, State>(
       unauthorized: {
         invoke: {
           src: () => (callback) => {
-            const changeStatus: AuthorizationStatusDidChangeListener = (state) => {
-              if (state.result === "authorized") {
+            const changeStatus: AuthorizationStatusDidChangeListener = ({ status }) => {
+              if (status === "authorized") {
                 callback("LOGIN");
               }
             };
