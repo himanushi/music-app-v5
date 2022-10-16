@@ -13,11 +13,9 @@
   };
 
   // eslint-disable-next-line no-undef
-  let modal: HTMLIonModalElement | null;
+  let modal: HTMLIonModalElement;
   const switchBreakpoint = () => {
-    if (modal) {
-      modal.setCurrentBreakpoint(open ? min : max);
-    }
+    modal.setCurrentBreakpoint(open ? min : max);
     open = !open;
   };
 </script>

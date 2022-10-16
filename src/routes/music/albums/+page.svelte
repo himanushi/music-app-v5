@@ -1,35 +1,32 @@
 <script lang="ts">
-  import type { AlbumResult } from "capacitor-plugin-musickit";
-  import { goto } from "$app/navigation";
-  import ItemDivider from "~/components/item-divider.svelte";
-  import SquareImage from "~/components/square-image.svelte";
-  import VirtualScroll from "~/components/virtual-scroll.svelte";
-  import { convertImageUrl } from "~/lib/convertImageUrl";
-  import { libraryAlbumsService } from "~/machines/apple-music-library-albums-machine";
+  import type { PageData } from "./$types";
+  import Albums from "./albums.svelte";
+  import Refresher from "~/components/refresher.svelte";
+  import { client } from "~/graphql/client";
 
-  let albums: AlbumResult[];
-  $: albums = [];
-  $: if ($libraryAlbumsService) {
-    albums = $libraryAlbumsService.context.albums;
-  }
+  export let data: PageData;
+
+  let tggle = true;
+  let loaded = false;
+  const refresh = () => {
+    client.cache.evict({
+      fieldName: "albums",
+      id: "ROOT_QUERY",
+    });
+
+    tggle = !tggle;
+  };
 </script>
 
-<ion-list>
-  <ItemDivider title="Albums" />
-  <VirtualScroll items={albums} let:item>
-    <ion-item button detail={false} on:click={() => goto(`/library/albums/${item.id}`)}>
-      <ion-thumbnail slot="start">
-        <SquareImage
-          src={convertImageUrl({
-            px: 300,
-            url: item.artworkUrl,
-          })}
-        />
-      </ion-thumbnail>
-      <ion-label>{item.name}</ion-label>
-      <ion-buttons slot="end">
-        <ion-icon name="heart-outline" slot="icon-only" />
-      </ion-buttons>
-    </ion-item>
-  </VirtualScroll>
-</ion-list>
+<Refresher {refresh} bind:loaded />
+
+<ion-item-group>
+  <ion-item-divider sticky>
+    <ion-label>Albums</ion-label>
+  </ion-item-divider>
+  <ion-list>
+    {#key tggle}
+      <Albums params={data.params} bind:loaded />
+    {/key}
+  </ion-list>
+</ion-item-group>

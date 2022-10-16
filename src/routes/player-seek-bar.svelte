@@ -35,7 +35,7 @@
   };
 
   // eslint-disable-next-line no-undef
-  let ionRange: HTMLIonRangeElement | undefined;
+  let ionRange: HTMLIonRangeElement;
   $: if (ionRange && !ionRange.pinFormatter) {
     // eslint-disable-next-line no-shadow
     const pinFormatter = (value: number) => toMMSS(value);

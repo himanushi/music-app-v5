@@ -17,10 +17,6 @@
         <ion-icon name="musical-notes" color="main" />
         <ion-label>Music</ion-label>
       </ion-segment-button>
-      <ion-segment-button value="library" on:click={() => goto("/library")}>
-        <ion-icon name="library" />
-        <ion-label>Library</ion-label>
-      </ion-segment-button>
       <ion-segment-button value="settings" on:click={() => goto("/settings")}>
         <ion-icon name="settings" />
         <ion-label>Settings</ion-label>

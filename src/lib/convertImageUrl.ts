@@ -1,6 +1,8 @@
-export const convertImageUrl = ({ url, px }: { url?: string; px: number }) => {
+import type { Maybe } from "~/graphql/types";
+
+export const convertImageUrl = ({ url, px }: { url?: string | Maybe<string>; px: number }) => {
   if (!url) {
-    return "/no-image.png";
+    return "/assets/no-image.png";
   }
   if (url.startsWith("http")) {
     const decodedUrl = decodeURI(url);

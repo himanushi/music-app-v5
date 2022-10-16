@@ -3,7 +3,7 @@
   export let alt: string | undefined = src;
 
   $: if (!src) {
-    src = "/no-image.png";
+    src = "/assets/no-image.png";
   }
 </script>
 
