@@ -17,7 +17,7 @@
 <ion-list>
   <ItemDivider title="Library Albums" />
   <VirtualScroll items={albums} let:item>
-    <ion-item button detail={false} on:click={() => goto(`/library/albums/${item.id}`)}>
+    <ion-item button detail={false} on:click={() => goto(`/music/library-albums/${item.id}`)}>
       <ion-thumbnail slot="start">
         <SquareImage
           src={convertImageUrl({
