@@ -3,20 +3,16 @@
   import "~/theme/custom.css";
   import ChangePage from "./change-page.svelte";
   import Content from "./content.svelte";
-  import Player from "./player.svelte";
+  import Footer from "./footer.svelte";
   import Initializer from "~/components/initializer/initializer.svelte";
 </script>
 
 <ChangePage />
 <Initializer />
 <ion-app>
-  <ion-header>
-    <ion-toolbar>
-      <ion-title>ゲーム音楽 Light</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <ion-toolbar color="black" />
   <Content>
     <slot />
-    <Player />
   </Content>
+  <Footer />
 </ion-app>

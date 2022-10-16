@@ -1,9 +1,10 @@
 <script lang="ts">
   import type { IonModalCustomEvent, ModalBreakpointChangeEventDetail } from "@ionic/core";
+  import Menu from "./menu.svelte";
   import PlayerFooter from "./player-footer.svelte";
   import PlayerSwitch from "./player-switch.svelte";
 
-  const min = 0.1;
+  const min = 0.2;
   const max = 1;
 
   let open = false;
@@ -23,7 +24,7 @@
 
 <ion-modal
   bind:this={modal}
-  backdrop-breakpoint={0.8}
+  backdrop-breakpoint={1}
   backdrop-dismiss={false}
   breakpoints={[min, max]}
   handle-behavior="cycle"
@@ -38,6 +39,7 @@
       <PlayerSwitch {switchBreakpoint} />
     {:else}
       <PlayerFooter {switchBreakpoint} />
+      <Menu />
     {/if}
   </ion-content>
 </ion-modal>

@@ -1,7 +1,4 @@
 import type { PageLoad } from "./$types";
-import { client } from "~/graphql/client";
-import { AppleMusicTokenDocument } from "~/graphql/types";
-import { accountService } from "~/machines/apple-music-account-machine";
 
 export const load: PageLoad = async () => {
   // const res = await client.query({

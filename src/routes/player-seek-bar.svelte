@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { IonRangeCustomEvent, RangeKnobMoveStartEventDetail } from "@ionic/core";
-
   import { tweened } from "svelte/motion";
   import { playerService } from "~/machines/apple-music-player-machine";
 
@@ -35,6 +34,14 @@
     return `${padding(minutes)}:${padding(seconds)}`;
   };
 
+  // eslint-disable-next-line no-undef
+  let ionRange: HTMLIonRangeElement | undefined;
+  $: if (ionRange && !ionRange.pinFormatter) {
+    // eslint-disable-next-line no-shadow
+    const pinFormatter = (value: number) => toMMSS(value);
+    ionRange.pinFormatter = pinFormatter;
+  }
+
   let seeking = false;
   let seekValue = 0;
 
@@ -58,14 +65,6 @@
   };
 
   $: seekValue = seeking ? seekValue : $seek;
-
-  // eslint-disable-next-line no-undef
-  let ionRange: HTMLIonRangeElement | undefined;
-  $: if (ionRange && !ionRange.pinFormatter) {
-    // eslint-disable-next-line no-shadow
-    const pinFormatter = (value: number) => toMMSS(value);
-    ionRange.pinFormatter = pinFormatter;
-  }
 </script>
 
 {#if $playerService}
@@ -88,12 +87,17 @@
 <style lang="scss">
   ion-range {
     padding: 0 20px;
-    --bar-height: 15px;
+    --height: 60px;
     --bar-border-radius: 2px;
     --bar-background-active: #14b8a6;
+    --bar-height: 20px;
+    --knob-size: 20px;
     --knob-background: #14b8a6;
-    --knob-size: 15px;
     --knob-box-shadow: none;
     --knob-border-radius: 2px;
+
+    &::part(pin) {
+      top: -40px;
+    }
   }
 </style>

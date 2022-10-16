@@ -1,5 +1,6 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
+  import ItemDivider from "~/components/item-divider.svelte";
   import SquareImage from "~/components/square-image.svelte";
   import { convertImageUrl } from "~/lib/convertImageUrl";
   import { matches } from "~/lib/matches";
@@ -35,6 +36,7 @@
 </script>
 
 <ion-content style="padding: 10px 0" color="dark-gray" in:fade>
+  <ItemDivider title="Queue" />
   <ion-reorder-group disabled={false} on:ionItemReorder={decide}>
     {#each $playerService.context.queueTracks as track, index}
       <ion-item-sliding>

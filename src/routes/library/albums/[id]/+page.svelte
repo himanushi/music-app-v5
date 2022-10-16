@@ -2,6 +2,7 @@
   import { CapacitorMusicKit, type GetLibraryAlbumResult } from "capacitor-plugin-musickit";
   import type { PageData } from "./$types";
   import CenterItem from "~/components/center-item.svelte";
+  import ItemDivider from "~/components/item-divider.svelte";
   import SquareImage from "~/components/square-image.svelte";
   import VirtualScroll from "~/components/virtual-scroll.svelte";
   import { convertImageUrl } from "~/lib/convertImageUrl";
@@ -31,9 +32,7 @@
 </script>
 
 <ion-item-group>
-  <ion-item-divider sticky>
-    <ion-label>Album</ion-label>
-  </ion-item-divider>
+  <ItemDivider title="Album" />
 
   {#if result?.album}
     <CenterItem>
@@ -55,9 +54,7 @@
         {result.album.tracks.length}曲
       </ion-note>
     </ion-item>
-    <ion-item-divider sticky>
-      <ion-label>Tracks</ion-label>
-    </ion-item-divider>
+    <ItemDivider title="Tracks" />
     <VirtualScroll itemHeight={46} items={result.album.tracks} let:index let:item>
       <ion-item button detail={false} on:click={() => play(index)}>
         <ion-note slot="start">

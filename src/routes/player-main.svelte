@@ -2,6 +2,7 @@
   import { fade } from "svelte/transition";
   import PlayerSeekBar from "./player-seek-bar.svelte";
   import CenterItem from "~/components/center-item.svelte";
+  import ItemDivider from "~/components/item-divider.svelte";
   import SquareImage from "~/components/square-image.svelte";
   import { convertImageUrl } from "~/lib/convertImageUrl";
   import { matches } from "~/lib/matches";
@@ -19,6 +20,7 @@
 </script>
 
 <ion-content color="dark-gray" in:fade>
+  <ItemDivider title="Player" />
   {#key $playerService.context.currentTrack?.id}
     <ion-grid>
       <ion-row>
