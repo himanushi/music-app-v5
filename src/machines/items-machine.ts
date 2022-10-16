@@ -7,8 +7,8 @@ import { Machine as machine, assign } from "xstate";
 import type { Mutable } from "~/@types/extends";
 import { client } from "~/graphql/client";
 import type { Maybe, CursorInputObject } from "~/graphql/types";
-import buildParameters from "~/lib/build-parameters";
-import type { ParameterPrefix } from "~/lib/build-parameters";
+import buildParameters from "~/lib/buildParameters";
+import type { ParameterPrefix } from "~/lib/buildParameters";
 
 export type ItemsQueryVariables = {
   cursor?: Maybe<CursorInputObject>;

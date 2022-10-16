@@ -4,7 +4,7 @@
   import { onMount, onDestroy } from "svelte";
   import { interpret } from "xstate";
   import VirtualScroll from "./virtual-scroll.svelte";
-  import type { ParameterPrefix } from "~/lib/build-parameters";
+  import type { ParameterPrefix } from "~/lib/buildParameters";
   import { openToast } from "~/lib/ionicController";
   import { itemsMachine } from "~/machines/items-machine";
 
