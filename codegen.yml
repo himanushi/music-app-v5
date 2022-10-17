@@ -16,3 +16,4 @@ generates:
         ISO8601DateTime: string
       skipTypename: true
       useTypeImports: true
+      maybeValue: "T | undefined"
