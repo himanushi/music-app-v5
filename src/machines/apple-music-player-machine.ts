@@ -28,6 +28,7 @@ type Event =
   | { type: "SET_CURRENT_PLAYBACK_NO"; currentPlaybackNo: number }
   | { type: "SET_QUEUE_TRACKS"; queueTracks: TrackResult[] }
   | { type: "MOVE_QUEUE_TRACKS"; from: number; to: number }
+  | { type: "REMOVE_QUEUE_TRACK"; index: number }
   | { type: "SET_SEEK"; seek: number }
   | { type: "CHANGE_SEEK"; seek: number }
   | { type: "SWITCH_REPEAT_MODE" }
@@ -115,6 +116,10 @@ export const playerMachine = createMachine<Context, Event, State>(
       MOVE_QUEUE_TRACKS: {
         target: `#${id}.loading.onlyQueueing`,
         actions: "moveQueueTracks",
+      },
+      REMOVE_QUEUE_TRACK: {
+        target: `#${id}.loading.onlyQueueing`,
+        actions: "removeQueueTrack",
       },
       CHANGE_SEEK: { actions: "changeSeek" },
       SWITCH_REPEAT_MODE: { actions: "switchRepeatMode" },
@@ -344,6 +349,27 @@ export const playerMachine = createMachine<Context, Event, State>(
         trackIds: ({ trackIds }, event) => {
           if ("from" in event && "to" in event) {
             return move(trackIds, event.from, event.to);
+          }
+          return trackIds;
+        },
+      }),
+
+      removeQueueTrack: assign({
+        currentPlaybackNo: ({ currentPlaybackNo }, event) => {
+          if ("index" in event) {
+            if (event.index <= currentPlaybackNo) {
+              return currentPlaybackNo - 1;
+            } else if (currentPlaybackNo > event.index) {
+              return currentPlaybackNo + 1;
+            }
+          }
+          return currentPlaybackNo;
+        },
+        trackIds: ({ trackIds }, event) => {
+          if ("index" in event) {
+            const ids = trackIds.slice();
+            ids.splice(event.index, 1);
+            return ids;
           }
           return trackIds;
         },

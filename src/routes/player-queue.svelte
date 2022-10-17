@@ -32,6 +32,13 @@
     }
   };
 
+  const remove = (index: number) => {
+    playerService.send({
+      index,
+      type: "REMOVE_QUEUE_TRACK",
+    });
+  };
+
   $: loading = matches($playerService, ["loading"]);
 </script>
 
@@ -83,7 +90,7 @@
           </ion-label>
         </ion-item>
         <ion-item-options side="end">
-          <ion-item-option color="danger">
+          <ion-item-option color="danger" on:click={() => remove(index)}>
             <ion-icon name="trash" slot="icon-only" />
           </ion-item-option>
         </ion-item-options>
