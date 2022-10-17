@@ -366,20 +366,23 @@ export const playerMachine = createMachine<Context, Event, State>(
       nowPlayingItemDidChange: () => (callback) => {
         let listener: PluginListenerHandle;
         (async () => {
-          listener = await CapacitorMusicKit.addListener(
-            "nowPlayingItemDidChange",
-            ({ index, track }) => {
+          listener = await CapacitorMusicKit.addListener("nowPlayingItemDidChange", () => {
+            (async () => {
+              callback({
+                type: "SET_QUEUE_TRACKS",
+                queueTracks: (await CapacitorMusicKit.getQueueTracks()).tracks,
+              });
               callback({
                 type: "SET_CURRENT_PLAYBACK_NO",
-                currentPlaybackNo: index,
+                currentPlaybackNo: (await CapacitorMusicKit.getCurrentIndex()).index,
               });
               callback({
                 type: "SET_CURRENT_TRACK",
-                currentTrack: track,
+                currentTrack: (await CapacitorMusicKit.getCurrentTrack()).track,
               });
               callback("MEMORY");
-            },
-          );
+            })();
+          });
         })();
 
         return () => {
