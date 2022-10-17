@@ -1,6 +1,8 @@
 import adapter from "@sveltejs/adapter-static";
 import preprocess from "svelte-preprocess";
 
+const ios = process.env.PLATFORM === "ios";
+
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
   kit: {
@@ -10,6 +12,9 @@ const config = {
     }),
     alias: {
       "~": "src",
+    },
+    files: {
+      appTemplate: ios ? "src/app-ios.html" : "src/app.html",
     },
     prerender: { entries: [] },
   },

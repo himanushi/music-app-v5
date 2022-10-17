@@ -1,8 +1,8 @@
 import { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
-  appId: "net.himakan.app.vgm2",
-  appName: "video-game-music",
+  appId: "net.video-game-music",
+  appName: "ゲーム音楽",
   bundledWebRuntime: false,
   webDir: "build",
 };

@@ -137,20 +137,7 @@ export const playerMachine = createMachine<Context, Event, State>(
             entry: ["stop"],
             invoke: {
               src: (context) => CapacitorMusicKit.setQueue({ ids: context.trackIds }),
-              onDone: "setQueueing",
-              onError: `#${id}.stopped`,
-            },
-          },
-          setQueueing: {
-            invoke: {
-              src: () => CapacitorMusicKit.getQueueTracks(),
-              onDone: {
-                target: "fetching",
-                actions: assign({
-                  queueTracks: (_, event: DoneInvokeEvent<GetQueueTracksResult>) =>
-                    event.data.tracks,
-                }),
-              },
+              onDone: "fetching",
               onError: `#${id}.stopped`,
             },
           },
@@ -160,7 +147,20 @@ export const playerMachine = createMachine<Context, Event, State>(
               src: () => (callback) => setEvents(callback, [["playing", "PLAYING"]]),
             },
             on: {
-              PLAYING: `#${id}.playing`,
+              PLAYING: "setQueueing",
+            },
+          },
+          setQueueing: {
+            invoke: {
+              src: () => CapacitorMusicKit.getQueueTracks(),
+              onDone: {
+                target: `#${id}.playing`,
+                actions: assign({
+                  queueTracks: (_, event: DoneInvokeEvent<GetQueueTracksResult>) =>
+                    event.data.tracks,
+                }),
+              },
+              onError: `#${id}.stopped`,
             },
           },
 
@@ -209,6 +209,10 @@ export const playerMachine = createMachine<Context, Event, State>(
             src: () => (callback) => {
               (async () => {
                 callback({
+                  type: "SET_QUEUE_TRACKS",
+                  queueTracks: (await CapacitorMusicKit.getQueueTracks()).tracks,
+                });
+                callback({
                   type: "SET_CURRENT_PLAYBACK_NO",
                   currentPlaybackNo: (await CapacitorMusicKit.getCurrentIndex()).index,
                 });
@@ -232,6 +236,7 @@ export const playerMachine = createMachine<Context, Event, State>(
           SET_SEEK: { actions: "setSeek" },
           SET_CURRENT_PLAYBACK_NO: { actions: "setCurrentPlaybackNo" },
           SET_CURRENT_TRACK: { actions: "setCurrentTrack" },
+          SET_QUEUE_TRACKS: { actions: "setQueueTracks" },
           MEMORY: { actions: "memory" },
         },
       },
@@ -305,6 +310,10 @@ export const playerMachine = createMachine<Context, Event, State>(
 
       setCurrentTrack: assign({
         currentTrack: (_, event) => ("currentTrack" in event ? event.currentTrack : undefined),
+      }),
+
+      setQueueTracks: assign({
+        queueTracks: (_, event) => ("queueTracks" in event ? event.queueTracks : []),
       }),
 
       setSeek: assign({

@@ -5,7 +5,7 @@
     "dev": "vite dev",
     "build": "vite build",
     "generate": "npx graphql-codegen --config=codegen.yml",
-    "ionic:build": "run-s build",
+    "ionic:build": "PLATFORM=ios run-s build",
     "ios:build": "ionic capacitor build ios"
   },
   "devDependencies": {
@@ -52,7 +52,7 @@
     "@capacitor/preferences": "^4.0.1",
     "@ionic/core": "^6.3.1",
     "@xstate/inspect": "^0.7.0",
-    "capacitor-plugin-musickit": "^0.0.24",
+    "capacitor-plugin-musickit": "^0.0.25",
     "graphql": "^16.6.0",
     "lodash.camelcase": "^4.3.0",
     "lodash.merge": "^4.6.2",
