@@ -14,6 +14,7 @@
     type TrackObject,
   } from "~/graphql/types";
   import { convertImageUrl } from "~/lib/convertImageUrl";
+  import { toTrackItem } from "~/lib/toTrackItem";
   import Item from "~/routes/music/tracks/item.svelte";
 
   export let data: PageData;
@@ -49,6 +50,11 @@
 
   <ItemDivider title="Tracks" />
   <VirtualScroll itemHeight={44} items={tracks} let:index let:item>
-    <Item {index} {item} items={tracks} viewImage={false} />
+    <Item
+      ids={tracks.map((track) => track.appleMusicId)}
+      {index}
+      item={toTrackItem(item)}
+      viewImage={false}
+    />
   </VirtualScroll>
 </ion-item-group>

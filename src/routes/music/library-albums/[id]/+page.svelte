@@ -1,26 +1,17 @@
 <script lang="ts">
   import { CapacitorMusicKit, type GetLibraryAlbumResult } from "capacitor-plugin-musickit";
+  import Item from "../../tracks/item.svelte";
   import type { PageData } from "./$types";
   import CenterItem from "~/components/center-item.svelte";
   import ItemDivider from "~/components/item-divider.svelte";
   import SquareImage from "~/components/square-image.svelte";
   import VirtualScroll from "~/components/virtual-scroll.svelte";
   import { convertImageUrl } from "~/lib/convertImageUrl";
+  import { toTrackItem } from "~/lib/toTrackItem";
   import { accountService } from "~/machines/apple-music-account-machine";
-  import { playerService } from "~/machines/apple-music-player-machine";
 
   export let data: PageData;
   let result: GetLibraryAlbumResult;
-
-  const play = (index: number) => {
-    if (result.album?.tracks) {
-      playerService.send({
-        currentPlaybackNo: index,
-        trackIds: result.album.tracks.map((track) => track.id),
-        type: "REPLACE_AND_PLAY",
-      });
-    }
-  };
 
   const getAlbum = async () => {
     result = await CapacitorMusicKit.getLibraryAlbum({ id: data.id });
@@ -56,12 +47,12 @@
     </ion-item>
     <ItemDivider title="Tracks" />
     <VirtualScroll itemHeight={46} items={result.album.tracks} let:index let:item>
-      <ion-item button detail={false} on:click={() => play(index)}>
-        <ion-note slot="start">
-          {item.trackNumber}
-        </ion-note>
-        <ion-label>{item.name}</ion-label>
-      </ion-item>
+      <Item
+        ids={result.album.tracks.map((track) => track.id)}
+        {index}
+        item={toTrackItem(item)}
+        viewImage={false}
+      />
     </VirtualScroll>
   {/if}
 </ion-item-group>

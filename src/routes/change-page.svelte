@@ -10,8 +10,10 @@
   });
 
   afterNavigate((props) => {
-    if ($scrollElement && props.to?.url.pathname) {
-      $scrollElement.scrollTop = $scrollLock[props.to.url.pathname] || 0;
-    }
+    setTimeout(() => {
+      if ($scrollElement && props.to?.url.pathname) {
+        $scrollElement.scrollTop = $scrollLock[props.to.url.pathname] || 0;
+      }
+    }, 0);
   });
 </script>

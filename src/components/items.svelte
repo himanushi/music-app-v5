@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { DocumentNode } from "@apollo/client";
-  import type { Components } from "@ionic/core";
   import { onMount, onDestroy } from "svelte";
   import { interpret } from "xstate";
   import VirtualScroll from "./virtual-scroll.svelte";
@@ -70,10 +69,12 @@
     reported = true;
   }
 
-  let infiniteScroll: HTMLElement & Components.IonInfiniteScroll;
+  // eslint-disable-next-line no-undef
+  let infiniteScroll: HTMLIonInfiniteScrollElement;
   const ionInfinite = () => {
     service.send("FETCH_MORE");
   };
+
   $: if ($service && $service.matches("active") && infiniteScroll) {
     loaded = true;
     infiniteScroll.complete();
@@ -83,6 +84,8 @@
       infiniteScroll.disabled = true;
     }
   }
+
+  $: console.log({ items });
 </script>
 
 <VirtualScroll {items} let:index let:item>

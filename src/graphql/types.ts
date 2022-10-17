@@ -1,6 +1,6 @@
 import type { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
-export type Maybe<T> = T | null;
-export type InputMaybe<T> = Maybe<T>;
+export type Maybe<T> = T | undefined;
+export type InputMaybe<T> = T | undefined;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
@@ -918,135 +918,135 @@ export type UserObject = {
 
 export type CurrentUserFieldsFragment = { readonly id: string, readonly name: string, readonly username: string, readonly registered: boolean, readonly role: { readonly id: string, readonly name: string, readonly description: string, readonly allowedActions: ReadonlyArray<ActionEnum> }, readonly favorite: { readonly albumIds: ReadonlyArray<string>, readonly artistIds: ReadonlyArray<string>, readonly trackIds: ReadonlyArray<string>, readonly playlistIds: ReadonlyArray<string> } };
 
-export type PlaylistFieldsFragment = { readonly id: string, readonly name: string, readonly description: string, readonly publicType: PlaylistPublicTypeEnum, readonly isMine?: boolean | null, readonly createdAt: string, readonly updatedAt: string, readonly author?: { readonly id: string, readonly name: string, readonly username: string } | null, readonly track?: { readonly id: string, readonly isrc: string, readonly name: string, readonly status: StatusEnum, readonly discNumber: number, readonly trackNumber: number, readonly durationMs: number, readonly previewUrl?: string | null, readonly popularity: number, readonly appleMusicId: string, readonly appleMusicPlayable: boolean, readonly artworkL: { readonly url?: string | null, readonly width?: number | null, readonly height?: number | null }, readonly artworkM: { readonly url?: string | null, readonly width?: number | null, readonly height?: number | null } } | null, readonly items: ReadonlyArray<{ readonly trackNumber: number, readonly track: { readonly id: string, readonly isrc: string, readonly name: string, readonly status: StatusEnum, readonly discNumber: number, readonly trackNumber: number, readonly durationMs: number, readonly previewUrl?: string | null, readonly popularity: number, readonly appleMusicId: string, readonly appleMusicPlayable: boolean, readonly artworkL: { readonly url?: string | null, readonly width?: number | null, readonly height?: number | null }, readonly artworkM: { readonly url?: string | null, readonly width?: number | null, readonly height?: number | null } } }> };
+export type PlaylistFieldsFragment = { readonly id: string, readonly name: string, readonly description: string, readonly publicType: PlaylistPublicTypeEnum, readonly isMine?: boolean | undefined, readonly createdAt: string, readonly updatedAt: string, readonly author?: { readonly id: string, readonly name: string, readonly username: string } | undefined, readonly track?: { readonly id: string, readonly isrc: string, readonly name: string, readonly status: StatusEnum, readonly discNumber: number, readonly trackNumber: number, readonly durationMs: number, readonly previewUrl?: string | undefined, readonly popularity: number, readonly appleMusicId: string, readonly appleMusicPlayable: boolean, readonly artworkL: { readonly url?: string | undefined, readonly width?: number | undefined, readonly height?: number | undefined }, readonly artworkM: { readonly url?: string | undefined, readonly width?: number | undefined, readonly height?: number | undefined } } | undefined, readonly items: ReadonlyArray<{ readonly trackNumber: number, readonly track: { readonly id: string, readonly isrc: string, readonly name: string, readonly status: StatusEnum, readonly discNumber: number, readonly trackNumber: number, readonly durationMs: number, readonly previewUrl?: string | undefined, readonly popularity: number, readonly appleMusicId: string, readonly appleMusicPlayable: boolean, readonly artworkL: { readonly url?: string | undefined, readonly width?: number | undefined, readonly height?: number | undefined }, readonly artworkM: { readonly url?: string | undefined, readonly width?: number | undefined, readonly height?: number | undefined } } }> };
 
-export type TrackFieldsFragment = { readonly id: string, readonly isrc: string, readonly name: string, readonly status: StatusEnum, readonly discNumber: number, readonly trackNumber: number, readonly durationMs: number, readonly previewUrl?: string | null, readonly popularity: number, readonly appleMusicId: string, readonly appleMusicPlayable: boolean, readonly artworkL: { readonly url?: string | null, readonly width?: number | null, readonly height?: number | null }, readonly artworkM: { readonly url?: string | null, readonly width?: number | null, readonly height?: number | null } };
+export type TrackFieldsFragment = { readonly id: string, readonly isrc: string, readonly name: string, readonly status: StatusEnum, readonly discNumber: number, readonly trackNumber: number, readonly durationMs: number, readonly previewUrl?: string | undefined, readonly popularity: number, readonly appleMusicId: string, readonly appleMusicPlayable: boolean, readonly artworkL: { readonly url?: string | undefined, readonly width?: number | undefined, readonly height?: number | undefined }, readonly artworkM: { readonly url?: string | undefined, readonly width?: number | undefined, readonly height?: number | undefined } };
 
 export type AddAlbumMutationVariables = Exact<{
   input: AddAlbumInput;
 }>;
 
 
-export type AddAlbumMutation = { readonly addAlbum?: { readonly album?: { readonly id: string } | null } | null };
+export type AddAlbumMutation = { readonly addAlbum?: { readonly album?: { readonly id: string } | undefined } | undefined };
 
 export type AddPlaylistItemsMutationVariables = Exact<{
   input: AddPlaylistItemsInput;
 }>;
 
 
-export type AddPlaylistItemsMutation = { readonly addPlaylistItems?: { readonly playlist?: { readonly id: string, readonly name: string, readonly description: string, readonly publicType: PlaylistPublicTypeEnum, readonly isMine?: boolean | null, readonly createdAt: string, readonly updatedAt: string, readonly author?: { readonly id: string, readonly name: string, readonly username: string } | null, readonly track?: { readonly id: string, readonly isrc: string, readonly name: string, readonly status: StatusEnum, readonly discNumber: number, readonly trackNumber: number, readonly durationMs: number, readonly previewUrl?: string | null, readonly popularity: number, readonly appleMusicId: string, readonly appleMusicPlayable: boolean, readonly artworkL: { readonly url?: string | null, readonly width?: number | null, readonly height?: number | null }, readonly artworkM: { readonly url?: string | null, readonly width?: number | null, readonly height?: number | null } } | null, readonly items: ReadonlyArray<{ readonly trackNumber: number, readonly track: { readonly id: string, readonly isrc: string, readonly name: string, readonly status: StatusEnum, readonly discNumber: number, readonly trackNumber: number, readonly durationMs: number, readonly previewUrl?: string | null, readonly popularity: number, readonly appleMusicId: string, readonly appleMusicPlayable: boolean, readonly artworkL: { readonly url?: string | null, readonly width?: number | null, readonly height?: number | null }, readonly artworkM: { readonly url?: string | null, readonly width?: number | null, readonly height?: number | null } } }> } | null } | null };
+export type AddPlaylistItemsMutation = { readonly addPlaylistItems?: { readonly playlist?: { readonly id: string, readonly name: string, readonly description: string, readonly publicType: PlaylistPublicTypeEnum, readonly isMine?: boolean | undefined, readonly createdAt: string, readonly updatedAt: string, readonly author?: { readonly id: string, readonly name: string, readonly username: string } | undefined, readonly track?: { readonly id: string, readonly isrc: string, readonly name: string, readonly status: StatusEnum, readonly discNumber: number, readonly trackNumber: number, readonly durationMs: number, readonly previewUrl?: string | undefined, readonly popularity: number, readonly appleMusicId: string, readonly appleMusicPlayable: boolean, readonly artworkL: { readonly url?: string | undefined, readonly width?: number | undefined, readonly height?: number | undefined }, readonly artworkM: { readonly url?: string | undefined, readonly width?: number | undefined, readonly height?: number | undefined } } | undefined, readonly items: ReadonlyArray<{ readonly trackNumber: number, readonly track: { readonly id: string, readonly isrc: string, readonly name: string, readonly status: StatusEnum, readonly discNumber: number, readonly trackNumber: number, readonly durationMs: number, readonly previewUrl?: string | undefined, readonly popularity: number, readonly appleMusicId: string, readonly appleMusicPlayable: boolean, readonly artworkL: { readonly url?: string | undefined, readonly width?: number | undefined, readonly height?: number | undefined }, readonly artworkM: { readonly url?: string | undefined, readonly width?: number | undefined, readonly height?: number | undefined } } }> } | undefined } | undefined };
 
 export type ChangeAlbumStatusMutationVariables = Exact<{
   input: ChangeAlbumStatusInput;
 }>;
 
 
-export type ChangeAlbumStatusMutation = { readonly changeAlbumStatus?: { readonly result: boolean } | null };
+export type ChangeAlbumStatusMutation = { readonly changeAlbumStatus?: { readonly result: boolean } | undefined };
 
 export type ChangeArtistStatusMutationVariables = Exact<{
   input: ChangeArtistStatusInput;
 }>;
 
 
-export type ChangeArtistStatusMutation = { readonly changeArtistStatus?: { readonly result: boolean } | null };
+export type ChangeArtistStatusMutation = { readonly changeArtistStatus?: { readonly result: boolean } | undefined };
 
 export type ChangeFavoritesMutationVariables = Exact<{
   input: ChangeFavoritesInput;
 }>;
 
 
-export type ChangeFavoritesMutation = { readonly changeFavorites?: { readonly currentUser?: { readonly id: string, readonly name: string, readonly username: string, readonly registered: boolean, readonly role: { readonly id: string, readonly name: string, readonly description: string, readonly allowedActions: ReadonlyArray<ActionEnum> }, readonly favorite: { readonly albumIds: ReadonlyArray<string>, readonly artistIds: ReadonlyArray<string>, readonly trackIds: ReadonlyArray<string>, readonly playlistIds: ReadonlyArray<string> } } | null } | null };
+export type ChangeFavoritesMutation = { readonly changeFavorites?: { readonly currentUser?: { readonly id: string, readonly name: string, readonly username: string, readonly registered: boolean, readonly role: { readonly id: string, readonly name: string, readonly description: string, readonly allowedActions: ReadonlyArray<ActionEnum> }, readonly favorite: { readonly albumIds: ReadonlyArray<string>, readonly artistIds: ReadonlyArray<string>, readonly trackIds: ReadonlyArray<string>, readonly playlistIds: ReadonlyArray<string> } } | undefined } | undefined };
 
 export type ClearCacheMutationVariables = Exact<{
   input: ClearCacheInput;
 }>;
 
 
-export type ClearCacheMutation = { readonly clearCache?: { readonly result?: ReadonlyArray<string> | null } | null };
+export type ClearCacheMutation = { readonly clearCache?: { readonly result?: ReadonlyArray<string> | undefined } | undefined };
 
 export type DeletePlaylistMutationVariables = Exact<{
   input: DeletePlaylistInput;
 }>;
 
 
-export type DeletePlaylistMutation = { readonly deletePlaylist?: { readonly result?: boolean | null } | null };
+export type DeletePlaylistMutation = { readonly deletePlaylist?: { readonly result?: boolean | undefined } | undefined };
 
 export type ForceIgnoreAlbumMutationVariables = Exact<{
   input: ForceIgnoreAlbumInput;
 }>;
 
 
-export type ForceIgnoreAlbumMutation = { readonly forceIgnoreAlbum?: { readonly result: boolean } | null };
+export type ForceIgnoreAlbumMutation = { readonly forceIgnoreAlbum?: { readonly result: boolean } | undefined };
 
 export type IgnoreAlbumsMutationVariables = Exact<{
   input: IgnoreAlbumsInput;
 }>;
 
 
-export type IgnoreAlbumsMutation = { readonly ignoreAlbums?: { readonly result?: boolean | null } | null };
+export type IgnoreAlbumsMutation = { readonly ignoreAlbums?: { readonly result?: boolean | undefined } | undefined };
 
 export type IgnoreArtistsMutationVariables = Exact<{
   input: IgnoreArtistsInput;
 }>;
 
 
-export type IgnoreArtistsMutation = { readonly ignoreArtists?: { readonly result?: boolean | null } | null };
+export type IgnoreArtistsMutation = { readonly ignoreArtists?: { readonly result?: boolean | undefined } | undefined };
 
 export type LoginMutationVariables = Exact<{
   input: LoginInput;
 }>;
 
 
-export type LoginMutation = { readonly login?: { readonly currentUser?: { readonly id: string, readonly name: string, readonly username: string, readonly registered: boolean, readonly role: { readonly id: string, readonly name: string, readonly description: string, readonly allowedActions: ReadonlyArray<ActionEnum> }, readonly favorite: { readonly albumIds: ReadonlyArray<string>, readonly artistIds: ReadonlyArray<string>, readonly trackIds: ReadonlyArray<string>, readonly playlistIds: ReadonlyArray<string> } } | null } | null };
+export type LoginMutation = { readonly login?: { readonly currentUser?: { readonly id: string, readonly name: string, readonly username: string, readonly registered: boolean, readonly role: { readonly id: string, readonly name: string, readonly description: string, readonly allowedActions: ReadonlyArray<ActionEnum> }, readonly favorite: { readonly albumIds: ReadonlyArray<string>, readonly artistIds: ReadonlyArray<string>, readonly trackIds: ReadonlyArray<string>, readonly playlistIds: ReadonlyArray<string> } } | undefined } | undefined };
 
 export type LogoutMutationVariables = Exact<{
   input: LogoutInput;
 }>;
 
 
-export type LogoutMutation = { readonly logout?: { readonly currentUser?: { readonly id: string, readonly name: string, readonly username: string, readonly registered: boolean, readonly role: { readonly id: string, readonly name: string, readonly description: string, readonly allowedActions: ReadonlyArray<ActionEnum> }, readonly favorite: { readonly albumIds: ReadonlyArray<string>, readonly artistIds: ReadonlyArray<string>, readonly trackIds: ReadonlyArray<string>, readonly playlistIds: ReadonlyArray<string> } } | null } | null };
+export type LogoutMutation = { readonly logout?: { readonly currentUser?: { readonly id: string, readonly name: string, readonly username: string, readonly registered: boolean, readonly role: { readonly id: string, readonly name: string, readonly description: string, readonly allowedActions: ReadonlyArray<ActionEnum> }, readonly favorite: { readonly albumIds: ReadonlyArray<string>, readonly artistIds: ReadonlyArray<string>, readonly trackIds: ReadonlyArray<string>, readonly playlistIds: ReadonlyArray<string> } } | undefined } | undefined };
 
 export type SignupMutationVariables = Exact<{
   input: SignupInput;
 }>;
 
 
-export type SignupMutation = { readonly signup?: { readonly currentUser?: { readonly id: string, readonly name: string, readonly username: string, readonly registered: boolean, readonly role: { readonly id: string, readonly name: string, readonly description: string, readonly allowedActions: ReadonlyArray<ActionEnum> }, readonly favorite: { readonly albumIds: ReadonlyArray<string>, readonly artistIds: ReadonlyArray<string>, readonly trackIds: ReadonlyArray<string>, readonly playlistIds: ReadonlyArray<string> } } | null } | null };
+export type SignupMutation = { readonly signup?: { readonly currentUser?: { readonly id: string, readonly name: string, readonly username: string, readonly registered: boolean, readonly role: { readonly id: string, readonly name: string, readonly description: string, readonly allowedActions: ReadonlyArray<ActionEnum> }, readonly favorite: { readonly albumIds: ReadonlyArray<string>, readonly artistIds: ReadonlyArray<string>, readonly trackIds: ReadonlyArray<string>, readonly playlistIds: ReadonlyArray<string> } } | undefined } | undefined };
 
 export type UpdateAlbumMutationVariables = Exact<{
   input: UpdateAlbumInput;
 }>;
 
 
-export type UpdateAlbumMutation = { readonly updateAlbum?: { readonly album?: { readonly id: string } | null } | null };
+export type UpdateAlbumMutation = { readonly updateAlbum?: { readonly album?: { readonly id: string } | undefined } | undefined };
 
 export type UpdateMeMutationVariables = Exact<{
   input: UpdateMeInput;
 }>;
 
 
-export type UpdateMeMutation = { readonly updateMe?: { readonly currentUser?: { readonly id: string, readonly name: string, readonly username: string, readonly registered: boolean, readonly role: { readonly id: string, readonly name: string, readonly description: string, readonly allowedActions: ReadonlyArray<ActionEnum> }, readonly favorite: { readonly albumIds: ReadonlyArray<string>, readonly artistIds: ReadonlyArray<string>, readonly trackIds: ReadonlyArray<string>, readonly playlistIds: ReadonlyArray<string> } } | null } | null };
+export type UpdateMeMutation = { readonly updateMe?: { readonly currentUser?: { readonly id: string, readonly name: string, readonly username: string, readonly registered: boolean, readonly role: { readonly id: string, readonly name: string, readonly description: string, readonly allowedActions: ReadonlyArray<ActionEnum> }, readonly favorite: { readonly albumIds: ReadonlyArray<string>, readonly artistIds: ReadonlyArray<string>, readonly trackIds: ReadonlyArray<string>, readonly playlistIds: ReadonlyArray<string> } } | undefined } | undefined };
 
 export type UpdateRoleMutationVariables = Exact<{
   input: UpdateRoleInput;
 }>;
 
 
-export type UpdateRoleMutation = { readonly updateRole?: { readonly role?: { readonly id: string, readonly name: string, readonly description: string, readonly allowedActions: ReadonlyArray<ActionEnum> } | null } | null };
+export type UpdateRoleMutation = { readonly updateRole?: { readonly role?: { readonly id: string, readonly name: string, readonly description: string, readonly allowedActions: ReadonlyArray<ActionEnum> } | undefined } | undefined };
 
 export type UpsertPlaylistMutationVariables = Exact<{
   input: UpsertPlaylistInput;
 }>;
 
 
-export type UpsertPlaylistMutation = { readonly upsertPlaylist?: { readonly playlist?: { readonly id: string, readonly name: string, readonly description: string, readonly publicType: PlaylistPublicTypeEnum, readonly isMine?: boolean | null, readonly createdAt: string, readonly updatedAt: string, readonly author?: { readonly id: string, readonly name: string, readonly username: string } | null, readonly track?: { readonly id: string, readonly isrc: string, readonly name: string, readonly status: StatusEnum, readonly discNumber: number, readonly trackNumber: number, readonly durationMs: number, readonly previewUrl?: string | null, readonly popularity: number, readonly appleMusicId: string, readonly appleMusicPlayable: boolean, readonly artworkL: { readonly url?: string | null, readonly width?: number | null, readonly height?: number | null }, readonly artworkM: { readonly url?: string | null, readonly width?: number | null, readonly height?: number | null } } | null, readonly items: ReadonlyArray<{ readonly trackNumber: number, readonly track: { readonly id: string, readonly isrc: string, readonly name: string, readonly status: StatusEnum, readonly discNumber: number, readonly trackNumber: number, readonly durationMs: number, readonly previewUrl?: string | null, readonly popularity: number, readonly appleMusicId: string, readonly appleMusicPlayable: boolean, readonly artworkL: { readonly url?: string | null, readonly width?: number | null, readonly height?: number | null }, readonly artworkM: { readonly url?: string | null, readonly width?: number | null, readonly height?: number | null } } }> } | null } | null };
+export type UpsertPlaylistMutation = { readonly upsertPlaylist?: { readonly playlist?: { readonly id: string, readonly name: string, readonly description: string, readonly publicType: PlaylistPublicTypeEnum, readonly isMine?: boolean | undefined, readonly createdAt: string, readonly updatedAt: string, readonly author?: { readonly id: string, readonly name: string, readonly username: string } | undefined, readonly track?: { readonly id: string, readonly isrc: string, readonly name: string, readonly status: StatusEnum, readonly discNumber: number, readonly trackNumber: number, readonly durationMs: number, readonly previewUrl?: string | undefined, readonly popularity: number, readonly appleMusicId: string, readonly appleMusicPlayable: boolean, readonly artworkL: { readonly url?: string | undefined, readonly width?: number | undefined, readonly height?: number | undefined }, readonly artworkM: { readonly url?: string | undefined, readonly width?: number | undefined, readonly height?: number | undefined } } | undefined, readonly items: ReadonlyArray<{ readonly trackNumber: number, readonly track: { readonly id: string, readonly isrc: string, readonly name: string, readonly status: StatusEnum, readonly discNumber: number, readonly trackNumber: number, readonly durationMs: number, readonly previewUrl?: string | undefined, readonly popularity: number, readonly appleMusicId: string, readonly appleMusicPlayable: boolean, readonly artworkL: { readonly url?: string | undefined, readonly width?: number | undefined, readonly height?: number | undefined }, readonly artworkM: { readonly url?: string | undefined, readonly width?: number | undefined, readonly height?: number | undefined } } }> } | undefined } | undefined };
 
 export type AlbumQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
-export type AlbumQuery = { readonly album?: { readonly id: string, readonly totalTracks: number, readonly name: string, readonly status: StatusEnum, readonly releaseDate: string, readonly recordLabel: string, readonly copyright: string, readonly appleMusicId: string, readonly appleMusicPlayable: boolean, readonly artworkL?: { readonly url?: string | null, readonly width?: number | null, readonly height?: number | null } | null, readonly artworkM?: { readonly url?: string | null, readonly width?: number | null, readonly height?: number | null } | null, readonly tracks: ReadonlyArray<{ readonly id: string, readonly isrc: string, readonly name: string, readonly status: StatusEnum, readonly discNumber: number, readonly trackNumber: number, readonly durationMs: number, readonly previewUrl?: string | null, readonly popularity: number, readonly appleMusicId: string, readonly appleMusicPlayable: boolean, readonly artworkL: { readonly url?: string | null, readonly width?: number | null, readonly height?: number | null }, readonly artworkM: { readonly url?: string | null, readonly width?: number | null, readonly height?: number | null } }> } | null };
+export type AlbumQuery = { readonly album?: { readonly id: string, readonly totalTracks: number, readonly name: string, readonly status: StatusEnum, readonly releaseDate: string, readonly recordLabel: string, readonly copyright: string, readonly appleMusicId: string, readonly appleMusicPlayable: boolean, readonly artworkL?: { readonly url?: string | undefined, readonly width?: number | undefined, readonly height?: number | undefined } | undefined, readonly artworkM?: { readonly url?: string | undefined, readonly width?: number | undefined, readonly height?: number | undefined } | undefined, readonly tracks: ReadonlyArray<{ readonly id: string, readonly isrc: string, readonly name: string, readonly status: StatusEnum, readonly discNumber: number, readonly trackNumber: number, readonly durationMs: number, readonly previewUrl?: string | undefined, readonly popularity: number, readonly appleMusicId: string, readonly appleMusicPlayable: boolean, readonly artworkL: { readonly url?: string | undefined, readonly width?: number | undefined, readonly height?: number | undefined }, readonly artworkM: { readonly url?: string | undefined, readonly width?: number | undefined, readonly height?: number | undefined } }> } | undefined };
 
 export type AlbumsQueryVariables = Exact<{
   cursor?: InputMaybe<CursorInputObject>;
@@ -1055,7 +1055,7 @@ export type AlbumsQueryVariables = Exact<{
 }>;
 
 
-export type AlbumsQuery = { readonly items?: ReadonlyArray<{ readonly id: string, readonly name: string, readonly status: StatusEnum, readonly appleMusicId: string, readonly appleMusicPlayable: boolean, readonly artworkM?: { readonly url?: string | null, readonly width?: number | null, readonly height?: number | null } | null }> | null };
+export type AlbumsQuery = { readonly items?: ReadonlyArray<{ readonly id: string, readonly name: string, readonly status: StatusEnum, readonly appleMusicId: string, readonly appleMusicPlayable: boolean, readonly artworkM?: { readonly url?: string | undefined, readonly width?: number | undefined, readonly height?: number | undefined } | undefined }> | undefined };
 
 export type AllActionsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1072,7 +1072,7 @@ export type ArtistQueryVariables = Exact<{
 }>;
 
 
-export type ArtistQuery = { readonly artist?: { readonly id: string, readonly name: string, readonly status: StatusEnum, readonly artworkL: { readonly url?: string | null, readonly width?: number | null, readonly height?: number | null } } | null };
+export type ArtistQuery = { readonly artist?: { readonly id: string, readonly name: string, readonly status: StatusEnum, readonly artworkL: { readonly url?: string | undefined, readonly width?: number | undefined, readonly height?: number | undefined } } | undefined };
 
 export type ArtistsQueryVariables = Exact<{
   cursor?: InputMaybe<CursorInputObject>;
@@ -1081,7 +1081,7 @@ export type ArtistsQueryVariables = Exact<{
 }>;
 
 
-export type ArtistsQuery = { readonly items?: ReadonlyArray<{ readonly id: string, readonly name: string, readonly status: StatusEnum, readonly artworkM: { readonly url?: string | null, readonly width?: number | null, readonly height?: number | null } }> | null };
+export type ArtistsQuery = { readonly items?: ReadonlyArray<{ readonly id: string, readonly name: string, readonly status: StatusEnum, readonly artworkM: { readonly url?: string | undefined, readonly width?: number | undefined, readonly height?: number | undefined } }> | undefined };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1093,7 +1093,7 @@ export type PlaylistQueryVariables = Exact<{
 }>;
 
 
-export type PlaylistQuery = { readonly playlist?: { readonly id: string, readonly name: string, readonly description: string, readonly publicType: PlaylistPublicTypeEnum, readonly isMine?: boolean | null, readonly createdAt: string, readonly updatedAt: string, readonly author?: { readonly id: string, readonly name: string, readonly username: string } | null, readonly track?: { readonly id: string, readonly isrc: string, readonly name: string, readonly status: StatusEnum, readonly discNumber: number, readonly trackNumber: number, readonly durationMs: number, readonly previewUrl?: string | null, readonly popularity: number, readonly appleMusicId: string, readonly appleMusicPlayable: boolean, readonly artworkL: { readonly url?: string | null, readonly width?: number | null, readonly height?: number | null }, readonly artworkM: { readonly url?: string | null, readonly width?: number | null, readonly height?: number | null } } | null, readonly items: ReadonlyArray<{ readonly trackNumber: number, readonly track: { readonly id: string, readonly isrc: string, readonly name: string, readonly status: StatusEnum, readonly discNumber: number, readonly trackNumber: number, readonly durationMs: number, readonly previewUrl?: string | null, readonly popularity: number, readonly appleMusicId: string, readonly appleMusicPlayable: boolean, readonly artworkL: { readonly url?: string | null, readonly width?: number | null, readonly height?: number | null }, readonly artworkM: { readonly url?: string | null, readonly width?: number | null, readonly height?: number | null } } }> } | null };
+export type PlaylistQuery = { readonly playlist?: { readonly id: string, readonly name: string, readonly description: string, readonly publicType: PlaylistPublicTypeEnum, readonly isMine?: boolean | undefined, readonly createdAt: string, readonly updatedAt: string, readonly author?: { readonly id: string, readonly name: string, readonly username: string } | undefined, readonly track?: { readonly id: string, readonly isrc: string, readonly name: string, readonly status: StatusEnum, readonly discNumber: number, readonly trackNumber: number, readonly durationMs: number, readonly previewUrl?: string | undefined, readonly popularity: number, readonly appleMusicId: string, readonly appleMusicPlayable: boolean, readonly artworkL: { readonly url?: string | undefined, readonly width?: number | undefined, readonly height?: number | undefined }, readonly artworkM: { readonly url?: string | undefined, readonly width?: number | undefined, readonly height?: number | undefined } } | undefined, readonly items: ReadonlyArray<{ readonly trackNumber: number, readonly track: { readonly id: string, readonly isrc: string, readonly name: string, readonly status: StatusEnum, readonly discNumber: number, readonly trackNumber: number, readonly durationMs: number, readonly previewUrl?: string | undefined, readonly popularity: number, readonly appleMusicId: string, readonly appleMusicPlayable: boolean, readonly artworkL: { readonly url?: string | undefined, readonly width?: number | undefined, readonly height?: number | undefined }, readonly artworkM: { readonly url?: string | undefined, readonly width?: number | undefined, readonly height?: number | undefined } } }> } | undefined };
 
 export type PlaylistsQueryVariables = Exact<{
   cursor?: InputMaybe<CursorInputObject>;
@@ -1102,7 +1102,7 @@ export type PlaylistsQueryVariables = Exact<{
 }>;
 
 
-export type PlaylistsQuery = { readonly items?: ReadonlyArray<{ readonly id: string, readonly name: string, readonly createdAt: string, readonly updatedAt: string, readonly author?: { readonly id: string, readonly name: string, readonly username: string } | null, readonly track?: { readonly id: string, readonly isrc: string, readonly name: string, readonly status: StatusEnum, readonly discNumber: number, readonly trackNumber: number, readonly durationMs: number, readonly previewUrl?: string | null, readonly popularity: number, readonly appleMusicId: string, readonly appleMusicPlayable: boolean, readonly artworkL: { readonly url?: string | null, readonly width?: number | null, readonly height?: number | null }, readonly artworkM: { readonly url?: string | null, readonly width?: number | null, readonly height?: number | null } } | null }> | null };
+export type PlaylistsQuery = { readonly items?: ReadonlyArray<{ readonly id: string, readonly name: string, readonly createdAt: string, readonly updatedAt: string, readonly author?: { readonly id: string, readonly name: string, readonly username: string } | undefined, readonly track?: { readonly id: string, readonly isrc: string, readonly name: string, readonly status: StatusEnum, readonly discNumber: number, readonly trackNumber: number, readonly durationMs: number, readonly previewUrl?: string | undefined, readonly popularity: number, readonly appleMusicId: string, readonly appleMusicPlayable: boolean, readonly artworkL: { readonly url?: string | undefined, readonly width?: number | undefined, readonly height?: number | undefined }, readonly artworkM: { readonly url?: string | undefined, readonly width?: number | undefined, readonly height?: number | undefined } } | undefined }> | undefined };
 
 export type RolesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1114,7 +1114,7 @@ export type TrackQueryVariables = Exact<{
 }>;
 
 
-export type TrackQuery = { readonly track?: { readonly id: string, readonly isrc: string, readonly name: string, readonly status: StatusEnum, readonly discNumber: number, readonly trackNumber: number, readonly durationMs: number, readonly previewUrl?: string | null, readonly popularity: number, readonly appleMusicId: string, readonly appleMusicPlayable: boolean, readonly artworkL: { readonly url?: string | null, readonly width?: number | null, readonly height?: number | null }, readonly artworkM: { readonly url?: string | null, readonly width?: number | null, readonly height?: number | null } } | null };
+export type TrackQuery = { readonly track?: { readonly id: string, readonly isrc: string, readonly name: string, readonly status: StatusEnum, readonly discNumber: number, readonly trackNumber: number, readonly durationMs: number, readonly previewUrl?: string | undefined, readonly popularity: number, readonly appleMusicId: string, readonly appleMusicPlayable: boolean, readonly artworkL: { readonly url?: string | undefined, readonly width?: number | undefined, readonly height?: number | undefined }, readonly artworkM: { readonly url?: string | undefined, readonly width?: number | undefined, readonly height?: number | undefined } } | undefined };
 
 export type TracksQueryVariables = Exact<{
   cursor?: InputMaybe<CursorInputObject>;
@@ -1123,7 +1123,7 @@ export type TracksQueryVariables = Exact<{
 }>;
 
 
-export type TracksQuery = { readonly items?: ReadonlyArray<{ readonly id: string, readonly isrc: string, readonly name: string, readonly status: StatusEnum, readonly discNumber: number, readonly trackNumber: number, readonly durationMs: number, readonly previewUrl?: string | null, readonly popularity: number, readonly appleMusicId: string, readonly appleMusicPlayable: boolean, readonly artworkL: { readonly url?: string | null, readonly width?: number | null, readonly height?: number | null }, readonly artworkM: { readonly url?: string | null, readonly width?: number | null, readonly height?: number | null } }> | null };
+export type TracksQuery = { readonly items?: ReadonlyArray<{ readonly id: string, readonly isrc: string, readonly name: string, readonly status: StatusEnum, readonly discNumber: number, readonly trackNumber: number, readonly durationMs: number, readonly previewUrl?: string | undefined, readonly popularity: number, readonly appleMusicId: string, readonly appleMusicPlayable: boolean, readonly artworkL: { readonly url?: string | undefined, readonly width?: number | undefined, readonly height?: number | undefined }, readonly artworkM: { readonly url?: string | undefined, readonly width?: number | undefined, readonly height?: number | undefined } }> | undefined };
 
 export const CurrentUserFieldsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CurrentUserFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CurrentUserObject"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"registered"}},{"kind":"Field","name":{"kind":"Name","value":"role"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"allowedActions"}}]}},{"kind":"Field","name":{"kind":"Name","value":"favorite"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"albumIds"}},{"kind":"Field","name":{"kind":"Name","value":"artistIds"}},{"kind":"Field","name":{"kind":"Name","value":"trackIds"}},{"kind":"Field","name":{"kind":"Name","value":"playlistIds"}}]}}]}}]} as unknown as DocumentNode<CurrentUserFieldsFragment, unknown>;
 export const TrackFieldsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TrackFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"TrackObject"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"isrc"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"discNumber"}},{"kind":"Field","name":{"kind":"Name","value":"trackNumber"}},{"kind":"Field","name":{"kind":"Name","value":"durationMs"}},{"kind":"Field","name":{"kind":"Name","value":"previewUrl"}},{"kind":"Field","name":{"kind":"Name","value":"popularity"}},{"kind":"Field","name":{"kind":"Name","value":"artworkL"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"width"}},{"kind":"Field","name":{"kind":"Name","value":"height"}}]}},{"kind":"Field","name":{"kind":"Name","value":"artworkM"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"width"}},{"kind":"Field","name":{"kind":"Name","value":"height"}}]}},{"kind":"Field","name":{"kind":"Name","value":"appleMusicId"}},{"kind":"Field","name":{"kind":"Name","value":"appleMusicPlayable"}}]}}]} as unknown as DocumentNode<TrackFieldsFragment, unknown>;
