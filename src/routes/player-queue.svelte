@@ -45,7 +45,7 @@
 <ion-content style="padding: 10px 0" color="dark-gray" in:fade>
   <ItemDivider title="Queue" />
   <ion-reorder-group disabled={false} on:ionItemReorder={decide}>
-    {#each $playerService.context.queueTracks as track, index}
+    {#each $playerService.context.queueTracks as track, index (`${track.id}_${index}`)}
       <ion-item-sliding>
         <ion-item color={$playerService.context.currentPlaybackNo === index ? "main" : "dark-gray"}>
           <ion-reorder slot="start">
