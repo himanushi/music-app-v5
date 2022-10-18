@@ -126,17 +126,14 @@ module.exports = {
     // undefined で初期化しても良い
     "no-undef-init": "off",
 
+    "no-undef": "off",
+
     // undefined 使える
     "no-undefined": "off",
 
-    // typescript で [key in object] をするため
-    "no-unused-vars": [
-      "error",
-      {
-        argsIgnorePattern: "^_",
-        varsIgnorePattern: "^key$",
-      },
-    ],
+    "no-use-before-define": "off",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": "error",
 
     // object 内の改行は prettier に任せる
     "object-curly-newline": "off",

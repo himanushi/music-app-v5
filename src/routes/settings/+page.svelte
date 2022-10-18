@@ -1,6 +1,6 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
-  import ItemDivider from "~/components/item-divider.svelte";
+  import ItemDivider from "~/components/item-divider/item-divider.svelte";
 </script>
 
 <ion-list>

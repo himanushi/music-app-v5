@@ -1,5 +1,5 @@
 <script lang="ts">
-  import ItemDivider from "~/components/item-divider.svelte";
+  import ItemDivider from "~/components/item-divider/item-divider.svelte";
   import { mergeMeta } from "~/lib/mergeMeta";
   import { accountService as account } from "~/machines/apple-music-account-machine";
 

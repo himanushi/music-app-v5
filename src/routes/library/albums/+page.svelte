@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { AlbumResult } from "capacitor-plugin-musickit";
   import { goto } from "$app/navigation";
-  import ItemDivider from "~/components/item-divider.svelte";
+  import ItemDivider from "~/components/item-divider/item-divider.svelte";
   import SquareImage from "~/components/square-image.svelte";
   import VirtualScroll from "~/components/virtual-scroll.svelte";
   import { convertImageUrl } from "~/lib/convertImageUrl";
@@ -17,7 +17,7 @@
 <ion-list>
   <ItemDivider title="Library Albums" />
   <VirtualScroll items={albums} let:item>
-    <ion-item button detail={false} on:click={() => goto(`/music/library-albums/${item.id}`)}>
+    <ion-item button detail={false} on:click={() => goto(`/library/albums/${item.id}`)}>
       <ion-thumbnail slot="start">
         <SquareImage
           src={convertImageUrl({

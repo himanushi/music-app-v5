@@ -2,7 +2,7 @@
   import { fade } from "svelte/transition";
   import PlayerSeekBar from "./player-seek-bar.svelte";
   import CenterItem from "~/components/center-item.svelte";
-  import ItemDivider from "~/components/item-divider.svelte";
+  import ItemDivider from "~/components/item-divider/item-divider.svelte";
   import SquareImage from "~/components/square-image.svelte";
   import { convertImageUrl } from "~/lib/convertImageUrl";
   import { matches } from "~/lib/matches";
@@ -108,17 +108,9 @@
           </ion-button>
         </ion-col>
         <ion-col>
-          <ion-button id="player-main-option" color="black" size="large">
-            <ion-icon name="ellipsis-horizontal" slot="icon-only" />
+          <ion-button color="black" size="large">
+            <ion-icon name="shuffle" slot="icon-only" color="main" />
           </ion-button>
-          <ion-popover dismiss-on-select="true" side={"top"} trigger="player-main-option">
-            <ion-content>
-              <ion-list>
-                <ion-item button detail={false}> リンク </ion-item>
-                <ion-item button detail={false}> プレイリストに追加 </ion-item>
-              </ion-list>
-            </ion-content>
-          </ion-popover>
         </ion-col>
       </ion-row>
     </ion-grid>

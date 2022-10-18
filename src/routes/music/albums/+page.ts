@@ -1,5 +1,8 @@
-import type { PageLoad } from "./$types";
+import { client } from "~/graphql/client";
 
-export const load: PageLoad = ({ params }) => ({
-  params,
-});
+export const clearCache = () => {
+  client.cache.evict({
+    fieldName: "albums",
+    id: "ROOT_QUERY",
+  });
+};

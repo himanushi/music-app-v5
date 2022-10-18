@@ -14,11 +14,10 @@ export const ParameterKeys = {
   direction: "d",
   favorite: "f",
   ids: "i",
-  keyword: "q",
   mine: "m",
+  name: "n",
   order: "o",
   status: "s",
-  username: "u",
 };
 
 export type ParameterPrefix = keyof typeof ParameterPrefixKeys;
@@ -60,7 +59,7 @@ export default function buildParameters<T> (
   let conditions = {};
 
   // 並び順対象
-  getUniqueValues(prefixKey + ParameterKeys.keyword).forEach((value) => {
+  getUniqueValues(prefixKey + ParameterKeys.name).forEach((value) => {
     conditions = merge(conditions, { name: value });
   });
 
@@ -111,15 +110,6 @@ export default function buildParameters<T> (
     parameters = merge(parameters, { conditions: { isMine: value === "1" } });
   });
 
-  // ユーザーお気に入り
-  let usernames = { usernames: [] };
-  getUniqueValues(prefixKey + ParameterKeys.username).forEach((value) => {
-    usernames = mergeWith(usernames, { usernames: [value] }, customizer);
-  });
-  if (usernames.usernames.length !== 0) {
-    parameters = mergeWith(parameters, { conditions: { ...usernames } });
-  }
-
   // 並び順対象
   getUniqueValues(prefixKey + ParameterKeys.order).forEach((value) => {
     parameters = merge(parameters, { sort: { order: value } });
@@ -132,3 +122,40 @@ export default function buildParameters<T> (
 
   return parameters as T;
 }
+
+export type SearchParams = Record<string, string>;
+
+export const searchParams = {
+  album: {
+    direction: "bd",
+    favorite: "bf",
+    ids: "bi",
+    name: "bn",
+    order: "bo",
+    status: "bs",
+  },
+  artist: {
+    direction: "ad",
+    favorite: "af",
+    ids: "ai",
+    name: "an",
+    order: "ao",
+    status: "as",
+  },
+  playlist: {
+    direction: "pd",
+    favorite: "pf",
+    ids: "pi",
+    name: "pn",
+    order: "po",
+    status: "ps",
+  },
+  track: {
+    direction: "td",
+    favorite: "tf",
+    ids: "ti",
+    name: "tn",
+    order: "to",
+    status: "ts",
+  },
+};

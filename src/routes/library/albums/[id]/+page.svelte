@@ -1,14 +1,14 @@
 <script lang="ts">
   import { CapacitorMusicKit, type GetLibraryAlbumResult } from "capacitor-plugin-musickit";
-  import Item from "../../tracks/item.svelte";
   import type { PageData } from "./$types";
   import CenterItem from "~/components/center-item.svelte";
-  import ItemDivider from "~/components/item-divider.svelte";
+  import ItemDivider from "~/components/item-divider/item-divider.svelte";
   import SquareImage from "~/components/square-image.svelte";
   import VirtualScroll from "~/components/virtual-scroll.svelte";
   import { convertImageUrl } from "~/lib/convertImageUrl";
   import { toTrackItem } from "~/lib/toTrackItem";
   import { accountService } from "~/machines/apple-music-account-machine";
+  import Item from "~/routes/library/tracks/item.svelte";
 
   export let data: PageData;
   let result: GetLibraryAlbumResult;

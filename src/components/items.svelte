@@ -3,15 +3,18 @@
   import { onMount, onDestroy } from "svelte";
   import { interpret } from "xstate";
   import VirtualScroll from "./virtual-scroll.svelte";
+  import { afterNavigate } from "$app/navigation";
+  import { page } from "$app/stores";
   import type { ParameterPrefix } from "~/lib/buildParameters";
   import { openToast } from "~/lib/ionicController";
+  import { urlToParamsObject } from "~/lib/paramsToObject";
   import { itemsMachine } from "~/machines/items-machine";
 
   export let type: ParameterPrefix;
   export let document: DocumentNode;
-  export let params: { [key: string]: any } | undefined = undefined;
   export let variables: any | undefined = undefined;
   export let loaded = false;
+  let params = urlToParamsObject($page.url);
 
   // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
   interface $$Slots {
@@ -85,7 +88,12 @@
     }
   }
 
-  $: console.log({ items });
+  afterNavigate((props) => {
+    if (props.to?.url) {
+      params = urlToParamsObject(props.to.url);
+      console.log(params);
+    }
+  });
 </script>
 
 <VirtualScroll {items} let:index let:item>

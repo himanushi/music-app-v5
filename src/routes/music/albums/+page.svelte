@@ -1,34 +1,27 @@
 <script lang="ts">
-  import type { PageData } from "./$types";
+  import { clearCache } from "./+page";
   import Albums from "./albums.svelte";
-  import ItemDivider from "~/components/item-divider.svelte";
+  import SearchDivider from "./search-divider.svelte";
   import Refresher from "~/components/refresher.svelte";
-  import { client } from "~/graphql/client";
   import { isAllowed } from "~/lib/me";
   import { me } from "~/store/me";
 
-  export let data: PageData;
-
-  let tggle = true;
+  let toggle = true;
   let loaded = false;
 
   const refresh = () => {
-    client.cache.evict({
-      fieldName: "albums",
-      id: "ROOT_QUERY",
-    });
-
-    tggle = !tggle;
+    clearCache();
+    toggle = !toggle;
   };
 </script>
 
 {#if $me && isAllowed($me, "albums")}
   <Refresher {refresh} bind:loaded />
   <ion-item-group>
-    <ItemDivider title="Album" />
+    <SearchDivider {refresh} />
     <ion-list>
-      {#key tggle}
-        <Albums params={data.params} bind:loaded />
+      {#key toggle}
+        <Albums bind:loaded />
       {/key}
     </ion-list>
   </ion-item-group>

@@ -5,7 +5,7 @@
   import PlayerSwitch from "./player-switch.svelte";
 
   const min = 0.2;
-  const max = 1;
+  const max = 1.0;
 
   let open = false;
   const creakpointDidChange = (event: IonModalCustomEvent<ModalBreakpointChangeEventDetail>) => {

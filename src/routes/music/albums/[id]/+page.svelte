@@ -3,7 +3,7 @@
   import { onMount } from "svelte";
   import type { PageData } from "./$types";
   import CenterItem from "~/components/center-item.svelte";
-  import ItemDivider from "~/components/item-divider.svelte";
+  import ItemDivider from "~/components/item-divider/item-divider.svelte";
   import SquareImage from "~/components/square-image.svelte";
   import VirtualScroll from "~/components/virtual-scroll.svelte";
   import { client } from "~/graphql/client";

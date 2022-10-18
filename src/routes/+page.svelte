@@ -1,5 +1,8 @@
 <script lang="ts">
-  import Page from "./music/library-albums/+page.svelte";
-</script>
+  import { onMount } from "svelte";
+  import { goto } from "$app/navigation";
 
-<Page />
+  onMount(() => {
+    goto("/music/albums");
+  });
+</script>
