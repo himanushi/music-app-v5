@@ -11,14 +11,18 @@
   import Item from "~/routes/library/tracks/item.svelte";
 
   export let data: PageData;
-  let result: GetLibraryAlbumResult;
+  let result: GetLibraryAlbumResult | undefined;
 
-  const getAlbum = async () => {
-    result = await CapacitorMusicKit.getLibraryAlbum({ id: data.id });
+  const getItem = async () => {
+    result = await CapacitorMusicKit.getLibraryAlbum({
+      id: data.id,
+      include: ["tracks"],
+    });
+    console.log({ result });
   };
 
   $: if ($accountService && $accountService.matches("authorized")) {
-    getAlbum();
+    getItem();
   }
 </script>
 
@@ -39,16 +43,19 @@
         {result.album.name}
       </ion-label>
     </ion-item>
+  {/if}
+
+  {#if result?.tracks}
     <ion-item>
       <ion-label class="ion-text-wrap"> 曲数 </ion-label>
       <ion-note slot="end">
-        {result.album.tracks.length}曲
+        {result.tracks.length}曲
       </ion-note>
     </ion-item>
     <ItemDivider title="Tracks" />
-    <VirtualScroll itemHeight={46} items={result.album.tracks} let:index let:item>
+    <VirtualScroll itemHeight={46} items={result.tracks} let:index let:item>
       <Item
-        ids={result.album.tracks.map((track) => track.id)}
+        ids={result.tracks.map((track) => track.id)}
         {index}
         item={toTrackItem(item)}
         viewImage={false}

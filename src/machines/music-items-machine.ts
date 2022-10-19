@@ -19,7 +19,7 @@ export type ItemsQueryVariables = {
 const limit = 50;
 
 // eslint-disable-next-line max-lines-per-function
-export const itemsMachine = <
+export const musicItemsMachine = <
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
   ItemType extends any,
   ItemsQuery extends { items: ReadonlyArray<Record<string, any>> }

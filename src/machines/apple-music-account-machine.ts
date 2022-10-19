@@ -6,19 +6,20 @@ import type { PluginListenerHandle } from "@capacitor/core";
 import type { AuthorizationStatusDidChangeListener } from "capacitor-plugin-musickit";
 import { CapacitorMusicKit } from "capacitor-plugin-musickit";
 import { assign, interpret, createMachine } from "xstate";
+import { isAuthorized } from "~/store/isAuthorized";
 
-type Context = {
+export type Context = {
   config?: MusicKit.Config;
 };
 
-type Event =
+export type Event =
   | { type: "SET_TOKEN"; config: MusicKit.Config }
   | { type: "CHECKING" }
   | { type: "LOGIN_OR_LOGOUT" }
   | { type: "LOGIN" }
   | { type: "LOGOUT" };
 
-type State =
+export type State =
   | { value: "idle"; context: Context & { config: undefined } }
   | { value: "checking"; context: Context }
   | { value: "authorized"; context: Context }
@@ -79,6 +80,8 @@ export const accountMachine = createMachine<Context, Event, State>(
       authorized: {
         invoke: {
           src: () => (callback) => {
+            isAuthorized.set(true);
+
             const changeStatus: AuthorizationStatusDidChangeListener = ({ status }) => {
               if (status !== "authorized") {
                 callback("LOGOUT");
@@ -115,6 +118,8 @@ export const accountMachine = createMachine<Context, Event, State>(
       unauthorized: {
         invoke: {
           src: () => (callback) => {
+            isAuthorized.set(false);
+
             const changeStatus: AuthorizationStatusDidChangeListener = ({ status }) => {
               if (status === "authorized") {
                 callback("LOGIN");
@@ -156,7 +161,7 @@ export const accountMachine = createMachine<Context, Event, State>(
       logout: () => CapacitorMusicKit.unauthorize(),
 
       setConfig: assign({
-        config: (_, event) => "config" in event ? event.config : undefined,
+        config: (_, event) => ("config" in event ? event.config : undefined),
       }),
     },
   },

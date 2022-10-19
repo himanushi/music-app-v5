@@ -8,7 +8,7 @@
   import type { ParameterPrefix } from "~/lib/buildParameters";
   import { openToast } from "~/lib/ionicController";
   import { urlToParamsObject } from "~/lib/paramsToObject";
-  import { itemsMachine } from "~/machines/items-machine";
+  import { musicItemsMachine } from "~/machines/music-items-machine";
 
   export let type: ParameterPrefix;
   export let document: DocumentNode;
@@ -26,7 +26,7 @@
     };
   }
 
-  const service = interpret(itemsMachine(type, document));
+  const service = interpret(musicItemsMachine(type, document));
 
   onMount(() => {
     service.start();
