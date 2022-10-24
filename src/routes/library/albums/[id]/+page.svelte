@@ -84,6 +84,7 @@
       />
     </VirtualScroll>
   {/if}
+
   {#if artists.length > 0}
     <ItemDivider title="Artists" />
     <VirtualScroll itemHeight={46} items={artists} let:item>

@@ -89,6 +89,33 @@ const move = <T>(array: (T | undefined)[], old_index: number, new_index: number)
   return arr as T[];
 };
 
+const toMediaItem = (item?: MusicKit.MediaItem): MusicKit.MediaItem | undefined =>
+  item ? {
+    albumInfo: item.albumInfo,
+    albumName: item.albumName,
+    artistName: item.artistName,
+    artwork: item.artwork,
+    artworkURL: item.artworkURL,
+    attributes: item.attributes,
+    contentRating: item.contentRating,
+    discNumber: item.discNumber,
+    id: item.id,
+    info: item.info,
+    isExplicitItem: item.isExplicitItem,
+    isPlayable: item.isPlayable,
+    isPreparedToPlay: item.isPreparedToPlay,
+    isrc: item.isrc,
+    playbackDuration: item.playbackDuration,
+    playlistArtworkURL: item.playlistArtworkURL,
+    playlistName: item.playlistName,
+    previewURL: item.previewURL,
+    releaseDate: item.releaseDate,
+    title: item.title,
+    trackNumber: item.trackNumber,
+    type: item.type,
+    prepareToPlay: item.prepareToPlay,
+  } : undefined;
+
 const id = "AppleMusicPlayer";
 
 export const playerMachine = createMachine<Context, Event, State>(
@@ -311,11 +338,13 @@ export const playerMachine = createMachine<Context, Event, State>(
       }),
 
       setCurrentTrack: assign({
-        currentTrack: (_, event) => ("currentTrack" in event ? event.currentTrack : undefined),
+        currentTrack: (_, event) =>
+          "currentTrack" in event ? ({ ...toMediaItem(event.currentTrack) } as MusicKit.MediaItem) : undefined,
       }),
 
       setQueueTracks: assign({
-        queueTracks: (_, event) => ("queueTracks" in event ? event.queueTracks : []),
+        queueTracks: (_, event) =>
+          "queueTracks" in event ? event.queueTracks.map((track) => ({ ...toMediaItem(track) } as MusicKit.MediaItem)) : [],
       }),
 
       setSeek: assign({
