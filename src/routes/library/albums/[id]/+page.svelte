@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { CapacitorMusicKit, type GetLibraryAlbumResult } from "capacitor-plugin-musickit";
+  import { CapacitorMusicKit } from "capacitor-plugin-musickit";
   import LibraryArtistItem from "../../artists/library-artist-item.svelte";
   import type { PageData } from "./$types";
   import CenterItem from "~/components/center-item.svelte";
@@ -12,13 +12,28 @@
   import LibraryTrackItem from "~/routes/library/tracks/library-track-item.svelte";
 
   export let data: PageData;
-  let result: GetLibraryAlbumResult | undefined;
+  let album: MusicKit.LibraryAlbums | undefined;
+  let songs: MusicKit.LibrarySongs[] = [];
+  let artists: MusicKit.LibraryArtists[] = [];
 
   const getItem = async () => {
-    result = await CapacitorMusicKit.getLibraryAlbum({
-      id: data.id,
-      include: ["tracks", "artists"],
-    });
+    album = (
+      await CapacitorMusicKit.getLibraryAlbums({
+        ids: [data.id],
+      })
+    ).data[0];
+    songs = (
+      await CapacitorMusicKit.getLibrarySongs({
+        albumId: data.id,
+        limit: 100,
+      })
+    ).data;
+    artists = (
+      await CapacitorMusicKit.getLibraryArtists({
+        albumId: data.id,
+        limit: 10,
+      })
+    ).data;
   };
 
   $: if ($accountService && $accountService.matches("authorized")) {
@@ -29,43 +44,49 @@
 <ion-item-group>
   <ItemDivider title="Album" />
 
-  {#if result?.album}
+  {#if album}
     <CenterItem>
       <SquareImage
         src={convertImageUrl({
           px: 500,
-          url: result.album.artworkUrl,
+          url: album.attributes.artwork.url,
         })}
       />
     </CenterItem>
     <ion-item>
       <ion-label>
-        {result.album.name}
+        {album.attributes.name}
       </ion-label>
     </ion-item>
   {/if}
 
-  {#if result?.tracks}
+  {#if songs.length > 0}
     <ion-item>
       <ion-label class="ion-text-wrap"> 曲数 </ion-label>
       <ion-note slot="end">
-        {result.tracks.length}曲
+        {songs.length}曲
       </ion-note>
     </ion-item>
-    <ItemDivider title="Tracks" />
-    <VirtualScroll itemHeight={46} items={result.tracks} let:index let:item>
+    <ion-item>
+      <ion-buttons>
+        <ion-button>
+          <ion-icon name="heart" color="red" />
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+    <ItemDivider title="Songs" />
+    <VirtualScroll itemHeight={46} items={songs} let:index let:item>
       <LibraryTrackItem
-        ids={result.tracks.map((track) => track.id)}
+        ids={songs.map((track) => track.id)}
         {index}
         item={toTrackItem(item)}
         viewImage={false}
       />
     </VirtualScroll>
   {/if}
-
-  {#if result?.artists}
+  {#if artists.length > 0}
     <ItemDivider title="Artists" />
-    <VirtualScroll itemHeight={46} items={result.artists} let:item>
+    <VirtualScroll itemHeight={46} items={artists} let:item>
       <LibraryArtistItem {item} />
     </VirtualScroll>
   {/if}

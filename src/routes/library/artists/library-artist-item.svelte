@@ -1,10 +1,9 @@
 <script lang="ts">
-  import type { ArtistResult } from "capacitor-plugin-musickit";
   import { goto } from "$app/navigation";
 
-  export let item: ArtistResult;
+  export let item: MusicKit.LibraryArtists;
 </script>
 
 <ion-item button detail={false} on:click={() => goto(`/library/artists/${item.id}`)}>
-  <ion-label>{item.name}</ion-label>
+  <ion-label>{item.attributes.name}</ion-label>
 </ion-item>

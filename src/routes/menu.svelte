@@ -11,27 +11,32 @@
     <ion-buttons slot="start">
       <ion-button on:click={back}>
         <ion-icon name="chevron-back" />
+        <ion-ripple-effect type="unbounded" />
       </ion-button>
     </ion-buttons>
 
-    <ion-segment value="music">
+    <ion-buttons>
       <ion-segment-button value="music" on:click={() => goto("/music")}>
-        <ion-icon name="musical-notes" color="main" />
+        <ion-icon name="musical-notes" />
         <ion-label>Music</ion-label>
+        <ion-ripple-effect type="unbounded" />
       </ion-segment-button>
       <ion-segment-button value="library" on:click={() => goto("/library")}>
         <ion-icon name="library" />
         <ion-label>Library</ion-label>
+        <ion-ripple-effect type="unbounded" />
       </ion-segment-button>
       <ion-segment-button value="settings" on:click={() => goto("/settings")}>
         <ion-icon name="settings" />
         <ion-label>Settings</ion-label>
+        <ion-ripple-effect type="unbounded" />
       </ion-segment-button>
-    </ion-segment>
+    </ion-buttons>
 
     <ion-buttons slot="end">
       <ion-button on:click={forward}>
         <ion-icon name="chevron-forward" />
+        <ion-ripple-effect type="unbounded" />
       </ion-button>
     </ion-buttons>
   </ion-toolbar>

@@ -1,28 +1,16 @@
 <script lang="ts">
-  import { CapacitorMusicKit, type GetLibraryAlbumsResult } from "capacitor-plugin-musickit";
   import LibraryAlbumItem from "./library-album-item.svelte";
   import ItemDivider from "~/components/item-divider/item-divider.svelte";
   import VirtualScroll from "~/components/virtual-scroll.svelte";
-  import { isAuthorized } from "~/store/isAuthorized";
+  import { libraryAlbumsService } from "~/machines/apple-music-library-albums-machine";
 
-  let result: GetLibraryAlbumsResult | undefined;
-
-  const getItems = async () => {
-    result = await CapacitorMusicKit.getLibraryAlbums({
-      limit: 100,
-      offset: 0,
-    });
-  };
-
-  $: if ($isAuthorized) {
-    getItems();
-  }
+  $: albums = $libraryAlbumsService.context.albums;
 </script>
 
 <ion-list>
   <ItemDivider title="Library Albums" />
-  {#if result}
-    <VirtualScroll items={result.albums} let:item>
+  {#if albums}
+    <VirtualScroll items={albums} let:item>
       <LibraryAlbumItem {item} />
     </VirtualScroll>
   {/if}
