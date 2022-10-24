@@ -55,7 +55,7 @@
             <SquareImage
               src={convertImageUrl({
                 px: 300,
-                url: track.artworkUrl,
+                url: track.artworkURL,
               })}
             />
           </ion-thumbnail>
@@ -86,7 +86,7 @@
             {/if}
           </ion-buttons>
           <ion-label>
-            {track.name}
+            {track.title}
           </ion-label>
         </ion-item>
         <ion-item-options side="end">

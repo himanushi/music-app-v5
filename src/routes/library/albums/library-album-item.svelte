@@ -1,10 +1,9 @@
 <script lang="ts">
-  import type { AlbumResult } from "capacitor-plugin-musickit";
   import { goto } from "$app/navigation";
   import SquareImage from "~/components/square-image.svelte";
   import { convertImageUrl } from "~/lib/convertImageUrl";
 
-  export let item: AlbumResult;
+  export let item: MusicKit.LibraryAlbums;
 </script>
 
 <ion-item button detail={false} on:click={() => goto(`/library/albums/${item.id}`)}>
@@ -12,11 +11,11 @@
     <SquareImage
       src={convertImageUrl({
         px: 300,
-        url: item.artworkUrl,
+        url: item.attributes.artwork?.url,
       })}
     />
   </ion-thumbnail>
-  <ion-label>{item.name}</ion-label>
+  <ion-label>{item.attributes.name}</ion-label>
   <ion-buttons slot="end">
     <ion-icon name="heart-outline" slot="icon-only" />
   </ion-buttons>

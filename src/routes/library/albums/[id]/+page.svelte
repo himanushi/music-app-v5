@@ -74,7 +74,7 @@
         </ion-button>
       </ion-buttons>
     </ion-item>
-    <ItemDivider title="Songs" />
+    <ItemDivider title="Tracks" />
     <VirtualScroll itemHeight={46} items={songs} let:index let:item>
       <LibraryTrackItem
         ids={songs.map((track) => track.id)}

@@ -70,12 +70,14 @@
 {#if $playerService}
   <ion-item color="dark-gray" lines="none">
     <ion-note slot="start">{toMMSS($playerService.context.seek)}</ion-note>
-    <ion-note slot="end">{toMMSS($playerService.context.currentTrack?.durationMs ?? 0)}</ion-note>
+    <ion-note slot="end"
+      >{toMMSS($playerService.context.currentTrack?.playbackDuration ?? 0)}</ion-note
+    >
   </ion-item>
   <ion-range
     bind:this={ionRange}
     {disabled}
-    max={$playerService.context.currentTrack?.durationMs ?? 0}
+    max={$playerService.context.currentTrack?.playbackDuration ?? 0}
     min={0}
     pin
     value={seekValue}

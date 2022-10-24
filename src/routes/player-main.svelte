@@ -30,7 +30,7 @@
               <SquareImage
                 src={convertImageUrl({
                   px: 500,
-                  url: $playerService.context.currentTrack.artworkUrl,
+                  url: $playerService.context.currentTrack.artworkURL,
                 })}
               />
             </CenterItem>
@@ -46,7 +46,7 @@
         <ion-row>
           <ion-col style="padding: 10px">
             <ion-label>
-              {$playerService.context.currentTrack.name}
+              {$playerService.context.currentTrack.title}
             </ion-label>
           </ion-col>
         </ion-row>

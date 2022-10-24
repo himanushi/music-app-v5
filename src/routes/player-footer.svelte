@@ -21,12 +21,12 @@
         <SquareImage
           src={convertImageUrl({
             px: 300,
-            url: $playerService.context.currentTrack.artworkUrl,
+            url: $playerService.context.currentTrack.artworkURL,
           })}
         />
       </ion-thumbnail>
       <ion-title>
-        {$playerService.context.currentTrack.name}
+        {$playerService.context.currentTrack.title}
       </ion-title>
     {:else}
       <ion-thumbnail slot="start">

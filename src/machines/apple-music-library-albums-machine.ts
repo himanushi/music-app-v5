@@ -2,11 +2,7 @@
 /* eslint-disable sort-keys */
 /* eslint-disable sort-keys-fix/sort-keys-fix */
 
-import {
-  CapacitorMusicKit,
-  type AlbumResult,
-  type GetLibraryAlbumsResult,
-} from "capacitor-plugin-musickit";
+import { CapacitorMusicKit, type GetLibraryAlbumsResult } from "capacitor-plugin-musickit";
 import { assign, send, createMachine, interpret } from "xstate";
 import type { DoneInvokeEvent } from "xstate";
 import { store } from "~/store/store";
@@ -16,7 +12,7 @@ const version = 1;
 export type Context = {
   hasNext: boolean;
   offset: number;
-  albums: AlbumResult[];
+  albums: MusicKit.LibraryAlbums[];
   version: number;
 };
 
@@ -112,14 +108,10 @@ export const libraryAlbumsMachine = createMachine<Context, Event, State>(
             actions: assign({
               albums: (context, event: DoneInvokeEvent<GetLibraryAlbumsResult>) => [
                 ...context.albums,
-                ...event.data.albums.map((album) => ({
-                  id: album.id,
-                  name: album.name,
-                  artworkUrl: album.artworkUrl,
-                })),
+                ...event.data.data,
               ],
               offset: (context) => context.offset + limit,
-              hasNext: (_, event) => event.data.hasNext,
+              hasNext: (_, event) => Boolean(event.data.next),
             }),
           },
 
@@ -136,10 +128,10 @@ export const libraryAlbumsMachine = createMachine<Context, Event, State>(
       memory: (context) => store.set(id, context),
 
       remember: assign({
-        hasNext: (_, event) => "context" in event ? event.context.hasNext : false,
-        offset: (_, event) => "context" in event ? event.context.offset : 0,
-        albums: (_, event) => "context" in event ? event.context.albums : [],
-        version: (_, event) => "context" in event ? event.context.version : version,
+        hasNext: (_, event) => ("context" in event ? event.context.hasNext : false),
+        offset: (_, event) => ("context" in event ? event.context.offset : 0),
+        albums: (_, event) => ("context" in event ? event.context.albums : []),
+        version: (_, event) => ("context" in event ? event.context.version : version),
       }),
     },
   },

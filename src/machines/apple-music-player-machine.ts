@@ -3,9 +3,8 @@
 /* eslint-disable sort-keys-fix/sort-keys-fix */
 import type { PluginListenerHandle } from "@capacitor/core";
 import type {
-  GetQueueTracksResult,
+  GetQueueSongsResult,
   PlaybackStateDidChangeListener,
-  TrackResult,
 } from "capacitor-plugin-musickit";
 import { CapacitorMusicKit } from "capacitor-plugin-musickit";
 import { assign, interpret, createMachine, type DoneInvokeEvent } from "xstate";
@@ -14,9 +13,9 @@ import { store } from "~/store/store";
 const version = 1;
 
 type Context = {
-  currentTrack?: TrackResult;
+  currentTrack?: MusicKit.MediaItem;
   currentPlaybackNo: number;
-  queueTracks: TrackResult[];
+  queueTracks: MusicKit.MediaItem[];
   trackIds: string[];
   seek: number;
   repeatMode: "none" | "all" | "one";
@@ -24,9 +23,9 @@ type Context = {
 };
 
 type Event =
-  | { type: "SET_CURRENT_TRACK"; currentTrack?: TrackResult }
+  | { type: "SET_CURRENT_TRACK"; currentTrack?: MusicKit.MediaItem }
   | { type: "SET_CURRENT_PLAYBACK_NO"; currentPlaybackNo: number }
-  | { type: "SET_QUEUE_TRACKS"; queueTracks: TrackResult[] }
+  | { type: "SET_QUEUE_TRACKS"; queueTracks: MusicKit.MediaItem[] }
   | { type: "MOVE_QUEUE_TRACKS"; from: number; to: number }
   | { type: "REMOVE_QUEUE_TRACK"; index: number }
   | { type: "SET_SEEK"; seek: number }
@@ -157,12 +156,11 @@ export const playerMachine = createMachine<Context, Event, State>(
           },
           setQueueing: {
             invoke: {
-              src: () => CapacitorMusicKit.getQueueTracks(),
+              src: () => CapacitorMusicKit.getQueueSongs(),
               onDone: {
                 target: `#${id}.playing`,
                 actions: assign({
-                  queueTracks: (_, event: DoneInvokeEvent<GetQueueTracksResult>) =>
-                    event.data.tracks,
+                  queueTracks: (_, event: DoneInvokeEvent<GetQueueSongsResult>) => event.data.items,
                 }),
               },
               onError: `#${id}.stopped`,
@@ -179,12 +177,11 @@ export const playerMachine = createMachine<Context, Event, State>(
           },
           setOnlyQueueing: {
             invoke: {
-              src: () => CapacitorMusicKit.getQueueTracks(),
+              src: () => CapacitorMusicKit.getQueueSongs(),
               onDone: {
                 target: `#${id}.stopped`,
                 actions: assign({
-                  queueTracks: (_, event: DoneInvokeEvent<GetQueueTracksResult>) =>
-                    event.data.tracks,
+                  queueTracks: (_, event: DoneInvokeEvent<GetQueueSongsResult>) => event.data.items,
                 }),
               },
               onError: `#${id}.stopped`,
@@ -215,7 +212,7 @@ export const playerMachine = createMachine<Context, Event, State>(
               (async () => {
                 callback({
                   type: "SET_QUEUE_TRACKS",
-                  queueTracks: (await CapacitorMusicKit.getQueueTracks()).tracks,
+                  queueTracks: (await CapacitorMusicKit.getQueueSongs()).items,
                 });
                 callback({
                   type: "SET_CURRENT_PLAYBACK_NO",
@@ -223,7 +220,7 @@ export const playerMachine = createMachine<Context, Event, State>(
                 });
                 callback({
                   type: "SET_CURRENT_TRACK",
-                  currentTrack: (await CapacitorMusicKit.getCurrentTrack()).track,
+                  currentTrack: (await CapacitorMusicKit.getCurrentSong()).item,
                 });
                 callback("MEMORY");
               })();
@@ -396,7 +393,7 @@ export const playerMachine = createMachine<Context, Event, State>(
             (async () => {
               callback({
                 type: "SET_QUEUE_TRACKS",
-                queueTracks: (await CapacitorMusicKit.getQueueTracks()).tracks,
+                queueTracks: (await CapacitorMusicKit.getQueueSongs()).items,
               });
               callback({
                 type: "SET_CURRENT_PLAYBACK_NO",
@@ -404,7 +401,7 @@ export const playerMachine = createMachine<Context, Event, State>(
               });
               callback({
                 type: "SET_CURRENT_TRACK",
-                currentTrack: (await CapacitorMusicKit.getCurrentTrack()).track,
+                currentTrack: (await CapacitorMusicKit.getCurrentSong()).item,
               });
               callback("MEMORY");
             })();
