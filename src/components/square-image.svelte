@@ -1,10 +1,6 @@
 <script lang="ts">
-  export let src: string | undefined = undefined;
+  export let src: string | undefined = "/assets/no-image.png";
   export let alt: string | undefined = src;
-
-  $: if (!src) {
-    src = "/assets/no-image.png";
-  }
 </script>
 
 <ion-img {alt} {src} />
