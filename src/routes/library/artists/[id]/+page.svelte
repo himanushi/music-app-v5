@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { CapacitorMusicKit, type GetLibraryArtistResult } from "capacitor-plugin-musickit";
+  import { CapacitorMusicKit, type GetLibraryArtistsResult } from "capacitor-plugin-musickit";
   import LibraryAlbumItem from "../../albums/library-album-item.svelte";
   import type { PageData } from "./$types";
   import ItemDivider from "~/components/item-divider/item-divider.svelte";
@@ -7,12 +7,11 @@
   import { accountService } from "~/machines/apple-music-account-machine";
 
   export let data: PageData;
-  let result: GetLibraryArtistResult | undefined;
+  let result: GetLibraryArtistsResult | undefined;
 
   const getItem = async () => {
-    result = await CapacitorMusicKit.getLibraryArtist({
-      id: data.id,
-      include: ["albums"],
+    result = await CapacitorMusicKit.getLibraryArtists({
+      ids: [data.id],
     });
   };
 
