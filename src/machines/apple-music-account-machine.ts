@@ -9,11 +9,11 @@ import { assign, interpret, createMachine } from "xstate";
 import { isAuthorized } from "~/store/isAuthorized";
 
 export type Context = {
-  config?: MusicKit.Config;
+  config?: MusicKit.Configuration;
 };
 
 export type Event =
-  | { type: "SET_TOKEN"; config: MusicKit.Config }
+  | { type: "SET_TOKEN"; config: MusicKit.Configuration }
   | { type: "CHECKING" }
   | { type: "LOGIN_OR_LOGOUT" }
   | { type: "LOGIN" }
