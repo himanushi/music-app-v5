@@ -51,13 +51,6 @@
   left: calc(var(--padding-start) + var(--ion-safe-area-left, 0px) + 50px);
 }
 
-.md .tabs-bottom {
-  transform: translateY(-56px) !important;
-}
-.ios .tabs-bottom {
-  transform: translateY(-50px) !important;
-}
-
 body.dark,
 :root {
   --ion-color-main: #14b8a6;

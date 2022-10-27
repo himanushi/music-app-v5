@@ -29,10 +29,17 @@ export const load: PageLoad = ({ params }) => {
     });
   };
 
+  const stopServices = () => {
+    albumsService.stop();
+    songsService.stop();
+    artistsService.stop();
+  };
+
   return {
     albumsService,
     artistsService,
     getItem,
     songsService,
+    stopServices,
   };
 };

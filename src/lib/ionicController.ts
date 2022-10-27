@@ -48,7 +48,6 @@ export const openToast = async (props: ToastOptions) => {
         text: "OK",
       },
     ],
-    cssClass: "tabs-bottom",
     position: "bottom",
   };
 
