@@ -6,19 +6,8 @@
   const onLoaded = () => (loaded = true);
 </script>
 
-<ion-img
-  style={loaded ? "" : "width:0px;height:0px;"}
-  class="image"
-  {alt}
-  {src}
-  on:ionImgDidLoad={onLoaded}
-/>
-<ion-img
-  style={loaded ? "display:none;" : ""}
-  class="dummy"
-  alt="no image"
-  src="/assets/no-image.png"
-/>
+<ion-img style={loaded ? "" : "width:0px;height:0px;"} {alt} {src} on:ionImgDidLoad={onLoaded} />
+<ion-img style={loaded ? "display:none;" : ""} alt="no image" src="/assets/no-image.png" />
 
 <style lang="scss">
   ion-img {
