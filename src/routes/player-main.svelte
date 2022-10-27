@@ -2,6 +2,7 @@
   import { fade } from "svelte/transition";
   import PlayerSeekBar from "./player-seek-bar.svelte";
   import CenterItem from "~/components/center-item.svelte";
+  import Icon from "~/components/icon.svelte";
   import ItemDivider from "~/components/item-divider/item-divider.svelte";
   import SquareImage from "~/components/square-image.svelte";
   import { convertImageUrl } from "~/lib/convertImageUrl";
@@ -62,7 +63,7 @@
             size="large"
             on:click={previousPlay}
           >
-            <ion-icon name="play-skip-back" slot="icon-only" />
+            <Icon name="skip_previous" fill size="l" />
           </ion-button>
         </ion-col>
         <ion-col>
@@ -73,11 +74,11 @@
             on:click={playOrPause}
           >
             {#if matches($playerService, ["playing"])}
-              <ion-icon name="pause" slot="icon-only" />
+              <Icon name="pause" fill size="l" />
             {:else if loading}
-              <ion-icon name="sync" slot="icon-only" />
+              <Icon name="sync" fill size="l" />
             {:else}
-              <ion-icon name="play" slot="icon-only" />
+              <Icon name="play_arrow" fill size="l" />
             {/if}
           </ion-button>
         </ion-col>
@@ -88,28 +89,28 @@
             size="large"
             on:click={nextPlay}
           >
-            <ion-icon name="play-skip-forward" slot="icon-only" />
+            <Icon name="skip_next" fill size="l" />
           </ion-button>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col>
           <ion-button color="black" size="large">
-            <ion-icon name="heart" slot="icon-only" color="red" />
+            <Icon name="favorite" color="red" fill size="l" />
           </ion-button>
         </ion-col>
         <ion-col>
           <ion-button color="black" size="large" on:click={switchRepeatMode}>
-            <ion-icon
+            <Icon
               name="repeat"
-              slot="icon-only"
               color={$playerService.context.repeatMode === "none" ? "gray" : "main"}
+              size="l"
             />
           </ion-button>
         </ion-col>
         <ion-col>
           <ion-button color="black" size="large">
-            <ion-icon name="shuffle" slot="icon-only" color="main" />
+            <Icon name="shuffle" size="l" />
           </ion-button>
         </ion-col>
       </ion-row>

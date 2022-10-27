@@ -1,6 +1,7 @@
 <script lang="ts">
   import PlayerMain from "./player-main.svelte";
   import PlayerQueue from "./player-queue.svelte";
+  import Icon from "~/components/icon.svelte";
 
   export let switchBreakpoint: () => void;
 </script>
@@ -10,13 +11,13 @@
   <ion-tab tab="queue"><PlayerQueue /></ion-tab>
   <ion-tab-bar slot="bottom">
     <ion-tab-button on:click={switchBreakpoint}>
-      <ion-icon name="close" />
+      <Icon name="close" size="l" />
     </ion-tab-button>
     <ion-tab-button tab="player">
-      <ion-icon name="musical-note" />
+      <Icon name="music_note" size="l" />
     </ion-tab-button>
     <ion-tab-button tab="queue">
-      <ion-icon name="list" />
+      <Icon name="queue_music" size="l" />
     </ion-tab-button>
   </ion-tab-bar>
 </ion-tabs>

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
+  import Icon from "~/components/icon.svelte";
   import SquareImage from "~/components/square-image.svelte";
   import { convertImageUrl } from "~/lib/convertImageUrl";
   import { matches } from "~/lib/matches";
@@ -39,18 +40,20 @@
         on:click|preventDefault|stopPropagation={playOrPause}
       >
         {#if matches($playerService, ["playing"])}
-          <ion-icon name="pause" slot="icon-only" />
+          <Icon name="pause" fill />
         {:else if loading}
-          <ion-icon name="sync" slot="icon-only" />
+          <Icon name="sync" fill />
         {:else}
-          <ion-icon name="play" slot="icon-only" />
+          <Icon name="play_arrow" fill />
         {/if}
+        <ion-ripple-effect type="unbounded" />
       </ion-button>
       <ion-button
         disabled={loading || !$playerService.context.currentTrack}
         on:click|preventDefault|stopPropagation={nextPlay}
       >
-        <ion-icon name="play-forward" slot="icon-only" />
+        <Icon name="skip_next" fill />
+        <ion-ripple-effect type="unbounded" />
       </ion-button>
     </ion-buttons>
   </ion-toolbar>

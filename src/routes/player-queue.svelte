@@ -1,5 +1,6 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
+  import Icon from "~/components/icon.svelte";
   import ItemDivider from "~/components/item-divider/item-divider.svelte";
   import SquareImage from "~/components/square-image.svelte";
   import { convertImageUrl } from "~/lib/convertImageUrl";
@@ -47,24 +48,27 @@
   <ion-reorder-group disabled={false} on:ionItemReorder={decide}>
     {#each $playerService.context.queueTracks as track, index (`${track.id}_${index}`)}
       <ion-item-sliding>
-        <ion-item color={$playerService.context.currentPlaybackNo === index ? "main" : "dark-gray"}>
+        <ion-item
+          color={$playerService.context.currentPlaybackNo === index ? "main" : "dark-gray"}
+          on:click={() => play(index)}
+        >
           <ion-reorder slot="start">
-            <ion-icon name="reorder-two" />
+            <Icon name="reorder" fill size="s" />
           </ion-reorder>
-          <ion-thumbnail slot="start" on:click|preventDefault|stopPropagation>
-            <SquareImage
-              src={convertImageUrl({
-                px: 300,
-                url: track.artworkURL,
-              })}
-            />
-          </ion-thumbnail>
-          <ion-buttons
-            slot="start"
-            class="thumbnail-button"
-            on:click|preventDefault|stopPropagation
-          >
-            {#if $playerService.context.currentPlaybackNo === index}
+          {#if $playerService.context.currentPlaybackNo === index}
+            <ion-thumbnail slot="start" on:click|preventDefault|stopPropagation>
+              <SquareImage
+                src={convertImageUrl({
+                  px: 300,
+                  url: track.artworkURL,
+                })}
+              />
+            </ion-thumbnail>
+            <ion-buttons
+              slot="start"
+              class="thumbnail-button"
+              on:click|preventDefault|stopPropagation
+            >
               <ion-button
                 color="black"
                 disabled={loading || !$playerService.context.currentTrack}
@@ -72,19 +76,24 @@
                 on:click={playOrPause}
               >
                 {#if matches($playerService, ["playing"])}
-                  <ion-icon name="pause" slot="icon-only" color="main" />
+                  <Icon name="pause" fill />
                 {:else if loading}
-                  <ion-icon name="sync" slot="icon-only" color="main" />
+                  <Icon name="sync" fill />
                 {:else}
-                  <ion-icon name="play" slot="icon-only" color="main" />
+                  <Icon name="play_arrow" fill />
                 {/if}
               </ion-button>
-            {:else}
-              <ion-button on:click={() => play(index)}>
-                <ion-icon name="play" slot="icon-only" />
-              </ion-button>
-            {/if}
-          </ion-buttons>
+            </ion-buttons>
+          {:else}
+            <ion-thumbnail slot="start">
+              <SquareImage
+                src={convertImageUrl({
+                  px: 300,
+                  url: track.artworkURL,
+                })}
+              />
+            </ion-thumbnail>
+          {/if}
           <ion-label>
             {track.title}
           </ion-label>
