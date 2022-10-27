@@ -2,23 +2,24 @@
 /* eslint-disable sort-keys */
 /* eslint-disable sort-keys-fix/sort-keys-fix */
 
+import type { GetMultiDataOptions } from "capacitor-plugin-musickit";
 import { assign, send, createMachine } from "xstate";
 import type { DoneInvokeEvent } from "xstate";
 
 const version = 1;
 
-type BaseType = (options: any) => Promise<MusicKit.Relationship<any>>;
+type BaseType = (options: {}) => Promise<MusicKit.Relationship<{}>>;
 
 export type Context<T extends BaseType> = {
   hasNext: boolean;
   offset: number;
-  props: Record<string, any> & { limit?: number };
+  props: Parameters<T>[0] & GetMultiDataOptions;
   items: Awaited<ReturnType<T>>["data"];
   version: number;
 };
 
 export type Event<T extends BaseType> =
-  | { type: "SET_PROPS"; props: Record<string, any> }
+  | { type: "SET_PROPS"; props: Parameters<T>[0] & GetMultiDataOptions }
   | { type: "LOAD" }
   | { type: "IDLE" }
   | { type: "LOADING" }
@@ -106,7 +107,12 @@ export const createLibraryItemsMachine = <T extends BaseType>(getLibraryItems: T
               }),
             },
 
-            onError: "idle",
+            onError: {
+              target: "checking",
+              actions: assign({
+                hasNext: (_) => false,
+              }),
+            },
           },
           on: {},
         },
