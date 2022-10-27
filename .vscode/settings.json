@@ -22,6 +22,7 @@
     "camelcase",
     "codegen",
     "conds",
+    "customizer",
     "datetime",
     "dompurify",
     "Entrypoints",

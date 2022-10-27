@@ -54,7 +54,7 @@ module.exports = {
     "function-paren-newline": "off",
 
     // 1文字の変数を許可しない
-    "id-length": ["error", { exceptions: ["_", "x", "y", "a"] }],
+    "id-length": ["error", { exceptions: ["_", "x", "y", "a", "l", "m", "s"] }],
 
     // ワンライナーの改行許可
     "implicit-arrow-linebreak": "off",
@@ -133,7 +133,7 @@ module.exports = {
 
     "no-use-before-define": "off",
     "no-unused-vars": "off",
-    "@typescript-eslint/no-unused-vars": "error",
+    "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
 
     // object 内の改行は prettier に任せる
     "object-curly-newline": "off",
