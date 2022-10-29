@@ -30,7 +30,7 @@
       });
 
       openToast({
-        color: "light-green",
+        color: "main",
         duration: 5000,
         message: "更新しました",
       });
@@ -60,7 +60,7 @@
       });
 
       openToast({
-        color: "light-green",
+        color: "main",
         duration: 5000,
         message: "更新しました",
       });

@@ -2,6 +2,13 @@
 /* ref: https://tailwindcss.com/docs/customizing-colors */
 /* color theme ref: https://material.io/resources/color */
 
+.text-select {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
 @font-face {
   font-family: "Material Symbols Rounded";
   font-style: normal;

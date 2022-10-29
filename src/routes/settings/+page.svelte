@@ -9,7 +9,7 @@
     <ion-label> 設定 </ion-label>
   </ion-item>
   <ItemDivider title="About" />
-  <ion-item button on:click={() => goto("/settings/me")}>
+  <ion-item button on:click={() => goto("/settings/about")}>
     <ion-label> このアプリについて </ion-label>
   </ion-item>
   <ion-item button on:click={() => goto("/settings/me")}>

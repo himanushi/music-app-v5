@@ -96,7 +96,7 @@
   });
 </script>
 
-<VirtualScroll {items} let:index let:item>
+<VirtualScroll {items} thumbnail let:index let:item>
   <slot {index} {item} {items} />
 </VirtualScroll>
 

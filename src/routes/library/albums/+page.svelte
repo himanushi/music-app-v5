@@ -10,7 +10,7 @@
 <ion-list>
   <ItemDivider title="Library Albums" />
   {#if albums}
-    <VirtualScroll items={albums} let:item>
+    <VirtualScroll items={albums} thumbnail let:item>
       <LibraryAlbumItem {item} />
     </VirtualScroll>
   {/if}

@@ -36,5 +36,6 @@
 
 <ItemDivider title="Apple Music" />
 <ion-item button on:click={onClick}>
+  <ion-icon slot="start" src="/assets/logo-apple-music.svg" />
   <ion-label> Apple Music {meta.label} </ion-label>
 </ion-item>

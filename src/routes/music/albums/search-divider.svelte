@@ -97,7 +97,7 @@
       },
       {
         label: "並び順",
-        onChange: (value) => (orderValue = value),
+        onChange: (option) => (orderValue = option.value),
         options: orderItems,
         type: "select",
         value: orderValue,
@@ -110,7 +110,7 @@
       },
       {
         label: "ステータス",
-        onChange: (value) => (statusValue = value),
+        onChange: (option) => (statusValue = option.value),
         options: statusItems,
         type: "select",
         value: statusValue,

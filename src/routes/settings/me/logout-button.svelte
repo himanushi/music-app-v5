@@ -20,7 +20,7 @@
       });
 
       openToast({
-        color: "light-green",
+        color: "main",
         duration: 3000,
         message: "ログアウトしました",
       });
