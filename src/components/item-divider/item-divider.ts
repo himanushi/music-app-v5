@@ -20,7 +20,7 @@ export type Checkbox = {
 
 export type Select = {
   label: string;
-  onChange: (value: Option["value"]) => void;
+  onChange: (value: Option) => void;
   type: "select";
   options: Option[];
   value: Option["value"];

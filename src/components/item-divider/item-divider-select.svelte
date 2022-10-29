@@ -1,11 +1,11 @@
 <script lang="ts">
   import type { IonSelectCustomEvent, SelectChangeEventDetail } from "@ionic/core";
-  import type { Select } from "./item-divider";
+  import type { Option, Select } from "./item-divider";
 
   export let item: Select;
 
-  const onChange = (event: IonSelectCustomEvent<SelectChangeEventDetail>) =>
-    item.onChange(event.detail.value);
+  const onChange = (event: IonSelectCustomEvent<SelectChangeEventDetail<any>>) =>
+    item.onChange(event.detail as Option);
 </script>
 
 <ion-item>
