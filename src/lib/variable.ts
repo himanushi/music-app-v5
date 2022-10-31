@@ -1,3 +1,5 @@
+export const title = document.querySelector("title")?.innerText;
+
 const getContent = (selector: string) => {
   if (typeof document !== "undefined") {
     return document.querySelector<HTMLMetaElement>(selector)?.content;
