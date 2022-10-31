@@ -1,6 +1,7 @@
 <script lang="ts">
   import { ApolloError } from "@apollo/client/core";
   import { goto } from "$app/navigation";
+  import Icon from "~/components/icon.svelte";
   import Messages from "~/components/messages.svelte";
   import { client } from "~/graphql/client";
   import { LogoutDocument, MeDocument } from "~/graphql/types";
@@ -25,7 +26,7 @@
         message: "ログアウトしました",
       });
 
-      goto("/me");
+      goto("/settings/me");
     } catch (error) {
       disabled = false;
 
@@ -37,7 +38,7 @@
 </script>
 
 <ion-item button {disabled} on:click={logout}>
-  <ion-icon name="exit-outline" slot="start" color="red" />
+  <Icon name="logout" color="red" start />
   ログアウト
 </ion-item>
 <Messages messages={messages._} type="error" />

@@ -1,6 +1,7 @@
 <script lang="ts">
   import { ApolloError } from "@apollo/client/core";
   import { goto } from "$app/navigation";
+  import Icon from "~/components/icon.svelte";
   import InputText from "~/components/input-item.svelte";
   import ItemDivider from "~/components/item-divider/item-divider.svelte";
   import Messages from "~/components/messages.svelte";
@@ -63,7 +64,7 @@
         bind:value={currentPassword}
       />
       <ion-item button {disabled} on:click={login}>
-        <ion-icon name="log-in-outline" slot="start" color="blue" />
+        <Icon name="login" color="blue" />
         <ion-label>ログイン</ion-label>
       </ion-item>
       <Messages messages={messages._} type="error" />

@@ -1,6 +1,7 @@
 <script lang="ts">
   import { ApolloError } from "@apollo/client/core";
   import { goto } from "$app/navigation";
+  import Icon from "~/components/icon.svelte";
   import InputText from "~/components/input-item.svelte";
   import ItemDivider from "~/components/item-divider/item-divider.svelte";
   import Messages from "~/components/messages.svelte";
@@ -86,7 +87,7 @@
       bind:value={name}
     />
     <ion-item button {disabled} on:click={updateMe}>
-      <ion-icon name="build-outline" slot="start" />
+      <Icon name="edit" color="green" start />
       更新する
     </ion-item>
     <Messages messages={messages._} type="error" />
@@ -115,7 +116,7 @@
         bind:value={newPasswordConfirmation}
       />
       <ion-item button {disabled} on:click={changePassword}>
-        <ion-icon name="build-outline" slot="start" />
+        <Icon name="edit" color="green" start />
         更新する
       </ion-item>
       <Messages messages={messages._} type="error" />

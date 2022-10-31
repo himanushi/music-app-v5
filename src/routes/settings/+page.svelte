@@ -12,13 +12,13 @@
   <ion-item button on:click={() => goto("/settings/about")}>
     <ion-label> このアプリについて </ion-label>
   </ion-item>
-  <ion-item button on:click={() => goto("/settings/me")}>
+  <ion-item button on:click={() => goto("/settings/terms")}>
     <ion-label> 利用規約 </ion-label>
   </ion-item>
-  <ion-item button on:click={() => goto("/settings/me")}>
+  <ion-item button on:click={() => goto("/settings/privacy")}>
     <ion-label> プライバシーポリシー </ion-label>
   </ion-item>
-  <ion-item button on:click={() => goto("/settings/me")}>
+  <ion-item button on:click={() => goto("/settings/cookie-policy")}>
     <ion-label> クッキーポリシー </ion-label>
   </ion-item>
 </ion-list>
