@@ -1,6 +1,8 @@
 <script lang="ts">
   import { ApolloError } from "@apollo/client/core";
+  import Page from "../../terms/+page.svelte";
   import { goto } from "$app/navigation";
+  import Icon from "~/components/icon.svelte";
   import InputCheckbox from "~/components/input-checkbox.svelte";
   import InputText from "~/components/input-item.svelte";
   import ItemDivider from "~/components/item-divider/item-divider.svelte";
@@ -55,6 +57,10 @@
     modal.isOpen = true;
   };
 
+  const close = () => {
+    modal.isOpen = false;
+  };
+
   let modal: HTMLIonModalElement;
 </script>
 
@@ -104,17 +110,14 @@
 </ion-list>
 
 <ion-modal bind:this={modal}>
-  <ion-content>
-    <ion-header>
-      <ion-toolbar>
-        <ion-title> a </ion-title>
-      </ion-toolbar>
-    </ion-header>
-    <ion-content />
-    <ion-footer>
-      <ion-toolbar>
-        <ion-title> b </ion-title>
-      </ion-toolbar>
-    </ion-footer>
-  </ion-content>
+  <Page />
+  <ion-footer>
+    <ion-toolbar>
+      <ion-buttons slot="end">
+        <ion-button on:click={close}>
+          <Icon name="close" />
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-footer>
 </ion-modal>
