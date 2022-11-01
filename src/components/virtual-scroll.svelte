@@ -16,7 +16,7 @@
   }
   export let items: T[] = [];
   export let thumbnail = false;
-  export let itemHeight = thumbnail ? 60 : 48;
+  export let itemHeight = thumbnail ? 60 : 48.047;
 
   const dummySymbol = Symbol("dummy item");
 
