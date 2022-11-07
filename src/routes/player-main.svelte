@@ -46,7 +46,7 @@
       {#if $playerService.context.currentTrack}
         <ion-row>
           <ion-col style="padding: 10px">
-            <ion-label>
+            <ion-label class="text-select">
               {$playerService.context.currentTrack.title}
             </ion-label>
           </ion-col>
