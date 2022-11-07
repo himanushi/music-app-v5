@@ -20,6 +20,7 @@ export type Event =
   | { type: "LOAD" }
   | { type: "IDLE" }
   | { type: "LOADING" }
+  | { type: "RESET" }
   | { type: "REMEMBER"; context: Context };
 
 export type State =
@@ -55,6 +56,13 @@ export const libraryAlbumsMachine = createMachine<Context, Event, State>(
       offset: 0,
       albums: [],
       version,
+    },
+
+    on: {
+      RESET: {
+        actions: "reset",
+        target: "checking",
+      },
     },
 
     states: {
@@ -125,6 +133,13 @@ export const libraryAlbumsMachine = createMachine<Context, Event, State>(
   },
   {
     actions: {
+      reset: assign({
+        hasNext: (_) => true,
+        offset: (_) => 0,
+        albums: (_) => [],
+        version: (_) => version,
+      }),
+
       memory: (context) => store.set(id, context),
 
       remember: assign({
