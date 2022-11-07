@@ -67,7 +67,7 @@
   <ItemDivider title="Tracks" />
   {#if $songsService.matches("done")}
     {#if songs.length > 0}
-      <VirtualScroll items={songs} thumbnail let:index let:item>
+      <VirtualScroll itemHeight={49} items={songs} let:index let:item>
         <LibraryTrackItem
           ids={songs.map((track) => track.id)}
           {index}
@@ -83,7 +83,7 @@
   <ItemDivider title="Artists" />
   {#if $artistsService.matches("done")}
     {#if artists.length > 0}
-      <VirtualScroll items={artists} thumbnail let:item>
+      <VirtualScroll itemHeight={48} items={artists} let:item>
         <LibraryArtistItem {item} />
       </VirtualScroll>
     {/if}
