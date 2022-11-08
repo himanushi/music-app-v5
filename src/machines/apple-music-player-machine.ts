@@ -5,6 +5,8 @@ import type { PluginListenerHandle } from "@capacitor/core";
 import type {
   GetQueueSongsResult,
   PlaybackStateDidChangeListener,
+  RepeatMode,
+  ShuffleMode,
 } from "capacitor-plugin-musickit";
 import { CapacitorMusicKit } from "capacitor-plugin-musickit";
 import { assign, interpret, createMachine, type DoneInvokeEvent } from "xstate";
@@ -18,7 +20,8 @@ type Context = {
   queueTracks: MusicKit.MediaItem[];
   trackIds: string[];
   seek: number;
-  repeatMode: "none" | "all" | "one";
+  repeatMode: RepeatMode;
+  shuffleMode: ShuffleMode;
   version: number;
 };
 
@@ -31,6 +34,7 @@ type Event =
   | { type: "SET_SEEK"; seek: number }
   | { type: "CHANGE_SEEK"; seek: number }
   | { type: "SWITCH_REPEAT_MODE" }
+  | { type: "SWITCH_SHUFFLE_MODE" }
   | { type: "REPLACE_AND_PLAY"; trackIds: string[]; currentPlaybackNo: number }
   | { type: "LOADING" }
   | { type: "WAITING" }
@@ -127,6 +131,7 @@ export const playerMachine = createMachine<Context, Event, State>(
       trackIds: [],
       seek: 0,
       repeatMode: "none",
+      shuffleMode: "off",
       version,
     },
 
@@ -149,6 +154,7 @@ export const playerMachine = createMachine<Context, Event, State>(
       },
       CHANGE_SEEK: { actions: "changeSeek" },
       SWITCH_REPEAT_MODE: { actions: "switchRepeatMode" },
+      SWITCH_SHUFFLE_MODE: { actions: "switchShuffleMode" },
       NEXT_PLAY: { actions: "nextPlay" },
       PREVIOUS_PLAY: { actions: "previousPlay" },
     },
@@ -353,8 +359,25 @@ export const playerMachine = createMachine<Context, Event, State>(
 
       switchRepeatMode: assign({
         repeatMode: ({ repeatMode }) => {
-          const mode = repeatMode === "none" ? "all" : "none";
+          const modeMap: { [key in RepeatMode]: RepeatMode } = {
+            none: "all",
+            all: "one",
+            one: "none",
+          };
+          const mode = modeMap[repeatMode];
           CapacitorMusicKit.setRepeatMode({ mode });
+          return mode;
+        },
+      }),
+
+      switchShuffleMode: assign({
+        shuffleMode: ({ shuffleMode }) => {
+          const modeMap: { [key in ShuffleMode]: ShuffleMode } = {
+            off: "songs",
+            songs: "off",
+          };
+          const mode = modeMap[shuffleMode];
+          CapacitorMusicKit.setShuffleMode({ mode });
           return mode;
         },
       }),
