@@ -1,10 +1,16 @@
-export const title = document.querySelector("title")?.innerText;
-
 const getContent = (selector: string) => {
   if (typeof document !== "undefined") {
     return document.querySelector<HTMLMetaElement>(selector)?.content;
   }
 };
+
+const getTitle = () => {
+  if (typeof document !== "undefined") {
+    return document.querySelector<HTMLMetaElement>("title")?.innerText;
+  }
+};
+
+export const title = getTitle();
 
 export const originUrl = getContent("meta[property='ms:origin-url']");
 
