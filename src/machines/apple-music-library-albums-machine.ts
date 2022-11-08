@@ -123,7 +123,7 @@ export const libraryAlbumsMachine = createMachine<Context, Event, State>(
             }),
           },
 
-          onError: "idle",
+          onError: "done",
         },
         on: {},
       },
