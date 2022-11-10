@@ -11,7 +11,7 @@
   import { convertImageUrl } from "~/lib/convertImageUrl";
   import { toTrackItem } from "~/lib/toTrackItem";
   import { accountService } from "~/machines/apple-music-account-machine";
-  import Item from "~/routes/music/tracks/item.svelte";
+  import TrackItem from "~/routes/music/tracks/track-item.svelte";
 
   export let data: PageData;
 
@@ -70,7 +70,7 @@
 
   <ItemDivider title="Tracks" />
   <VirtualScroll items={tracks} let:index let:item>
-    <Item
+    <TrackItem
       ids={tracks.map((track) => track.appleMusicId)}
       {index}
       item={toTrackItem(item)}
