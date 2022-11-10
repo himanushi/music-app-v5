@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { CapacitorMusicKit } from "capacitor-plugin-musickit";
   import { fade } from "svelte/transition";
   import PlayerSeekBar from "./player-seek-bar.svelte";
   import CenterItem from "~/components/center-item.svelte";
@@ -19,11 +20,73 @@
 
   const switchShuffleMode = () => playerService.send("SWITCH_SHUFFLE_MODE");
 
+  let favorite = false;
+  const changeFavorite = async () => {
+    const item = $playerService.context.currentTrack;
+    if (!item) {
+      return;
+    }
+
+    const type = item.id.startsWith("i.") ? "library-songs" : "songs";
+
+    const ratings = (
+      await CapacitorMusicKit.getRatings({
+        ids: [item.id],
+        type,
+      })
+    ).data;
+    const value = ratings.find((rating) => rating.id === item.id)?.attributes?.value;
+    if (value === 1) {
+      await CapacitorMusicKit.deleteRating({
+        id: item.id,
+        type,
+      });
+      favorite = false;
+    } else {
+      await CapacitorMusicKit.addRating({
+        id: item.id,
+        type,
+        value: 1,
+      });
+      favorite = true;
+    }
+  };
+
   $: loading = matches($playerService, ["loading"]);
+
+  // change item event
+  let prevId = "";
+  $: if (
+    $playerService &&
+    $playerService.context.currentTrack?.id &&
+    prevId !== $playerService.context.currentTrack.id
+  ) {
+    prevId = $playerService.context.currentTrack.id;
+
+    (async () => {
+      const type = prevId.startsWith("i.") ? "library-songs" : "songs";
+      const ratings = (
+        await CapacitorMusicKit.getRatings({
+          ids: [prevId],
+          type,
+        })
+      ).data;
+      favorite = Boolean(ratings.find((rating) => rating.id === prevId)?.attributes?.value);
+    })();
+  }
 </script>
 
 <ion-content color="dark-gray" in:fade>
-  <ItemDivider title="Player" />
+  <ItemDivider
+    menu={{
+      items: [],
+      onOk: () => {
+        // nothing
+      },
+      title: "",
+    }}
+    title="Player"
+  />
   <ion-grid>
     <ion-row>
       <ion-col style="padding: 10px">
@@ -96,8 +159,12 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-button color="black" size="large">
-          <Icon name="favorite" color="red" fill size="l" />
+        <ion-button color="black" size="large" on:click={changeFavorite}>
+          {#if favorite}
+            <Icon name="favorite" color="red" fill size="l" />
+          {:else}
+            <Icon name="favorite" size="l" />
+          {/if}
         </ion-button>
       </ion-col>
       <ion-col>
