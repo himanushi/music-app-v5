@@ -21,22 +21,14 @@
   const switchShuffleMode = () => playerService.send("SWITCH_SHUFFLE_MODE");
 
   let favorite = false;
+  let type: MusicKit.AppleMusicAPI.RatingType = "songs";
   const changeFavorite = async () => {
     const item = $playerService.context.currentTrack;
     if (!item) {
       return;
     }
 
-    const type = item.id.startsWith("i.") ? "library-songs" : "songs";
-
-    const ratings = (
-      await CapacitorMusicKit.getRatings({
-        ids: [item.id],
-        type,
-      })
-    ).data;
-    const value = ratings.find((rating) => rating.id === item.id)?.attributes?.value;
-    if (value === 1) {
+    if (favorite) {
       await CapacitorMusicKit.deleteRating({
         id: item.id,
         type,
@@ -64,7 +56,7 @@
     prevId = $playerService.context.currentTrack.id;
 
     (async () => {
-      const type = prevId.startsWith("i.") ? "library-songs" : "songs";
+      type = prevId.startsWith("i.") ? "library-songs" : "songs";
       const ratings = (
         await CapacitorMusicKit.getRatings({
           ids: [prevId],
@@ -89,7 +81,7 @@
   />
   <ion-grid>
     <ion-row>
-      <ion-col style="padding: 10px">
+      <ion-col class="ion-no-padding">
         {#if $playerService.context.currentTrack}
           <CenterItem>
             <SquareImage
@@ -109,7 +101,7 @@
 
     {#if $playerService.context.currentTrack}
       <ion-row>
-        <ion-col style="padding: 10px">
+        <ion-col>
           <ion-label class="text-select">
             {$playerService.context.currentTrack.title}
           </ion-label>
