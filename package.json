@@ -56,7 +56,7 @@
     "@capacitor/preferences": "^4.0.1",
     "@ionic/core": "^6.3.1",
     "@xstate/inspect": "^0.7.0",
-    "capacitor-plugin-musickit": "^0.0.63",
+    "capacitor-plugin-musickit": "^0.0.64",
     "dompurify": "^2.4.0",
     "graphql": "^16.6.0",
     "lodash.camelcase": "^4.3.0",
