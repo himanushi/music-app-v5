@@ -29,6 +29,8 @@ module.exports = {
     // 配列の改行は prettier に任せる
     "array-element-newline": "off",
 
+    "require-atomic-updates": "off",
+
     // アロー関数のワンライナーを許可する
     "arrow-body-style": ["error", "as-needed"],
 
