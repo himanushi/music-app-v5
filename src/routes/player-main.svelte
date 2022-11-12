@@ -1,8 +1,8 @@
 <script lang="ts">
+  import { Capacitor } from "@capacitor/core";
   import { CapacitorMusicKit } from "capacitor-plugin-musickit";
   import { fade } from "svelte/transition";
   import PlayerSeekBar from "./player-seek-bar.svelte";
-  import CenterItem from "~/components/center-item.svelte";
   import Icon from "~/components/icon.svelte";
   import ItemDivider from "~/components/item-divider/item-divider.svelte";
   import SquareImage from "~/components/square-image.svelte";
@@ -66,9 +66,16 @@
       favorite = Boolean(ratings.find((rating) => rating.id === prevId)?.attributes?.value);
     })();
   }
+
+  let artworkEle: HTMLIonColElement;
+  $: if (artworkEle) {
+    const height =
+      Capacitor.getPlatform() === "ios" ? "calc(100vh - 500px)" : "calc(100vh - 410px)";
+    artworkEle.style.height = height;
+  }
 </script>
 
-<ion-content color="dark-gray" in:fade>
+<ion-content color="dark-gray" force-overscroll={false} in:fade>
   <ItemDivider
     menu={{
       items: [],
@@ -80,21 +87,21 @@
     title="Player"
   />
   <ion-grid>
-    <ion-row>
-      <ion-col class="ion-no-padding">
+    <ion-row class="ion-justify-content-center ion-align-items-center">
+      <ion-col
+        bind:this={artworkEle}
+        style="display:flex;"
+        class="ion-no-padding ion-justify-content-center ion-align-items-center"
+      >
         {#if $playerService.context.currentTrack}
-          <CenterItem>
-            <SquareImage
-              src={convertImageUrl({
-                px: 500,
-                url: $playerService.context.currentTrack.artworkURL,
-              })}
-            />
-          </CenterItem>
+          <SquareImage
+            src={convertImageUrl({
+              px: 500,
+              url: $playerService.context.currentTrack.artworkURL,
+            })}
+          />
         {:else}
-          <CenterItem>
-            <SquareImage src={convertImageUrl({ px: 500 })} />
-          </CenterItem>
+          <SquareImage src={convertImageUrl({ px: 500 })} />
         {/if}
       </ion-col>
     </ion-row>

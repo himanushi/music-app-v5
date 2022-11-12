@@ -32,7 +32,7 @@
   swipe-to-close={false}
   on:ionBreakpointDidChange={creakpointDidChange}
 >
-  <ion-content color="dark-gray">
+  <ion-content color="dark-gray" force-overscroll={false}>
     {#if open}
       <PlayerSwitch {switchBreakpoint} />
     {:else}
