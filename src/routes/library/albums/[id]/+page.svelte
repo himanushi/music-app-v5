@@ -34,7 +34,7 @@
         <SquareImage
           src={convertImageUrl({
             px: 500,
-            url: albums[0].attributes.artwork.url,
+            url: albums[0].attributes.artwork?.url,
           })}
         />
       </CenterItem>

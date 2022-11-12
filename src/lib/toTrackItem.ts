@@ -9,7 +9,7 @@ export type TrackItem = {
 export const toTrackItem = (track: MusicKit.LibrarySongs | TrackObject): TrackItem => {
   if ("attributes" in track) {
     return {
-      artworkUrl: track.attributes.artwork.url,
+      artworkUrl: track.attributes.artwork?.url,
       index: track.attributes.trackNumber,
       name: track.attributes.name,
     };
