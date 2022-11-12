@@ -27,7 +27,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppleMusicUsageDescription</key>
-	<string>Apple Music サブスクリプションの曲を再生します。iTunes で購入した曲をライブラリから再生します。</string>
+	<string>Apple Music の曲を再生します。iTunes で購入した曲を再生します。</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>
