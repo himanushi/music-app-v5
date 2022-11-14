@@ -3,6 +3,7 @@
 /* eslint-disable sort-keys-fix/sort-keys-fix */
 import type { PluginListenerHandle } from "@capacitor/core";
 import type {
+  GetCurrentSongResult,
   GetQueueSongsResult,
   PlaybackStateDidChangeListener,
   RepeatMode,
@@ -212,9 +213,22 @@ export const playerMachine = createMachine<Context, Event, State>(
             invoke: {
               src: () => CapacitorMusicKit.getQueueSongs(),
               onDone: {
-                target: `#${id}.stopped`,
+                target: "setOnlyCurrentTrack",
                 actions: assign({
                   queueTracks: (_, event: DoneInvokeEvent<GetQueueSongsResult>) => event.data.items,
+                }),
+              },
+              onError: `#${id}.stopped`,
+            },
+          },
+          setOnlyCurrentTrack: {
+            invoke: {
+              src: () => CapacitorMusicKit.getCurrentSong(),
+              onDone: {
+                target: `#${id}.stopped`,
+                actions: assign({
+                  currentTrack: (_, event: DoneInvokeEvent<GetCurrentSongResult>) =>
+                    event.data.item,
                 }),
               },
               onError: `#${id}.stopped`,
