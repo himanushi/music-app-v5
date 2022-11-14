@@ -19,7 +19,6 @@ type Context = {
   currentPlaybackNo: number;
   queueTracks: MusicKit.MediaItem[];
   trackIds: string[];
-  seek: number;
   repeatMode: RepeatMode;
   shuffleMode: ShuffleMode;
   version: number;
@@ -31,8 +30,6 @@ type Event =
   | { type: "SET_QUEUE_TRACKS"; queueTracks: MusicKit.MediaItem[] }
   | { type: "MOVE_QUEUE_TRACKS"; from: number; to: number }
   | { type: "REMOVE_QUEUE_TRACK"; index: number }
-  | { type: "SET_SEEK"; seek: number }
-  | { type: "CHANGE_SEEK"; seek: number }
   | { type: "SWITCH_REPEAT_MODE" }
   | { type: "SWITCH_SHUFFLE_MODE" }
   | { type: "REPLACE_AND_PLAY"; trackIds: string[]; currentPlaybackNo: number }
@@ -129,7 +126,6 @@ export const playerMachine = createMachine<Context, Event, State>(
       currentPlaybackNo: -1,
       queueTracks: [],
       trackIds: [],
-      seek: 0,
       repeatMode: "none",
       shuffleMode: "off",
       version,
@@ -152,7 +148,6 @@ export const playerMachine = createMachine<Context, Event, State>(
         target: `#${id}.loading.onlyQueueing`,
         actions: "removeQueueTrack",
       },
-      CHANGE_SEEK: { actions: "changeSeek" },
       SWITCH_REPEAT_MODE: { actions: "switchRepeatMode" },
       SWITCH_SHUFFLE_MODE: { actions: "switchShuffleMode" },
       NEXT_PLAY: { actions: "nextPlay" },
@@ -268,7 +263,6 @@ export const playerMachine = createMachine<Context, Event, State>(
           STOPPED: "stopped",
           WAITING: `#${id}.loading.waiting`,
           PLAY_OR_PAUSE: { actions: "pause" },
-          SET_SEEK: { actions: "setSeek" },
           SET_CURRENT_PLAYBACK_NO: { actions: "setCurrentPlaybackNo" },
           SET_CURRENT_TRACK: { actions: "setCurrentTrack" },
           SET_QUEUE_TRACKS: { actions: "setQueueTracks" },
@@ -320,9 +314,6 @@ export const playerMachine = createMachine<Context, Event, State>(
 
       stop: () => CapacitorMusicKit.stop(),
 
-      changeSeek: (_, event) =>
-        "seek" in event ? CapacitorMusicKit.seekToTime({ time: event.seek / 1000 }) : undefined,
-
       memory: (context) => store.set(id, context),
 
       remember: assign({
@@ -351,10 +342,6 @@ export const playerMachine = createMachine<Context, Event, State>(
       setQueueTracks: assign({
         queueTracks: (_, event) =>
           "queueTracks" in event ? event.queueTracks.map((track) => ({ ...toMediaItem(track) } as MusicKit.MediaItem)) : [],
-      }),
-
-      setSeek: assign({
-        seek: (_, event) => ("seek" in event ? event.seek : 0),
       }),
 
       switchRepeatMode: assign({
@@ -465,19 +452,6 @@ export const playerMachine = createMachine<Context, Event, State>(
             listener.remove();
           }
         };
-      },
-
-      ticktack: () => (callback) => {
-        const interval = setInterval(
-          async () =>
-            callback({
-              type: "SET_SEEK",
-              seek: (await CapacitorMusicKit.getCurrentPlaybackTime()).time * 1000,
-            }),
-          1000,
-        );
-
-        return () => clearInterval(interval);
       },
     },
   },
