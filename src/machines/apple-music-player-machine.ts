@@ -176,10 +176,15 @@ export const playerMachine = createMachine<Context, Event, State>(
           fetching: {
             entry: ["playIndex"],
             invoke: {
-              src: () => (callback) => setEvents(callback, [["playing", "PLAYING"]]),
+              src: () => (callback) =>
+                setEvents(callback, [
+                  ["playing", "PLAYING"],
+                  ["stopped", "STOPPED"],
+                ]),
             },
             on: {
               PLAYING: "setQueueing",
+              STOPPED: `#${id}.stopped`,
             },
           },
           setQueueing: {
