@@ -19,14 +19,6 @@
     },
   });
 
-  $: if ($playerService.value) {
-    if ($playerService.value === "playing") {
-      playerSeekService.send("ACTIVE");
-    } else {
-      playerSeekService.send("IDLE");
-    }
-  }
-
   $: disabled = $playerService.value === "loading";
 
   $: if ($playerSeekService) {

@@ -7,6 +7,7 @@
   import ItemDivider from "~/components/item-divider/item-divider.svelte";
   import SquareImage from "~/components/square-image.svelte";
   import { convertImageUrl } from "~/lib/convertImageUrl";
+  import { openToast } from "~/lib/ionicController";
   import { matches } from "~/lib/matches";
   import { playerService } from "~/machines/apple-music-player-machine";
 
@@ -46,9 +47,14 @@
 
   $: loading = matches($playerService, ["loading"]);
 
+  let hasMusicSubscription = false;
+  $: (async () =>
+    (hasMusicSubscription = (await CapacitorMusicKit.hasMusicSubscription()).result))();
+
   // change item event
   let prevId = "";
   $: if (
+    hasMusicSubscription &&
     $playerService &&
     $playerService.context.currentTrack?.id &&
     prevId !== $playerService.context.currentTrack.id
@@ -66,6 +72,14 @@
       favorite = Boolean(ratings.find((rating) => rating.id === prevId)?.attributes?.value);
     })();
   }
+
+  const favoriteInfo = () => {
+    openToast({
+      color: "main",
+      duration: 5000,
+      message: "Apple Music サブスクリプション加入で使用できます",
+    });
+  };
 
   let artworkEle: HTMLIonColElement;
   $: if (artworkEle) {
@@ -158,13 +172,19 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-button color="black" size="large" on:click={changeFavorite}>
-          {#if favorite}
-            <Icon name="favorite" color="red" fill size="l" />
-          {:else}
-            <Icon name="favorite" size="l" />
-          {/if}
-        </ion-button>
+        {#if hasMusicSubscription}
+          <ion-button color="black" size="large" on:click={changeFavorite}>
+            {#if favorite}
+              <Icon name="favorite" color="red" fill size="l" />
+            {:else}
+              <Icon name="favorite" size="l" />
+            {/if}
+          </ion-button>
+        {:else}
+          <ion-button color="black" size="large" on:click={favoriteInfo}>
+            <Icon name="favorite" color="gray" fill size="l" />
+          </ion-button>
+        {/if}
       </ion-col>
       <ion-col>
         <ion-button color="black" size="large" on:click={switchRepeatMode}>
