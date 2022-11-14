@@ -2,6 +2,7 @@
   import type { IonRangeCustomEvent, RangeKnobMoveStartEventDetail } from "@ionic/core";
   import { tweened } from "svelte/motion";
   import { playerService } from "~/machines/apple-music-player-machine";
+  import { playerSeekService } from "~/machines/apple-music-player-seek-machine";
 
   // seek を滑らかに動かす
   const seek = tweened(0, {
@@ -18,10 +19,18 @@
     },
   });
 
+  $: if ($playerService.value) {
+    if ($playerService.value === "playing") {
+      playerSeekService.send("ACTIVE");
+    } else {
+      playerSeekService.send("IDLE");
+    }
+  }
+
   $: disabled = $playerService.value === "loading";
 
-  $: if ($playerService) {
-    seek.set($playerService.context.seek);
+  $: if ($playerSeekService) {
+    seek.set($playerSeekService.context.seek);
   }
 
   const toMMSS = (duration: number) => {
@@ -48,7 +57,7 @@
   const onStart = (event: IonRangeCustomEvent<RangeKnobMoveStartEventDetail>) => {
     seeking = true;
 
-    if (playerService && typeof event.detail.value === "number") {
+    if (typeof event.detail.value === "number") {
       seekValue = event.detail.value;
     }
   };
@@ -56,8 +65,8 @@
   const onStop = (event: IonRangeCustomEvent<RangeKnobMoveStartEventDetail>) => {
     seeking = false;
 
-    if (playerService && typeof event.detail.value === "number") {
-      playerService.send({
+    if (playerSeekService && typeof event.detail.value === "number") {
+      playerSeekService.send({
         seek: event.detail.value,
         type: "CHANGE_SEEK",
       });
@@ -67,9 +76,9 @@
   $: seekValue = seeking ? seekValue : $seek;
 </script>
 
-{#if $playerService}
+{#if $playerSeekService}
   <ion-item color="dark-gray" lines="none">
-    <ion-note slot="start">{toMMSS($playerService.context.seek)}</ion-note>
+    <ion-note slot="start">{toMMSS($playerSeekService.context.seek)}</ion-note>
     <ion-note slot="end"
       >{toMMSS($playerService.context.currentTrack?.playbackDuration ?? 0)}</ion-note
     >
