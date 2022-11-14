@@ -11,6 +11,7 @@ import type {
 } from "capacitor-plugin-musickit";
 import { CapacitorMusicKit } from "capacitor-plugin-musickit";
 import { assign, interpret, createMachine, type DoneInvokeEvent } from "xstate";
+import { openToast } from "~/lib/ionicController";
 import { store } from "~/store/store";
 
 const version = 1;
@@ -180,12 +181,22 @@ export const playerMachine = createMachine<Context, Event, State>(
               src: () => (callback) =>
                 setEvents(callback, [
                   ["playing", "PLAYING"],
-                  ["stopped", "STOPPED"],
+                  ["completed", "STOPPED"],
                 ]),
             },
             on: {
               PLAYING: "setQueueing",
-              STOPPED: `#${id}.stopped`,
+              STOPPED: {
+                target: `#${id}.stopped`,
+                actions: [
+                  () =>
+                    openToast({
+                      message: "再生に失敗しました。Apple Music で再生出来るか確認してください。",
+                      color: "light-red",
+                      duration: 10000,
+                    }),
+                ],
+              },
             },
           },
           setQueueing: {
