@@ -3,11 +3,11 @@
   import { CapacitorMusicKit } from "capacitor-plugin-musickit";
   import { fade } from "svelte/transition";
   import PlayerSeekBar from "./player-seek-bar.svelte";
+  import FavoriteButton from "~/components/favorite-button.svelte";
   import Icon from "~/components/icon.svelte";
   import ItemDivider from "~/components/item-divider/item-divider.svelte";
   import SquareImage from "~/components/square-image.svelte";
   import { convertImageUrl } from "~/lib/convertImageUrl";
-  import { openToast } from "~/lib/ionicController";
   import { matches } from "~/lib/matches";
   import { playerService } from "~/machines/apple-music-player-machine";
 
@@ -21,65 +21,27 @@
 
   const switchShuffleMode = () => playerService.send("SWITCH_SHUFFLE_MODE");
 
-  let favorite = false;
-  let type: MusicKit.AppleMusicAPI.RatingType = "songs";
-  const changeFavorite = async () => {
-    const item = $playerService.context.currentTrack;
-    if (!item) {
-      return;
-    }
-
-    if (favorite) {
-      await CapacitorMusicKit.deleteRating({
-        id: item.id,
-        type,
-      });
-      favorite = false;
-    } else {
-      await CapacitorMusicKit.addRating({
-        id: item.id,
-        type,
-        value: 1,
-      });
-      favorite = true;
-    }
-  };
-
   $: loading = matches($playerService, ["loading"]);
 
-  let hasMusicSubscription = false;
-  $: (async () =>
-    (hasMusicSubscription = (await CapacitorMusicKit.hasMusicSubscription()).result))();
-
-  // change item event
+  let favorite = false;
   let prevId = "";
   $: if (
-    hasMusicSubscription &&
-    $playerService &&
-    $playerService.context.currentTrack?.id &&
+    $playerService?.context?.currentTrack?.id &&
     prevId !== $playerService.context.currentTrack.id
   ) {
     prevId = $playerService.context.currentTrack.id;
 
     (async () => {
-      type = prevId.startsWith("i.") ? "library-songs" : "songs";
+      const type = prevId.startsWith("i.") ? "library-songs" : "songs";
       const ratings = (
         await CapacitorMusicKit.getRatings({
           ids: [prevId],
           type,
         })
       ).data;
-      favorite = Boolean(ratings.find((rating) => rating.id === prevId)?.attributes?.value);
+      favorite = Boolean(ratings.find((rating) => rating.id === prevId));
     })();
   }
-
-  const favoriteInfo = () => {
-    openToast({
-      color: "main",
-      duration: 5000,
-      message: "Apple Music サブスクリプション加入で使用できます",
-    });
-  };
 
   let artworkEle: HTMLIonColElement;
   $: if (artworkEle) {
@@ -172,19 +134,7 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        {#if hasMusicSubscription}
-          <ion-button color="black" size="large" on:click={changeFavorite}>
-            {#if favorite}
-              <Icon name="favorite" color="red" fill size="l" />
-            {:else}
-              <Icon name="favorite" size="l" />
-            {/if}
-          </ion-button>
-        {:else}
-          <ion-button color="black" size="large" on:click={favoriteInfo}>
-            <Icon name="favorite" color="gray" fill size="l" />
-          </ion-button>
-        {/if}
+        <FavoriteButton id={$playerService?.context?.currentTrack?.id} {favorite} size="l" />
       </ion-col>
       <ion-col>
         <ion-button color="black" size="large" on:click={switchRepeatMode}>

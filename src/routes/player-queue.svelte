@@ -1,9 +1,11 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
+  import FavoriteButton from "~/components/favorite-button.svelte";
   import Icon from "~/components/icon.svelte";
   import ItemDivider from "~/components/item-divider/item-divider.svelte";
   import SquareImage from "~/components/square-image.svelte";
   import { convertImageUrl } from "~/lib/convertImageUrl";
+  import { getRatings } from "~/lib/getRatings";
   import { matches } from "~/lib/matches";
   import { playerService } from "~/machines/apple-music-player-machine";
 
@@ -41,6 +43,13 @@
   };
 
   $: loading = matches($playerService, ["loading"]);
+
+  let ratings: MusicKit.Ratings[] = [];
+  $: if ($playerService?.context?.queueTracks?.length > 0) {
+    (async () => {
+      ratings = await getRatings($playerService?.context?.queueTracks.map((track) => track.id));
+    })();
+  }
 </script>
 
 <ion-content style="padding: 10px 0" color="dark-gray" in:fade>
@@ -97,6 +106,12 @@
           <ion-label>
             {track.title}
           </ion-label>
+          <ion-buttons>
+            <FavoriteButton
+              id={track.id}
+              favorite={Boolean(ratings.find((rating) => rating.id === track.id))}
+            />
+          </ion-buttons>
         </ion-item>
         <ion-item-options side="end">
           <ion-item-option color="danger" on:click={() => remove(index)}>
