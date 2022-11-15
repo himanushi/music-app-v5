@@ -6,6 +6,7 @@ import type { PluginListenerHandle } from "@capacitor/core";
 import type { AuthorizationStatusDidChangeListener } from "capacitor-plugin-musickit";
 import { CapacitorMusicKit } from "capacitor-plugin-musickit";
 import { assign, interpret, createMachine } from "xstate";
+import { hasMusicSubscription } from "~/store/hasMusicSubscription";
 import { isAuthorized } from "~/store/isAuthorized";
 
 export type Context = {
@@ -94,6 +95,8 @@ export const accountMachine = createMachine<Context, Event, State>(
                 "authorizationStatusDidChange",
                 changeStatus,
               );
+
+              hasMusicSubscription.set((await CapacitorMusicKit.hasMusicSubscription()).result);
             })();
 
             return () => {
