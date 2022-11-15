@@ -1,12 +1,15 @@
 <script lang="ts">
+  import FavoriteButton from "~/components/favorite-button.svelte";
   import SquareImage from "~/components/square-image.svelte";
   import type { TrackItem } from "~/lib/toTrackItem";
   import { playerService } from "~/machines/apple-music-player-machine";
+  import { hasMusicSubscription } from "~/store/hasMusicSubscription";
 
   export let index: number;
   export let item: TrackItem;
   export let ids: string[];
   export let viewImage = true;
+  export let favorite = false;
 
   const play = () => {
     playerService.send({
@@ -30,4 +33,9 @@
   <ion-label>
     {item.name}
   </ion-label>
+  {#if $hasMusicSubscription}
+    <ion-buttons slot="end">
+      <FavoriteButton id={item.id} {favorite} />
+    </ion-buttons>
+  {/if}
 </ion-item>

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { CapacitorMusicKit } from "capacitor-plugin-musickit";
   import { onDestroy } from "svelte";
   import LibraryArtistItem from "../../artists/library-artist-item.svelte";
   import type { PageData } from "./$types";
@@ -9,8 +10,8 @@
   import VirtualScroll from "~/components/virtual-scroll.svelte";
   import { convertImageUrl } from "~/lib/convertImageUrl";
   import { toTrackItem } from "~/lib/toTrackItem";
-  import { accountService } from "~/machines/apple-music-account-machine";
   import LibraryTrackItem from "~/routes/library/tracks/library-track-item.svelte";
+  import { isAuthorized } from "~/store/isAuthorized";
 
   export let data: PageData;
 
@@ -18,9 +19,23 @@
   $: albums = $albumsService.context.items;
   $: songs = $songsService.context.items;
   $: artists = $artistsService.context.items;
+  let ratingSongs: MusicKit.Ratings[] = [];
 
-  $: if ($accountService.matches("authorized")) {
+  $: if ($isAuthorized) {
     getItem();
+  }
+
+  const getRatings = async () => {
+    ratingSongs = (
+      await CapacitorMusicKit.getRatings({
+        ids: $songsService.context.items.map((item) => item.id),
+        type: "library-songs",
+      })
+    ).data;
+  };
+
+  $: if ($songsService.value === "done") {
+    getRatings();
   }
 
   onDestroy(() => stopServices());
@@ -39,7 +54,7 @@
         />
       </CenterItem>
       <ion-item>
-        <ion-label>
+        <ion-label class="ion-text-wrap text-select">
           {albums[0].attributes.name}
         </ion-label>
       </ion-item>
@@ -69,6 +84,7 @@
     {#if songs.length > 0}
       <VirtualScroll items={songs} let:index let:item>
         <LibraryTrackItem
+          favorite={Boolean(ratingSongs.find((rating) => rating.id === item.id))}
           ids={songs.map((track) => track.id)}
           {index}
           item={toTrackItem(item)}

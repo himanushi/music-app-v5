@@ -16,7 +16,4 @@
     />
   </ion-thumbnail>
   <ion-label>{item.attributes.name}</ion-label>
-  <ion-buttons slot="end">
-    <ion-icon name="heart-outline" slot="icon-only" />
-  </ion-buttons>
 </ion-item>
