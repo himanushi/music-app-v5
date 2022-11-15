@@ -35,13 +35,7 @@ export const playerSeekMachine = createMachine<Context, Event, State>(
     },
 
     states: {
-      idle: {
-        entry: [
-          assign({
-            seek: 0,
-          }),
-        ],
-      },
+      idle: {},
 
       active: {
         invoke: [{ src: "ticktack" }],
