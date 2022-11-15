@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { CapacitorMusicKit } from "capacitor-plugin-musickit";
   import { onDestroy } from "svelte";
   import LibraryArtistItem from "../../artists/library-artist-item.svelte";
   import type { PageData } from "./$types";
@@ -9,8 +8,11 @@
   import SquareImage from "~/components/square-image.svelte";
   import VirtualScroll from "~/components/virtual-scroll.svelte";
   import { convertImageUrl } from "~/lib/convertImageUrl";
+  import { getRatings } from "~/lib/getRatings";
+  import { isFavorite } from "~/lib/isFavorite";
   import { toTrackItem } from "~/lib/toTrackItem";
   import LibraryTrackItem from "~/routes/library/tracks/library-track-item.svelte";
+  import { favorites } from "~/store/favorites";
   import { isAuthorized } from "~/store/isAuthorized";
 
   export let data: PageData;
@@ -19,23 +21,13 @@
   $: albums = $albumsService.context.items;
   $: songs = $songsService.context.items;
   $: artists = $artistsService.context.items;
-  let ratingSongs: MusicKit.Ratings[] = [];
 
   $: if ($isAuthorized) {
     getItem();
   }
 
-  const getRatings = async () => {
-    ratingSongs = (
-      await CapacitorMusicKit.getRatings({
-        ids: $songsService.context.items.map((item) => item.id),
-        type: "library-songs",
-      })
-    ).data;
-  };
-
   $: if ($songsService.value === "done") {
-    getRatings();
+    getRatings($songsService.context.items.map((item) => item.id));
   }
 
   onDestroy(() => stopServices());
@@ -84,7 +76,7 @@
     {#if songs.length > 0}
       <VirtualScroll items={songs} let:index let:item>
         <LibraryTrackItem
-          favorite={Boolean(ratingSongs.find((rating) => rating.id === item.id))}
+          favorite={isFavorite($favorites, item.id)}
           ids={songs.map((track) => track.id)}
           {index}
           item={toTrackItem(item)}

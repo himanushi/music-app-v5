@@ -2,6 +2,7 @@
   import { CapacitorMusicKit } from "capacitor-plugin-musickit";
   import Icon from "~/components/icon.svelte";
   import { openToast } from "~/lib/ionicController";
+  import { favorites } from "~/store/favorites";
   import { hasMusicSubscription } from "~/store/hasMusicSubscription";
 
   export let id: string | undefined;
@@ -18,14 +19,14 @@
         id,
         type,
       });
-      favorite = false;
+      favorites.delete(id);
     } else {
       await CapacitorMusicKit.addRating({
         id,
         type,
         value: 1,
       });
-      favorite = true;
+      favorites.update(id, 1);
     }
   };
 

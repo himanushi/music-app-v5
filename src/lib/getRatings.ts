@@ -1,4 +1,5 @@
 import { CapacitorMusicKit } from "capacitor-plugin-musickit";
+import { favorites } from "~/store/favorites";
 
 export const getRatings = async (ids: string[]) => {
   if (ids.length === 0) {
@@ -33,5 +34,10 @@ export const getRatings = async (ids: string[]) => {
     ];
   }
 
-  return ratings;
+  favorites.updateAll(
+    ratings.map((rating) => ({
+      id: rating.id,
+      value: rating.attributes.value,
+    })),
+  );
 };

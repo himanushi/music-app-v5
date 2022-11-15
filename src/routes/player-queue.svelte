@@ -6,8 +6,10 @@
   import SquareImage from "~/components/square-image.svelte";
   import { convertImageUrl } from "~/lib/convertImageUrl";
   import { getRatings } from "~/lib/getRatings";
+  import { isFavorite } from "~/lib/isFavorite";
   import { matches } from "~/lib/matches";
   import { playerService } from "~/machines/apple-music-player-machine";
+  import { favorites } from "~/store/favorites";
 
   const playOrPause = () => playerService.send("PLAY_OR_PAUSE");
 
@@ -44,11 +46,8 @@
 
   $: loading = matches($playerService, ["loading"]);
 
-  let ratings: MusicKit.Ratings[] = [];
   $: if ($playerService?.context?.queueTracks?.length > 0) {
-    (async () => {
-      ratings = await getRatings($playerService?.context?.queueTracks.map((track) => track.id));
-    })();
+    getRatings($playerService.context.queueTracks.map((track) => track.id));
   }
 </script>
 
@@ -107,10 +106,7 @@
             {track.title}
           </ion-label>
           <ion-buttons>
-            <FavoriteButton
-              id={track.id}
-              favorite={Boolean(ratings.find((rating) => rating.id === track.id))}
-            />
+            <FavoriteButton id={track.id} favorite={isFavorite($favorites, track.id)} />
           </ion-buttons>
         </ion-item>
         <ion-item-options side="end">

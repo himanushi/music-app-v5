@@ -1,6 +1,5 @@
 <script lang="ts">
   import { Capacitor } from "@capacitor/core";
-  import { CapacitorMusicKit } from "capacitor-plugin-musickit";
   import { fade } from "svelte/transition";
   import PlayerSeekBar from "./player-seek-bar.svelte";
   import FavoriteButton from "~/components/favorite-button.svelte";
@@ -8,8 +7,11 @@
   import ItemDivider from "~/components/item-divider/item-divider.svelte";
   import SquareImage from "~/components/square-image.svelte";
   import { convertImageUrl } from "~/lib/convertImageUrl";
+  import { getRatings } from "~/lib/getRatings";
+  import { isFavorite } from "~/lib/isFavorite";
   import { matches } from "~/lib/matches";
   import { playerService } from "~/machines/apple-music-player-machine";
+  import { favorites } from "~/store/favorites";
 
   const playOrPause = () => playerService.send("PLAY_OR_PAUSE");
 
@@ -23,24 +25,15 @@
 
   $: loading = matches($playerService, ["loading"]);
 
-  let favorite = false;
+  $: favorite = isFavorite($favorites, $playerService?.context?.currentTrack?.id);
+
   let prevId = "";
   $: if (
     $playerService?.context?.currentTrack?.id &&
     prevId !== $playerService.context.currentTrack.id
   ) {
     prevId = $playerService.context.currentTrack.id;
-
-    (async () => {
-      const type = prevId.startsWith("i.") ? "library-songs" : "songs";
-      const ratings = (
-        await CapacitorMusicKit.getRatings({
-          ids: [prevId],
-          type,
-        })
-      ).data;
-      favorite = Boolean(ratings.find((rating) => rating.id === prevId));
-    })();
+    getRatings([prevId]);
   }
 
   let artworkEle: HTMLIonColElement;
