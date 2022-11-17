@@ -22,6 +22,7 @@
   $: songs = $songsService.context.items;
   $: artists = $artistsService.context.items;
 
+  // 承認
   $: if ($isAuthorized) {
     getItem();
   }
