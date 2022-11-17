@@ -1,38 +1,49 @@
 <script lang="ts">
   import { CapacitorMusicKit } from "capacitor-plugin-musickit";
   import Icon from "~/components/icon.svelte";
+  import { getRatings } from "~/lib/getRatings";
   import { openToast } from "~/lib/ionicController";
   import { favorites } from "~/store/favorites";
   import { hasMusicSubscription } from "~/store/hasMusicSubscription";
 
   export let id: string | undefined;
   export let favorite = false;
-  export let type: MusicKit.AppleMusicAPI.RatingType | undefined = undefined;
+  export let categoryType: MusicKit.AppleMusicAPI.RatingCategoryType = "songs";
   export let size: "l" | "m" | "s" = "s";
 
+  let type: MusicKit.AppleMusicAPI.RatingType = "songs";
+  if (id && categoryType === "songs") {
+    type = id.startsWith("i.") ? "library-songs" : "songs";
+  } else if (id && categoryType === "albums") {
+    type = id.startsWith("l.") ? "library-albums" : "albums";
+  }
+
   const changeFavorite = async () => {
-    if (!type || !id) {
+    if (!id) {
       return;
     }
-    if (favorite) {
-      await CapacitorMusicKit.deleteRating({
-        id,
-        type,
-      });
-      favorites.delete(id);
-    } else {
-      await CapacitorMusicKit.addRating({
-        id,
-        type,
-        value: 1,
-      });
-      favorites.update(id, 1);
+    try {
+      if (favorite) {
+        await CapacitorMusicKit.deleteRating({
+          id,
+          type,
+        });
+        favorites.delete(id);
+      } else {
+        await CapacitorMusicKit.addRating({
+          id,
+          type,
+          value: 1,
+        });
+        getRatings({
+          categoryType,
+          ids: [id],
+        });
+      }
+    } catch (error) {
+      // nothing
     }
   };
-
-  $: if ($hasMusicSubscription && id) {
-    type = id.startsWith("i.") ? "library-songs" : "songs";
-  }
 
   const favoriteInfo = () => {
     openToast({
