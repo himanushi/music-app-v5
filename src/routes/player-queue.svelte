@@ -47,7 +47,7 @@
   $: loading = matches($playerService, ["loading"]);
 
   $: if ($playerService?.context?.queueTracks?.length > 0) {
-    getRatings($playerService.context.queueTracks.map((track) => track.id));
+    getRatings({ ids: $playerService.context.queueTracks.map((track) => track.id) });
   }
 </script>
 

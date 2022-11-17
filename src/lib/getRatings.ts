@@ -1,37 +1,50 @@
 import { CapacitorMusicKit } from "capacitor-plugin-musickit";
 import { favorites } from "~/store/favorites";
 
-export const getRatings = async (ids: string[]) => {
-  if (ids.length === 0) {
+export const getRatings = async ({
+  ids: selectIds,
+  categoryType: selectType = "songs",
+}: {
+  ids: string[];
+  categoryType?: MusicKit.AppleMusicAPI.RatingCategoryType;
+}) => {
+  if (selectIds.length === 0) {
     return [];
   }
 
   let ratings: MusicKit.Ratings[] = [];
 
-  const SongIds = ids.filter((id) => !id.startsWith("i."));
-  if (SongIds.length > 0) {
-    ratings = [
-      ...ratings,
-      ...(
-        await CapacitorMusicKit.getRatings({
-          ids: SongIds,
-          type: "songs",
-        })
-      ).data,
-    ];
-  }
+  const librarySongs = selectIds.filter((id) => id.startsWith("i."));
+  const songs = selectIds.filter((id) => !librarySongs.includes(id));
+  const libraryAlbums = selectIds.filter((id) => id.startsWith("l."));
+  const albums = selectIds.filter((id) => !libraryAlbums.includes(id));
 
-  const librarySongIds = ids.filter((id) => id.startsWith("i."));
-  if (librarySongIds.length > 0) {
-    ratings = [
-      ...ratings,
-      ...(
-        await CapacitorMusicKit.getRatings({
-          ids: librarySongIds,
-          type: "library-songs",
-        })
-      ).data,
-    ];
+  const pattern = {
+    albums,
+    "library-albums": libraryAlbums,
+    "library-songs": librarySongs,
+    songs,
+  };
+
+  const selectPattern = {
+    albums: ["library-albums", "albums"],
+    artists: ["library-artists", "artists"],
+    playlists: ["library-playlists", "playlists"],
+    songs: ["library-songs", "songs"],
+  };
+
+  for (const [type, ids] of Object.entries(pattern) as [keyof typeof pattern, string[]][]) {
+    if (ids.length > 0 && selectPattern[selectType].includes(type)) {
+      ratings = [
+        ...ratings,
+        ...(
+          await CapacitorMusicKit.getRatings({
+            ids,
+            type,
+          })
+        ).data,
+      ];
+    }
   }
 
   favorites.updateAll(

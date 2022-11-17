@@ -33,7 +33,7 @@
     prevId !== $playerService.context.currentTrack.id
   ) {
     prevId = $playerService.context.currentTrack.id;
-    getRatings([prevId]);
+    getRatings({ ids: [prevId] });
   }
 
   let artworkEle: HTMLIonColElement;

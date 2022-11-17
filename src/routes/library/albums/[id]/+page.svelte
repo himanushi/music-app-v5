@@ -3,6 +3,7 @@
   import LibraryArtistItem from "../../artists/library-artist-item.svelte";
   import type { PageData } from "./$types";
   import CenterItem from "~/components/center-item.svelte";
+  import FavoriteButton from "~/components/favorite-button.svelte";
   import ItemDivider from "~/components/item-divider/item-divider.svelte";
   import SkeletonItems from "~/components/skeleton-items.svelte";
   import SquareImage from "~/components/square-image.svelte";
@@ -27,7 +28,13 @@
   }
 
   $: if ($songsService.value === "done") {
-    getRatings($songsService.context.items.map((item) => item.id));
+    if (albums[0]) {
+      getRatings({
+        categoryType: "albums",
+        ids: [albums[0].id],
+      });
+    }
+    getRatings({ ids: $songsService.context.items.map((item) => item.id) });
   }
 
   onDestroy(() => stopServices());
@@ -58,9 +65,11 @@
       </ion-item>
       <ion-item>
         <ion-buttons>
-          <ion-button>
-            <ion-icon name="heart" color="red" />
-          </ion-button>
+          <FavoriteButton
+            id={albums[0].id}
+            categoryType="albums"
+            favorite={isFavorite($favorites, albums[0].id)}
+          />
         </ion-buttons>
       </ion-item>
     {/if}
