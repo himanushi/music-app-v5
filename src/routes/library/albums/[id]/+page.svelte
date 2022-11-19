@@ -64,7 +64,7 @@
         </ion-note>
       </ion-item>
       <ion-item>
-        <ion-buttons>
+        <ion-buttons slot="end">
           <FavoriteButton
             id={albums[0].id}
             categoryType="albums"
