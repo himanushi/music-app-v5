@@ -85,7 +85,6 @@
     {#if songs.length > 0}
       <VirtualScroll items={songs} let:index let:item>
         <LibraryTrackItem
-          favorite={isFavorite($favorites, item.id)}
           ids={songs.map((track) => track.id)}
           {index}
           item={toTrackItem(item)}
