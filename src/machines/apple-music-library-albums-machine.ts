@@ -17,6 +17,7 @@ export type Context = {
 };
 
 export type Event =
+  | { type: "SORT"; order: keyof MusicKit.LibraryAlbums["attributes"]; direction: "asc" | "desc" }
   | { type: "LOAD" }
   | { type: "IDLE" }
   | { type: "LOADING" }
@@ -47,6 +48,8 @@ const limit = 100;
 
 export const libraryAlbumsMachine = createMachine<Context, Event, State>(
   {
+    predictableActionArguments: true,
+
     id,
 
     initial: "idle",
@@ -70,12 +73,16 @@ export const libraryAlbumsMachine = createMachine<Context, Event, State>(
         invoke: {
           src: () => (callback) => {
             (async () => {
-              const context = await store.get<Context>(id);
-              if (context && context.version === version) {
-                callback({
-                  type: "REMEMBER",
-                  context,
-                });
+              try {
+                const context = await store.get<Context>(id);
+                if (context && context.version === version) {
+                  callback({
+                    type: "REMEMBER",
+                    context,
+                  });
+                }
+              } catch (error) {
+                // nothing
               }
             })();
           },
@@ -128,7 +135,11 @@ export const libraryAlbumsMachine = createMachine<Context, Event, State>(
         on: {},
       },
 
-      done: {},
+      done: {
+        on: {
+          SORT: { actions: "sort" },
+        },
+      },
     },
   },
   {
@@ -147,6 +158,23 @@ export const libraryAlbumsMachine = createMachine<Context, Event, State>(
         offset: (_, event) => ("context" in event ? event.context.offset : 0),
         albums: (_, event) => ("context" in event ? event.context.albums : []),
         version: (_, event) => ("context" in event ? event.context.version : version),
+      }),
+
+      sort: assign({
+        albums: (context, event) => {
+          console.log("aaaa");
+          if ("order" in event) {
+            return context.albums.sort((albumA, albumB) => {
+              const contentA = albumA.attributes[event.order];
+              const contentB = albumB.attributes[event.order];
+              if (contentA && contentB && contentA > contentB) {
+                return event.direction === "asc" ? 1 : -1;
+              }
+              return -1;
+            });
+          }
+          return context.albums;
+        },
       }),
     },
   },

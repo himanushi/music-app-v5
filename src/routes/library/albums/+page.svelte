@@ -1,9 +1,12 @@
 <script lang="ts">
+  import type { PageData } from "./$types";
   import LibraryAlbumItem from "./library-album-item.svelte";
   import ItemDivider from "~/components/item-divider/item-divider.svelte";
   import Refresher from "~/components/refresher.svelte";
   import VirtualScroll from "~/components/virtual-scroll.svelte";
   import { libraryAlbumsService } from "~/machines/apple-music-library-albums-machine";
+
+  export let data: PageData;
 
   $: albums = $libraryAlbumsService.context.albums;
 
@@ -16,7 +19,7 @@
 
 <Refresher {refresh} bind:loaded />
 <ion-list>
-  <ItemDivider title="Library Albums" />
+  <ItemDivider menu={data.menu} title="Library Albums" />
   {#if albums}
     <VirtualScroll items={albums} thumbnail let:item>
       <LibraryAlbumItem {item} />
