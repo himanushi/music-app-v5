@@ -1,8 +1,11 @@
 import { writable } from "svelte/store";
+import { store } from "./store";
 
 export type FavoriteType = {
   [key: string]: number;
 };
+
+const storeId = "Favorites";
 
 const createFavorites = () => {
   const { subscribe, update } = writable<FavoriteType>({});
@@ -11,6 +14,7 @@ const createFavorites = () => {
     delete: (id: string) => {
       update((object) => {
         delete object[id];
+        store.set(storeId, object);
         return object;
       });
     },
@@ -18,6 +22,7 @@ const createFavorites = () => {
     update: (id: string, value: number) => {
       update((object) => {
         object[id] = value;
+        store.set(storeId, object);
         return object;
       });
     },
@@ -26,6 +31,7 @@ const createFavorites = () => {
         favoriteArr.forEach((favorite) => {
           object[favorite.id] = favorite.value;
         });
+        store.set(storeId, object);
         return object;
       });
     },
