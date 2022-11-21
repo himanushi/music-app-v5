@@ -9,8 +9,9 @@
   import { UpdateMeDocument, MeDocument, ChangePasswordDocument } from "~/graphql/types";
   import { errorMessages } from "~/lib/error";
   import { openToast } from "~/lib/ionicController";
+  import { me } from "~/store/me";
 
-  export let name: string;
+  export let name: string = $me?.name;
   let currentPassword: string;
   let newPassword: string;
   let newPasswordConfirmation: string;
