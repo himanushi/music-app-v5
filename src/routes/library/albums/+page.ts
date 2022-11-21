@@ -7,7 +7,6 @@ export const load: PageLoad = () => {
   let direction: "asc" | "desc" = "asc";
 
   const onOk = () => {
-    console.log("bbb");
     libraryAlbumsService.send({
       direction,
       order,
@@ -56,6 +55,14 @@ export const load: PageLoad = () => {
           {
             label: "配信日降順",
             value: "releaseDate.desc",
+          },
+          {
+            label: "トラック数昇順",
+            value: "trackCount.asc",
+          },
+          {
+            label: "トラック数降順",
+            value: "trackCount.desc",
           },
         ],
         type: "select",
