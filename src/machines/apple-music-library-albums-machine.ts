@@ -5,11 +5,13 @@
 import { CapacitorMusicKit, type GetLibraryAlbumsResult } from "capacitor-plugin-musickit";
 import { assign, send, createMachine, interpret } from "xstate";
 import type { DoneInvokeEvent } from "xstate";
+import { getRatings } from "~/lib/getRatings";
 import { store } from "~/store/store";
 
 const version = 1;
 
 export type Context = {
+  alreadyFetchFavorites: boolean;
   hasNext: boolean;
   offset: number;
   albums: MusicKit.LibraryAlbums[];
@@ -21,6 +23,7 @@ export type Event =
   | { type: "LOAD" }
   | { type: "IDLE" }
   | { type: "LOADING" }
+  | { type: "FETCH_FAVORITES" }
   | { type: "RESET" }
   | { type: "REMEMBER"; context: Context };
 
@@ -55,6 +58,7 @@ export const libraryAlbumsMachine = createMachine<Context, Event, State>(
     initial: "idle",
 
     context: {
+      alreadyFetchFavorites: false,
       hasNext: true,
       offset: 0,
       albums: [],
@@ -136,8 +140,13 @@ export const libraryAlbumsMachine = createMachine<Context, Event, State>(
       },
 
       done: {
+        entry: [send("FETCH_FAVORITES")],
         on: {
           SORT: { actions: "sort" },
+          FETCH_FAVORITES: {
+            cond: (context) => !context.alreadyFetchFavorites,
+            actions: ["fetchFavorites", "memory"],
+          },
         },
       },
     },
@@ -145,16 +154,30 @@ export const libraryAlbumsMachine = createMachine<Context, Event, State>(
   {
     actions: {
       reset: assign({
+        alreadyFetchFavorites: (_) => false,
         hasNext: (_) => true,
         offset: (_) => 0,
         albums: (_) => [],
         version: (_) => version,
       }),
 
+      fetchFavorites: assign({
+        alreadyFetchFavorites: (context) => {
+          const ids = context.albums.map((album) => album.id);
+          getRatings({
+            categoryType: "albums",
+            ids,
+          });
+          return true;
+        },
+      }),
+
       memory: (context) => store.set(id, context),
 
       remember: assign({
-        hasNext: (_, event) => ("context" in event ? event.context.hasNext : false),
+        alreadyFetchFavorites: (_, event) =>
+          "context" in event ? event.context.alreadyFetchFavorites : false,
+        hasNext: (_, event) => ("context" in event ? event.context.hasNext : true),
         offset: (_, event) => ("context" in event ? event.context.offset : 0),
         albums: (_, event) => ("context" in event ? event.context.albums : []),
         version: (_, event) => ("context" in event ? event.context.version : version),
@@ -162,7 +185,6 @@ export const libraryAlbumsMachine = createMachine<Context, Event, State>(
 
       sort: assign({
         albums: (context, event) => {
-          console.log("aaaa");
           if ("order" in event) {
             return context.albums.sort((albumA, albumB) => {
               const contentA = albumA.attributes[event.order];
