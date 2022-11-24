@@ -16,6 +16,8 @@
     type = id.startsWith("i.") ? "library-songs" : "songs";
   } else if (id && categoryType === "albums") {
     type = id.startsWith("l.") ? "library-albums" : "albums";
+  } else if (id && categoryType === "artists") {
+    type = id.startsWith("r.") ? "library-artists" : "artists";
   }
 
   const changeFavorite = async () => {

@@ -27,14 +27,18 @@
     getItem();
   }
 
-  $: if ($songsService.value === "done") {
+  const getItems = async () => {
     if (albums[0]) {
-      getRatings({
+      await getRatings({
         categoryType: "albums",
         ids: [albums[0].id],
       });
     }
-    getRatings({ ids: $songsService.context.items.map((item) => item.id) });
+    await getRatings({ ids: $songsService.context.items.map((item) => item.id) });
+  };
+
+  $: if ($songsService.value === "done") {
+    getItems();
   }
 
   onDestroy(() => stopServices());
