@@ -50,13 +50,14 @@
   },
   "type": "module",
   "dependencies": {
-    "@apollo/client": "^3.6.9",
+    "@apollo/client": "^3.7.1",
     "@capacitor/core": "^4.3.0",
     "@capacitor/ios": "^4.3.0",
     "@capacitor/preferences": "^4.0.1",
     "@ionic/core": "^6.3.1",
     "@xstate/inspect": "^0.7.0",
-    "capacitor-plugin-musickit": "^0.0.69",
+    "apollo-link-rest": "^0.9.0",
+    "capacitor-plugin-musickit": "^0.0.70",
     "dompurify": "^2.4.0",
     "graphql": "^16.6.0",
     "lodash.camelcase": "^4.3.0",
@@ -64,6 +65,7 @@
     "lodash.merge": "^4.6.2",
     "lodash.mergewith": "^4.6.2",
     "marked": "^4.1.1",
+    "qs": "^6.11.0",
     "uuid": "^9.0.0",
     "xstate": "^4.33.6"
   }
