@@ -1,0 +1,19 @@
+overwrite: true
+schema: src/graphqlMusicKit/schema.graphql
+documents: src/graphqlMusicKit/**/*.graphql
+generates:
+  src/graphqlMusicKit/types.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typed-document-node
+    config:
+      enumsAsTypes: true
+      immutableTypes: true
+      addUnderscoreToArgsType: true
+      scalars:
+        PositiveNumber: number
+        ISO8601DateTime: string
+      skipTypename: true
+      useTypeImports: true
+      maybeValue: "T | undefined"
