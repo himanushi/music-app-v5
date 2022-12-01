@@ -5,6 +5,7 @@
     "dev": "vite dev",
     "build": "vite build",
     "generate": "npx graphql-codegen --config=codegen.yml",
+    "generate:musickit": "npx graphql-codegen --config=codegenMusicKit.yml",
     "ionic:build": "PLATFORM=ios run-s build",
     "ios:build": "ionic capacitor build ios"
   },
