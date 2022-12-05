@@ -9,7 +9,6 @@
   import SquareImage from "~/components/square-image.svelte";
   import VirtualScroll from "~/components/virtual-scroll.svelte";
   import { convertImageUrl } from "~/lib/convertImageUrl";
-  import { getRatings } from "~/lib/getRatings";
   import { isFavorite } from "~/lib/isFavorite";
   import { toTrackItem } from "~/lib/toTrackItem";
   import LibraryTrackItem from "~/routes/library/tracks/library-track-item.svelte";
@@ -25,20 +24,6 @@
 
   $: if ($isAuthorized) {
     getItem();
-  }
-
-  const getItems = async () => {
-    if (albums[0]) {
-      await getRatings({
-        categoryType: "albums",
-        ids: [albums[0].id],
-      });
-    }
-    await getRatings({ ids: $songsService.context.items.map((item) => item.id) });
-  };
-
-  $: if ($songsService.value === "done") {
-    getItems();
   }
 
   onDestroy(() => stopServices());
