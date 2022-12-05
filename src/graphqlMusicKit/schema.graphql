@@ -1,7 +1,0 @@
-type Album {
-  id: String!
-}
-
-type Query {
-  album(id: String!): Album
-}
