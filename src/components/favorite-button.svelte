@@ -54,11 +54,19 @@
       message: "Apple Music サブスクリプション加入で使用できます",
     });
   };
+
+  const buttonSize: "small" | "default" | "large" =
+    // eslint-disable-next-line no-nested-ternary
+    size === "s" ? "small" : size === "m" ? "default" : "large";
 </script>
 
 {#if type}
   {#if hasMusicSubscription}
-    <ion-button color="black" on:click|preventDefault|stopPropagation={changeFavorite}>
+    <ion-button
+      color="black"
+      size={buttonSize}
+      on:click|preventDefault|stopPropagation={changeFavorite}
+    >
       {#if favorite}
         <Icon name="favorite" color="red" fill {size} />
       {:else}
@@ -66,12 +74,16 @@
       {/if}
     </ion-button>
   {:else}
-    <ion-button color="black" on:click|preventDefault|stopPropagation={favoriteInfo}>
+    <ion-button
+      color="black"
+      size={buttonSize}
+      on:click|preventDefault|stopPropagation={favoriteInfo}
+    >
       <Icon name="favorite" color="gray" fill {size} />
     </ion-button>
   {/if}
 {:else}
-  <ion-button color="black" disabled>
+  <ion-button color="black" disabled size={buttonSize}>
     <Icon name="favorite" color="gray" {size} />
   </ion-button>
 {/if}
