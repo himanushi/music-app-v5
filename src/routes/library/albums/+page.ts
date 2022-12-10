@@ -5,6 +5,7 @@ import { libraryAlbumsService } from "~/machines/apple-music-library-albums-mach
 export const load: PageLoad = () => {
   let order: keyof MusicKit.LibraryAlbums["attributes"] = "name";
   let direction: "asc" | "desc" = "asc";
+  let name: string | null | undefined = undefined;
 
   const onOk = () => {
     libraryAlbumsService.send({
