@@ -9,7 +9,6 @@
   export let data: PageData;
 
   $: albums = $libraryAlbumsService.context.filteredAlbums;
-  $: window.ALBUMS = $libraryAlbumsService.context;
 
   let loaded = false;
   const refresh = () => {

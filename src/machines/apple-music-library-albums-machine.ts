@@ -6,6 +6,7 @@ import { CapacitorMusicKit, type GetLibraryAlbumsResult } from "capacitor-plugin
 import { assign, send, createMachine, interpret } from "xstate";
 import type { DoneInvokeEvent } from "xstate";
 import { getRatings } from "~/lib/getRatings";
+import { favoritesStoreId, type FavoriteType } from "~/store/favorites";
 import { store } from "~/store/store";
 
 const version = 1;
@@ -20,6 +21,8 @@ export type Context = {
   filterOrder?: keyof MusicKit.LibraryAlbums["attributes"];
   filterDirection?: "asc" | "desc";
   filterName?: string | null;
+  filterFavorite?: boolean;
+  filterFavorites: string[];
 };
 
 export type Event =
@@ -28,11 +31,14 @@ export type Event =
       order: Context["filterOrder"];
       direction: Context["filterDirection"];
       name?: string | null;
+      favorite: boolean;
     }
+  | { type: "DONE" }
   | { type: "LOAD" }
   | { type: "IDLE" }
   | { type: "LOADING" }
   | { type: "FETCH_FAVORITES" }
+  | { type: "SET_FAVORITES"; favorites: string[] }
   | { type: "RESET" }
   | { type: "REMEMBER"; context: Context };
 
@@ -52,6 +58,10 @@ export type State =
   | {
       value: "done";
       context: Context;
+    }
+  | {
+      value: "filtering";
+      context: Context;
     };
 
 export const id = "AppleMusicLibraryAlbums";
@@ -67,12 +77,13 @@ export const libraryAlbumsMachine = createMachine<Context, Event, State>(
     initial: "idle",
 
     context: {
+      version,
       needFetchFavorites: false,
       hasNext: true,
       offset: 0,
       albums: [],
       filteredAlbums: [],
-      version,
+      filterFavorites: [],
     },
 
     on: {
@@ -157,11 +168,35 @@ export const libraryAlbumsMachine = createMachine<Context, Event, State>(
       done: {
         entry: [send("FETCH_FAVORITES")],
         on: {
-          FILTER: { actions: ["filter", "memory"] },
+          FILTER: {
+            target: "filtering",
+            actions: "setFilters",
+          },
           FETCH_FAVORITES: {
             cond: (context) => context.needFetchFavorites,
             actions: ["fetchFavorites", "memory"],
           },
+        },
+      },
+
+      filtering: {
+        exit: ["filter", "memory"],
+        invoke: {
+          src: () => (callback) => {
+            (async () => {
+              const favorites = await store.get<FavoriteType>(favoritesStoreId);
+              const favoriteKeys = Object.keys(favorites!);
+              callback({
+                type: "SET_FAVORITES",
+                favorites: favoriteKeys,
+              });
+              callback({ type: "DONE" });
+            })();
+          },
+        },
+        on: {
+          DONE: "done",
+          SET_FAVORITES: { actions: "setFavorites" },
         },
       },
     },
@@ -178,6 +213,7 @@ export const libraryAlbumsMachine = createMachine<Context, Event, State>(
         filterName: (_) => undefined,
         filterOrder: (_) => undefined,
         filterDirection: (_) => undefined,
+        filterFavorite: (_) => undefined,
       }),
 
       fetchFavorites: assign({
@@ -195,6 +231,10 @@ export const libraryAlbumsMachine = createMachine<Context, Event, State>(
         },
       }),
 
+      setFavorites: assign({
+        filterFavorites: (_, event) => ("favorites" in event ? event.favorites : []),
+      }),
+
       memory: (context) => store.set(id, context),
 
       remember: assign({
@@ -209,33 +249,43 @@ export const libraryAlbumsMachine = createMachine<Context, Event, State>(
         filterOrder: (_, event) => ("context" in event ? event.context.filterOrder : undefined),
         filterDirection: (_, event) =>
           "context" in event ? event.context.filterDirection : undefined,
+        filterFavorite: (_, event) =>
+          "context" in event ? event.context.filterFavorite : undefined,
       }),
 
-      filter: assign({
-        filteredAlbums: (context, event) => {
-          let filteredAlbums: MusicKit.LibraryAlbums[] = [];
-          if ("order" in event) {
-            filteredAlbums = context.albums.slice().sort((albumA, albumB) => {
-              const contentA = albumA.attributes[event.order!];
-              const contentB = albumB.attributes[event.order!];
-              if (contentA && contentB && contentA > contentB) {
-                return event.direction === "asc" ? 1 : -1;
-              }
-              return event.direction === "asc" ? -1 : 1;
-            });
-          }
-          if ("name" in event) {
-            const re = new RegExp(`${event.name}`, "igu");
-            filteredAlbums = filteredAlbums.filter((album) =>
-              Boolean(album.attributes.name.match(re)),
-            );
-            return filteredAlbums;
-          }
-          return filteredAlbums;
-        },
+      setFilters: assign({
         filterName: (_, event) => ("name" in event ? event.name : undefined),
         filterOrder: (_, event) => ("order" in event ? event.order : undefined),
         filterDirection: (_, event) => ("direction" in event ? event.direction : undefined),
+        filterFavorite: (_, event) => ("favorite" in event ? event.favorite : undefined),
+      }),
+
+      filter: assign({
+        filteredAlbums: (context) => {
+          let filteredAlbums: MusicKit.LibraryAlbums[] = context.albums.slice();
+          if (context.filterOrder) {
+            filteredAlbums = filteredAlbums.sort((albumA, albumB) => {
+              const contentA = albumA.attributes[context.filterOrder!];
+              const contentB = albumB.attributes[context.filterOrder!];
+              if (contentA && contentB && contentA > contentB) {
+                return context.filterDirection === "asc" ? 1 : -1;
+              }
+              return context.filterDirection === "asc" ? -1 : 1;
+            });
+          }
+          if (context.filterName) {
+            const re = new RegExp(`${context.filterName}`, "igu");
+            filteredAlbums = filteredAlbums.filter((album) =>
+              Boolean(album.attributes.name.match(re)),
+            );
+          }
+          if (context.filterFavorite) {
+            filteredAlbums = filteredAlbums.filter((album) =>
+              context.filterFavorites.includes(album.id),
+            );
+          }
+          return filteredAlbums;
+        },
       }),
     },
   },

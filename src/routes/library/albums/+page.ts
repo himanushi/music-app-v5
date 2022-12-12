@@ -5,7 +5,8 @@ import { libraryAlbumsService } from "~/machines/apple-music-library-albums-mach
 export const load: PageLoad = () => {
   let order: keyof MusicKit.LibraryAlbums["attributes"] = "name";
   let direction: "asc" | "desc" = "asc";
-  let name: string | null | undefined = undefined;
+  let name: string | null | undefined = "";
+  let favorite = false;
 
   libraryAlbumsService.subscribe((service) => {
     name = service.context.filterName;
@@ -20,6 +21,7 @@ export const load: PageLoad = () => {
   const onOk = () => {
     libraryAlbumsService.send({
       direction,
+      favorite,
       name,
       order,
       type: "FILTER",
@@ -33,6 +35,12 @@ export const load: PageLoad = () => {
         onChange: (value) => (name = value),
         type: "input",
         value: name,
+      },
+      {
+        checked: favorite,
+        label: "お気に入り",
+        onChange: (value) => (favorite = value),
+        type: "checkbox",
       },
       {
         label: "並び順",
