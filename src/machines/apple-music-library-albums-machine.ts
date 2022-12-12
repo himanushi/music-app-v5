@@ -19,10 +19,16 @@ export type Context = {
   filteredAlbums: MusicKit.LibraryAlbums[];
   filterOrder?: keyof MusicKit.LibraryAlbums["attributes"];
   filterDirection?: "asc" | "desc";
+  filterName?: string | null;
 };
 
 export type Event =
-  | { type: "SORT"; order: Context["filterOrder"]; direction: Context["filterDirection"] }
+  | {
+      type: "FILTER";
+      order: Context["filterOrder"];
+      direction: Context["filterDirection"];
+      name?: string | null;
+    }
   | { type: "LOAD" }
   | { type: "IDLE" }
   | { type: "LOADING" }
@@ -151,7 +157,7 @@ export const libraryAlbumsMachine = createMachine<Context, Event, State>(
       done: {
         entry: [send("FETCH_FAVORITES")],
         on: {
-          SORT: { actions: "sort" },
+          FILTER: { actions: ["filter", "memory"] },
           FETCH_FAVORITES: {
             cond: (context) => context.needFetchFavorites,
             actions: ["fetchFavorites", "memory"],
@@ -169,6 +175,7 @@ export const libraryAlbumsMachine = createMachine<Context, Event, State>(
         albums: (_) => [],
         version: (_) => version,
         filteredAlbums: (_) => [],
+        filterName: (_) => undefined,
         filterOrder: (_) => undefined,
         filterDirection: (_) => undefined,
       }),
@@ -198,15 +205,17 @@ export const libraryAlbumsMachine = createMachine<Context, Event, State>(
         albums: (_, event) => ("context" in event ? event.context.albums : []),
         version: (_, event) => ("context" in event ? event.context.version : version),
         filteredAlbums: (_, event) => ("context" in event ? event.context.filteredAlbums : []),
+        filterName: (_, event) => ("context" in event ? event.context.filterName : undefined),
         filterOrder: (_, event) => ("context" in event ? event.context.filterOrder : undefined),
         filterDirection: (_, event) =>
           "context" in event ? event.context.filterDirection : undefined,
       }),
 
-      sort: assign({
+      filter: assign({
         filteredAlbums: (context, event) => {
+          let filteredAlbums: MusicKit.LibraryAlbums[] = [];
           if ("order" in event) {
-            return context.albums.slice().sort((albumA, albumB) => {
+            filteredAlbums = context.albums.slice().sort((albumA, albumB) => {
               const contentA = albumA.attributes[event.order!];
               const contentB = albumB.attributes[event.order!];
               if (contentA && contentB && contentA > contentB) {
@@ -215,8 +224,16 @@ export const libraryAlbumsMachine = createMachine<Context, Event, State>(
               return event.direction === "asc" ? -1 : 1;
             });
           }
-          return context.albums;
+          if ("name" in event) {
+            const re = new RegExp(`${event.name}`, "igu");
+            filteredAlbums = filteredAlbums.filter((album) =>
+              Boolean(album.attributes.name.match(re)),
+            );
+            return filteredAlbums;
+          }
+          return filteredAlbums;
         },
+        filterName: (_, event) => ("name" in event ? event.name : undefined),
         filterOrder: (_, event) => ("order" in event ? event.order : undefined),
         filterDirection: (_, event) => ("direction" in event ? event.direction : undefined),
       }),

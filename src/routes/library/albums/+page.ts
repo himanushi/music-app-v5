@@ -7,16 +7,33 @@ export const load: PageLoad = () => {
   let direction: "asc" | "desc" = "asc";
   let name: string | null | undefined = undefined;
 
+  libraryAlbumsService.subscribe((service) => {
+    name = service.context.filterName;
+    if (service.context.filterOrder) {
+      order = service.context.filterOrder;
+    }
+    if (service.context.filterDirection) {
+      direction = service.context.filterDirection;
+    }
+  });
+
   const onOk = () => {
     libraryAlbumsService.send({
       direction,
+      name,
       order,
-      type: "SORT",
+      type: "FILTER",
     });
   };
 
   const menu: Menu = {
     items: [
+      {
+        label: "名前検索",
+        onChange: (value) => (name = value),
+        type: "input",
+        value: name,
+      },
       {
         label: "並び順",
         onChange: (value) => {
