@@ -5,7 +5,7 @@ export type FavoriteType = {
   [key: string]: number;
 };
 
-export const storeId = "Favorites";
+export const favoritesStoreId = "Favorites";
 
 const createFavorites = () => {
   const { subscribe, update } = writable<FavoriteType>({});
@@ -14,7 +14,7 @@ const createFavorites = () => {
     delete: (id: string) => {
       update((object) => {
         delete object[id];
-        store.set(storeId, object);
+        store.set(favoritesStoreId, object);
         return object;
       });
     },
@@ -25,7 +25,7 @@ const createFavorites = () => {
     update: (id: string, value: number) => {
       update((object) => {
         object[id] = value;
-        store.set(storeId, object);
+        store.set(favoritesStoreId, object);
         return object;
       });
     },
@@ -34,7 +34,7 @@ const createFavorites = () => {
         favoriteArr.forEach((favorite) => {
           object[favorite.id] = favorite.value;
         });
-        store.set(storeId, object);
+        store.set(favoritesStoreId, object);
         return object;
       });
     },
