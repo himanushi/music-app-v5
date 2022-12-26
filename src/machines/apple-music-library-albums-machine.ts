@@ -15,9 +15,9 @@ export type Context = {
   needFetchFavorites: boolean;
   hasNext: boolean;
   offset: number;
-  albums: MusicKit.LibraryAlbums[];
+  items: MusicKit.LibraryAlbums[];
   version: number;
-  filteredAlbums: MusicKit.LibraryAlbums[];
+  filteredItems: MusicKit.LibraryAlbums[];
   filterOrder?: keyof MusicKit.LibraryAlbums["attributes"];
   filterDirection?: "asc" | "desc";
   filterName?: string | null;
@@ -78,11 +78,11 @@ export const libraryAlbumsMachine = createMachine<Context, Event, State>(
 
     context: {
       version,
-      needFetchFavorites: false,
+      needFetchFavorites: true,
       hasNext: true,
       offset: 0,
-      albums: [],
-      filteredAlbums: [],
+      items: [],
+      filteredItems: [],
       filterFavorites: [],
     },
 
@@ -147,15 +147,15 @@ export const libraryAlbumsMachine = createMachine<Context, Event, State>(
             target: "checking",
             actions: [
               assign({
-                albums: (context, event: DoneInvokeEvent<GetLibraryAlbumsResult>) => [
-                  ...context.albums,
+                items: (context, event: DoneInvokeEvent<GetLibraryAlbumsResult>) => [
+                  ...context.items,
                   ...event.data.data,
                 ],
                 offset: (context) => context.offset + limit,
                 hasNext: (_, event) => Boolean(event.data.next),
               }),
               assign({
-                filteredAlbums: (context) => context.albums,
+                filteredItems: (context) => context.items,
               }),
             ],
           },
@@ -207,9 +207,9 @@ export const libraryAlbumsMachine = createMachine<Context, Event, State>(
         needFetchFavorites: (_) => true,
         hasNext: (_) => true,
         offset: (_) => 0,
-        albums: (_) => [],
+        items: (_) => [],
         version: (_) => version,
-        filteredAlbums: (_) => [],
+        filteredItems: (_) => [],
         filterName: (_) => undefined,
         filterOrder: (_) => undefined,
         filterDirection: (_) => undefined,
@@ -218,7 +218,7 @@ export const libraryAlbumsMachine = createMachine<Context, Event, State>(
 
       fetchFavorites: assign({
         needFetchFavorites: (context) => {
-          const ids = context.albums.map((album) => album.id);
+          const ids = context.items.map((item) => item.id);
           try {
             getRatings({
               categoryType: "albums",
@@ -242,9 +242,9 @@ export const libraryAlbumsMachine = createMachine<Context, Event, State>(
           "context" in event ? event.context.needFetchFavorites : true,
         hasNext: (_, event) => ("context" in event ? event.context.hasNext : true),
         offset: (_, event) => ("context" in event ? event.context.offset : 0),
-        albums: (_, event) => ("context" in event ? event.context.albums : []),
+        items: (_, event) => ("context" in event ? event.context.items : []),
         version: (_, event) => ("context" in event ? event.context.version : version),
-        filteredAlbums: (_, event) => ("context" in event ? event.context.filteredAlbums : []),
+        filteredItems: (_, event) => ("context" in event ? event.context.filteredItems : []),
         filterName: (_, event) => ("context" in event ? event.context.filterName : undefined),
         filterOrder: (_, event) => ("context" in event ? event.context.filterOrder : undefined),
         filterDirection: (_, event) =>
@@ -261,12 +261,12 @@ export const libraryAlbumsMachine = createMachine<Context, Event, State>(
       }),
 
       filter: assign({
-        filteredAlbums: (context) => {
-          let filteredAlbums: MusicKit.LibraryAlbums[] = context.albums.slice();
+        filteredItems: (context) => {
+          let filteredItems: MusicKit.LibraryAlbums[] = context.items.slice();
           if (context.filterOrder) {
-            filteredAlbums = filteredAlbums.sort((albumA, albumB) => {
-              const contentA = albumA.attributes[context.filterOrder!];
-              const contentB = albumB.attributes[context.filterOrder!];
+            filteredItems = filteredItems.sort((itemA, itemB) => {
+              const contentA = itemA.attributes[context.filterOrder!];
+              const contentB = itemB.attributes[context.filterOrder!];
               if (contentA && contentB && contentA > contentB) {
                 return context.filterDirection === "asc" ? 1 : -1;
               }
@@ -275,16 +275,14 @@ export const libraryAlbumsMachine = createMachine<Context, Event, State>(
           }
           if (context.filterName) {
             const re = new RegExp(`${context.filterName}`, "igu");
-            filteredAlbums = filteredAlbums.filter((album) =>
-              Boolean(album.attributes.name.match(re)),
-            );
+            filteredItems = filteredItems.filter((item) => Boolean(item.attributes.name.match(re)));
           }
           if (context.filterFavorite) {
-            filteredAlbums = filteredAlbums.filter((album) =>
-              context.filterFavorites.includes(album.id),
+            filteredItems = filteredItems.filter((item) =>
+              context.filterFavorites.includes(item.id),
             );
           }
-          return filteredAlbums;
+          return filteredItems;
         },
       }),
     },
