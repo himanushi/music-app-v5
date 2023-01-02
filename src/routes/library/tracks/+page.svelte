@@ -13,8 +13,6 @@
 <ion-list>
   <ItemDivider menu={data.menu} title="Library Albums" />
   {#if items}
-    <VirtualScroll {items} thumbnail let:item>
-      <LibraryItem {item} />
-    </VirtualScroll>
+    <VirtualScroll {items} thumbnail let:item />
   {/if}
 </ion-list>
