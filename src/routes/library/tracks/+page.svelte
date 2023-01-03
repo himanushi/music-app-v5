@@ -6,13 +6,6 @@
   import { libraryAlbumsService } from "~/machines/apple-music-library-albums-machine";
 
   export let data: PageData;
-
-  $: items = $libraryAlbumsService.context.filteredItems;
 </script>
 
-<ion-list>
-  <ItemDivider menu={data.menu} title="Library Albums" />
-  {#if items}
-    <VirtualScroll {items} thumbnail let:item />
-  {/if}
-</ion-list>
+<ion-list />
