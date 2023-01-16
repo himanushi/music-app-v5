@@ -7,7 +7,7 @@
   import VirtualScroll from "~/components/virtual-scroll.svelte";
   import { client } from "~/graphql/client";
   import { AlbumDocument, type AlbumObject, type TrackObject } from "~/graphql/types";
-  import { convertDate } from "~/lib/convert";
+  import { convertDate, convertTime, toMs } from "~/lib/convert";
   import { convertImageUrl } from "~/lib/convertImageUrl";
   import { toTrackItem } from "~/lib/toTrackItem";
   import { accountService } from "~/machines/apple-music-account-machine";
@@ -49,9 +49,26 @@
       </ion-label>
     </ion-item>
     <ion-item class="text-select">
+      <ion-label class="ion-text-wrap">
+        {album.copyright}
+      </ion-label>
+    </ion-item>
+    <ion-item class="text-select">
       <ion-label class="ion-text-wrap"> 発売日/配信日 </ion-label>
       <ion-note slot="end">
         {convertDate(album.releaseDate)}
+      </ion-note>
+    </ion-item>
+    <ion-item class="text-select">
+      <ion-label class="ion-text-wrap"> 曲数 </ion-label>
+      <ion-note slot="end">
+        {album.totalTracks}曲
+      </ion-note>
+    </ion-item>
+    <ion-item>
+      <ion-label class="ion-text-wrap"> 再生時間 </ion-label>
+      <ion-note slot="end">
+        {album ? convertTime(toMs(album.tracks)) : ""}
       </ion-note>
     </ion-item>
     {#if album.status !== "ACTIVE"}
