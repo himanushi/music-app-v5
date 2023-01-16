@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Item from "./item.svelte";
+  import Item from "./artist-item.svelte";
   import Items from "~/components/items.svelte";
   import { ArtistsDocument } from "~/graphql/types";
 

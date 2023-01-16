@@ -1,4 +1,5 @@
 <script lang="ts">
+  import ArtistItem from "../../artists/artist-item.svelte";
   import type { PageData } from "./$types";
   import AlbumMenu from "./album-menu.svelte";
   import CenterItem from "~/components/center-item.svelte";
@@ -6,7 +7,14 @@
   import SquareImage from "~/components/square-image.svelte";
   import VirtualScroll from "~/components/virtual-scroll.svelte";
   import { client } from "~/graphql/client";
-  import { AlbumDocument, type AlbumObject, type TrackObject } from "~/graphql/types";
+  import {
+    AlbumDocument,
+    ArtistsDocument,
+    type AlbumObject,
+    type ArtistObject,
+    type TrackObject,
+    type StatusEnum,
+  } from "~/graphql/types";
   import { convertDate, convertTime, toMs } from "~/lib/convert";
   import { convertImageUrl } from "~/lib/convertImageUrl";
   import { toTrackItem } from "~/lib/toTrackItem";
@@ -17,6 +25,8 @@
 
   let album: AlbumObject | undefined;
   let tracks: TrackObject[] = [];
+  let artists: ArtistObject[] = [];
+  const status: StatusEnum[] = ["ACTIVE"];
 
   $: if (!album && $accountService && $accountService.matches("authorized")) {
     (async () => {
@@ -28,6 +38,24 @@
         })
       ).data.album as AlbumObject;
       tracks = album.tracks.map((track) => track);
+      if (album) {
+        artists = (
+          await client.query({
+            fetchPolicy: "cache-first",
+            query: ArtistsDocument,
+            variables: {
+              conditions: {
+                albumIds: [album.id],
+                status,
+              },
+              sort: {
+                direction: "DESC",
+                order: "POPULARITY",
+              },
+            },
+          })
+        ).data.items as ArtistObject[];
+      }
     })();
   }
 </script>
@@ -93,5 +121,10 @@
       item={toTrackItem(item)}
       viewImage={false}
     />
+  </VirtualScroll>
+
+  <ItemDivider title="Artists" />
+  <VirtualScroll items={artists} let:item>
+    <ArtistItem {item} />
   </VirtualScroll>
 </ion-item-group>
