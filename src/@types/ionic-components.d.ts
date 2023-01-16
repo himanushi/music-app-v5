@@ -1,6 +1,16 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { JSX as LocalJSX } from "@ionic/core";
 
+type CamelToKebabCase<S extends string> = S extends `${infer T}${infer U}`
+  ? `${T extends Capitalize<T> ? "-" : ""}${Lowercase<T>}${CamelToKebabCase<U>}`
+  : S;
+
+type CamelToKebab<T extends object> = {
+  [K in keyof T as `${CamelToKebabCase<string & K>}`]: T[K] extends object
+    ? CamelToKebab<T[K]>
+    : T[K];
+};
+
 type IonicAllEventNames =
   | "onDidDismiss"
   | "onDidPresent"
@@ -185,7 +195,7 @@ type ConvertIonicEvents<T extends {}> = Partial<{
 declare global {
   declare namespace svelte.JSX {
     type SvelteIonic<T> = ConvertIonicEvents<T> &
-      Omit<T, IonicAllEventNames> &
+      CamelToKebab<Omit<T, IonicAllEventNames>> &
       Omit<svelte.JSX.HTMLProps<HTMLElement>, keyof T>;
 
     interface IntrinsicElements {
