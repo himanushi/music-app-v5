@@ -124,7 +124,7 @@
   </VirtualScroll>
 
   <ItemDivider title="Artists" />
-  <VirtualScroll items={artists} let:item>
+  <VirtualScroll items={artists} thumbnail={true} let:item>
     <ArtistItem {item} />
   </VirtualScroll>
 </ion-item-group>
