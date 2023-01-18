@@ -6,15 +6,7 @@
   import ItemDivider from "~/components/item-divider/item-divider.svelte";
   import SquareImage from "~/components/square-image.svelte";
   import VirtualScroll from "~/components/virtual-scroll.svelte";
-  import { client } from "~/graphql/client";
-  import {
-    AlbumDocument,
-    ArtistsDocument,
-    type AlbumObject,
-    type ArtistObject,
-    type TrackObject,
-    type StatusEnum,
-  } from "~/graphql/types";
+  import type { AlbumObject, ArtistObject, TrackObject, StatusEnum } from "~/graphql/types";
   import { convertDate, convertTime, toMs } from "~/lib/convert";
   import { convertImageUrl } from "~/lib/convertImageUrl";
   import { toTrackItem } from "~/lib/toTrackItem";
@@ -29,34 +21,15 @@
   const status: StatusEnum[] = ["ACTIVE"];
 
   $: if (!album && $accountService && $accountService.matches("authorized")) {
-    (async () => {
-      album = (
-        await client.query({
-          fetchPolicy: "cache-first",
-          query: AlbumDocument,
-          variables: { id: data.id },
-        })
-      ).data.album as AlbumObject;
-      tracks = album.tracks.map((track) => track);
-      if (album) {
-        artists = (
-          await client.query({
-            fetchPolicy: "cache-first",
-            query: ArtistsDocument,
-            variables: {
-              conditions: {
-                albumIds: [album.id],
-                status,
-              },
-              sort: {
-                direction: "DESC",
-                order: "POPULARITY",
-              },
-            },
-          })
-        ).data.items as ArtistObject[];
-      }
-    })();
+    data.getItems({
+      callback: (items) => {
+        album = items.album;
+        tracks = items.tracks;
+        artists = items.artists;
+      },
+      id: data.id,
+      status,
+    });
   }
 </script>
 
