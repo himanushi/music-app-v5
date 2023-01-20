@@ -1,30 +1,30 @@
 <script lang="ts">
-  import type { ApolloQueryResult } from "@apollo/client";
-  import { onMount } from "svelte";
+  import AlbumItem from "../../albums/album-item.svelte";
   import type { PageData } from "./$types";
   import CenterItem from "~/components/center-item.svelte";
   import ItemDivider from "~/components/item-divider/item-divider.svelte";
   import SquareImage from "~/components/square-image.svelte";
-  import { client } from "~/graphql/client";
-  import { ArtistDocument, type ArtistObject, type ArtistQuery } from "~/graphql/types";
+  import VirtualScroll from "~/components/virtual-scroll.svelte";
+  import type { AlbumObject, ArtistObject, StatusEnum } from "~/graphql/types";
   import { convertImageUrl } from "~/lib/convertImageUrl";
+  import { accountService } from "~/machines/apple-music-account-machine";
 
   export let data: PageData;
 
-  let artist: ArtistObject | undefined = undefined;
-  let result: ApolloQueryResult<ArtistQuery>;
+  let artist: ArtistObject | undefined;
+  let albums: AlbumObject[] = [];
+  const status: StatusEnum[] = ["ACTIVE"];
 
-  $: if (result?.data?.artist) {
-    artist = result.data.artist as ArtistObject;
-  }
-
-  onMount(async () => {
-    result = await client.query({
-      fetchPolicy: "cache-first",
-      query: ArtistDocument,
-      variables: { id: data.id },
+  $: if (!artist && $accountService && $accountService.matches("authorized")) {
+    data.getItems({
+      callback: (items) => {
+        artist = items.artist;
+        albums = items.albums;
+      },
+      id: data.id,
+      status,
     });
-  });
+  }
 </script>
 
 <ion-item-group>
@@ -42,4 +42,9 @@
       {artist?.name}
     </ion-label>
   </ion-item>
+
+  <ItemDivider title="Albums" />
+  <VirtualScroll items={albums} thumbnail let:item>
+    <AlbumItem {item} />
+  </VirtualScroll>
 </ion-item-group>
