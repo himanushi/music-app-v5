@@ -18,7 +18,7 @@
 {#if $me && isAllowed($me, "tracks")}
   <Refresher {refresh} bind:loaded />
   <ion-item-group>
-    <SearchDivider {refresh} />
+    <SearchDivider />
     <ion-list>
       {#key toggle}
         <Tracks bind:loaded />

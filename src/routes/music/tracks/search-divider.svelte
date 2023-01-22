@@ -5,26 +5,16 @@
   import ItemDivider from "~/components/item-divider/item-divider.svelte";
   import { searchParams } from "~/lib/buildParameters";
 
-  export let refresh: () => void;
-
   const url = $page.url;
   const queries = url.searchParams;
 
-  let name: string | null | undefined = queries.get(searchParams.album.name);
-  let favorite = queries.get(searchParams.album.favorite) === "1";
-  const order = queries.get(searchParams.album.order) || "RELEASE";
-  const direction = queries.get(searchParams.album.direction) || "DESC";
+  let name: string | null | undefined = queries.get(searchParams.track.name);
+  let favorite = queries.get(searchParams.track.favorite) === "1";
+  const order = queries.get(searchParams.track.order) || "NEW";
+  const direction = queries.get(searchParams.track.direction) || "DESC";
 
   let orderValue = `${order}.${direction}`;
   const orderItems = [
-    {
-      label: "発売日新しい順",
-      value: "RELEASE.DESC",
-    },
-    {
-      label: "発売日古い順",
-      value: "RELEASE.ASC",
-    },
     {
       label: "追加日新しい順",
       value: "NEW.DESC",
@@ -39,7 +29,7 @@
     },
   ];
 
-  let statusValue = queries.get(searchParams.album.status) || "ACTIVE";
+  let statusValue = queries.get(searchParams.track.status) || "ACTIVE";
   const statusItems = [
     {
       label: "有効",
@@ -56,41 +46,40 @@
   ];
 
   const onOk = () => {
-    if (name) {
-      url.searchParams.set(searchParams.album.name, name);
+    if (name && name.length > 1) {
+      url.searchParams.set(searchParams.track.name, name);
     } else {
-      url.searchParams.delete(searchParams.album.name);
+      url.searchParams.delete(searchParams.track.name);
     }
 
     if (favorite) {
-      url.searchParams.set(searchParams.album.favorite, "1");
+      url.searchParams.set(searchParams.track.favorite, "1");
     } else {
-      url.searchParams.delete(searchParams.album.favorite);
+      url.searchParams.delete(searchParams.track.favorite);
     }
 
     if (orderValue) {
       const [_order, _direction] = orderValue.split(".");
-      url.searchParams.set(searchParams.album.order, _order);
-      url.searchParams.set(searchParams.album.direction, _direction);
+      url.searchParams.set(searchParams.track.order, _order);
+      url.searchParams.set(searchParams.track.direction, _direction);
     } else {
-      url.searchParams.delete(searchParams.album.order);
-      url.searchParams.delete(searchParams.album.direction);
+      url.searchParams.delete(searchParams.track.order);
+      url.searchParams.delete(searchParams.track.direction);
     }
 
     if (statusValue === "ACTIVE") {
-      url.searchParams.delete(searchParams.album.status);
+      url.searchParams.delete(searchParams.track.status);
     } else {
-      url.searchParams.set(searchParams.album.status, statusValue);
+      url.searchParams.set(searchParams.track.status, statusValue);
     }
 
     goto(url);
-    refresh();
   };
 
   const menu: Menu = {
     items: [
       {
-        label: "タイトル",
+        label: "タイトル(2文字以上)",
         onChange: (value) => (name = value),
         type: "input",
         value: name,
@@ -121,4 +110,4 @@
   };
 </script>
 
-<ItemDivider {menu} title="Albums" />
+<ItemDivider {menu} title="Tracks" />

@@ -26,6 +26,8 @@ type Context = {
   version: number;
 };
 
+export const limitTrackCount = 300;
+
 type Event =
   | { type: "SET_CURRENT_TRACK"; currentTrack?: MusicKit.MediaItem }
   | { type: "SET_CURRENT_PLAYBACK_NO"; currentPlaybackNo: number }
@@ -356,7 +358,8 @@ export const playerMachine = createMachine<Context, Event, State>(
       }),
 
       setTrackIds: assign({
-        trackIds: (_, event) => ("trackIds" in event ? event.trackIds : []),
+        trackIds: (_, event) =>
+          "trackIds" in event ? event.trackIds.slice(0, limitTrackCount) : [],
       }),
 
       setCurrentPlaybackNo: assign({
