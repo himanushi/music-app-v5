@@ -15,7 +15,7 @@
   };
 </script>
 
-{#if $me && isAllowed($me, "tracks")}
+{#if $me && isAllowed($me, "playlists")}
   <Refresher {refresh} bind:loaded />
   <ion-item-group>
     <SearchDivider />

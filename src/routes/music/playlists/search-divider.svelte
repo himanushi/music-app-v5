@@ -8,13 +8,21 @@
   const url = $page.url;
   const queries = url.searchParams;
 
-  let name: string | null | undefined = queries.get(searchParams.track.name);
-  let favorite = queries.get(searchParams.track.favorite) === "1";
-  const order = queries.get(searchParams.track.order) || "NEW";
-  const direction = queries.get(searchParams.track.direction) || "DESC";
+  let name: string | null | undefined = queries.get(searchParams.playlist.name);
+  let favorite = queries.get(searchParams.playlist.favorite) === "1";
+  const order = queries.get(searchParams.playlist.order) || "UPDATE";
+  const direction = queries.get(searchParams.playlist.direction) || "DESC";
 
   let orderValue = `${order}.${direction}`;
   const orderItems = [
+    {
+      label: "更新日新しい順",
+      value: "UPDATE.DESC",
+    },
+    {
+      label: "更新日古い順",
+      value: "UPDATE.ASC",
+    },
     {
       label: "追加日新しい順",
       value: "NEW.DESC",
@@ -29,7 +37,7 @@
     },
   ];
 
-  let statusValue = queries.get(searchParams.track.status) || "ACTIVE";
+  let statusValue = queries.get(searchParams.playlist.status) || "ACTIVE";
   const statusItems = [
     {
       label: "有効",
@@ -47,30 +55,30 @@
 
   const onOk = () => {
     if (name && name.length > 1) {
-      url.searchParams.set(searchParams.track.name, name);
+      url.searchParams.set(searchParams.playlist.name, name);
     } else {
-      url.searchParams.delete(searchParams.track.name);
+      url.searchParams.delete(searchParams.playlist.name);
     }
 
     if (favorite) {
-      url.searchParams.set(searchParams.track.favorite, "1");
+      url.searchParams.set(searchParams.playlist.favorite, "1");
     } else {
-      url.searchParams.delete(searchParams.track.favorite);
+      url.searchParams.delete(searchParams.playlist.favorite);
     }
 
     if (orderValue) {
       const [_order, _direction] = orderValue.split(".");
-      url.searchParams.set(searchParams.track.order, _order);
-      url.searchParams.set(searchParams.track.direction, _direction);
+      url.searchParams.set(searchParams.playlist.order, _order);
+      url.searchParams.set(searchParams.playlist.direction, _direction);
     } else {
-      url.searchParams.delete(searchParams.track.order);
-      url.searchParams.delete(searchParams.track.direction);
+      url.searchParams.delete(searchParams.playlist.order);
+      url.searchParams.delete(searchParams.playlist.direction);
     }
 
     if (statusValue === "ACTIVE") {
-      url.searchParams.delete(searchParams.track.status);
+      url.searchParams.delete(searchParams.playlist.status);
     } else {
-      url.searchParams.set(searchParams.track.status, statusValue);
+      url.searchParams.set(searchParams.playlist.status, statusValue);
     }
 
     goto(url);
@@ -110,4 +118,4 @@
   };
 </script>
 
-<ItemDivider {menu} title="Tracks" />
+<ItemDivider {menu} title="Playlist" />
