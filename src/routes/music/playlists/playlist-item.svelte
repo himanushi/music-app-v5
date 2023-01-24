@@ -1,42 +1,16 @@
 <script lang="ts">
-  import FavoriteButton from "~/components/favorite-button.svelte";
+  import { goto } from "$app/navigation";
   import SquareImage from "~/components/square-image.svelte";
-  import { isFavorite } from "~/lib/isFavorite";
-  import type { TrackItem } from "~/lib/toTrackItem";
-  import { playerService } from "~/machines/apple-music-player-machine";
-  import { favorites } from "~/store/favorites";
-  import { hasMusicSubscription } from "~/store/hasMusicSubscription";
+  import type { PlaylistObject } from "~/graphql/types";
 
-  export let index: number;
-  export let item: TrackItem;
-  export let ids: string[];
-  export let viewImage = true;
+  export let item: PlaylistObject;
 
-  const play = () => {
-    playerService.send({
-      currentPlaybackNo: index,
-      trackIds: ids,
-      type: "REPLACE_AND_PLAY",
-    });
-  };
+  const path = `/playlist/${item.id}`;
 </script>
 
-<ion-item button detail={false} on:click={play}>
-  {#if viewImage}
-    <ion-thumbnail slot="start" on:click|preventDefault|stopPropagation>
-      <SquareImage src={item.artworkUrl ?? undefined} />
-    </ion-thumbnail>
-  {:else}
-    <ion-note slot="start">
-      {item.index}
-    </ion-note>
-  {/if}
-  <ion-label>
-    {item.name}
-  </ion-label>
-  {#if $hasMusicSubscription}
-    <ion-buttons slot="end">
-      <FavoriteButton id={item.id} favorite={isFavorite($favorites, item.id)} />
-    </ion-buttons>
-  {/if}
+<ion-item button detail={false} on:click={() => goto(path)}>
+  <ion-thumbnail slot="start">
+    <SquareImage alt={item.name} src={item.track?.artworkM?.url ?? undefined} />
+  </ion-thumbnail>
+  <ion-label>{item.name}</ion-label>
 </ion-item>
