@@ -5,7 +5,7 @@
 
   export let item: PlaylistObject;
 
-  const path = `/playlist/${item.id}`;
+  const path = `/music/playlists/${item.id}`;
 </script>
 
 <ion-item button detail={false} on:click={() => goto(path)}>
