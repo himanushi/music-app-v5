@@ -5,7 +5,7 @@
   import SquareImage from "~/components/square-image.svelte";
   import VirtualScroll from "~/components/virtual-scroll.svelte";
   import type { PlaylistObject, TrackObject } from "~/graphql/types";
-  import { convertTime, toMs } from "~/lib/convert";
+  import { convertDate, convertTime, toMs } from "~/lib/convert";
   import { convertImageUrl } from "~/lib/convertImageUrl";
   import { toTrackItem } from "~/lib/toTrackItem";
   import { accountService } from "~/machines/apple-music-account-machine";
@@ -46,13 +46,13 @@
     <ion-item class="text-select">
       <ion-label class="ion-text-wrap"> 作成日 </ion-label>
       <ion-note slot="end">
-        {playlist.createdAt}
+        {convertDate(playlist.createdAt)}
       </ion-note>
     </ion-item>
     <ion-item class="text-select">
       <ion-label class="ion-text-wrap"> 更新日 </ion-label>
       <ion-note slot="end">
-        {playlist.updatedAt}
+        {convertDate(playlist.updatedAt)}
       </ion-note>
     </ion-item>
     <ion-item class="text-select">
