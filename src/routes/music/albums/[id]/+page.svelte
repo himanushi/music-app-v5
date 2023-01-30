@@ -4,6 +4,11 @@
   import AlbumMenu from "./album-menu.svelte";
   import CenterItem from "~/components/center-item.svelte";
   import ItemDivider from "~/components/item-divider/item-divider.svelte";
+  import LoadingItems from "~/components/loading-items.svelte";
+  import AmazonMusic from "~/components/music-service-buttons/amazon-music.svelte";
+  import LineMusic from "~/components/music-service-buttons/line-music.svelte";
+  import Spotify from "~/components/music-service-buttons/spotify.svelte";
+  import YoutubeMusic from "~/components/music-service-buttons/youtube-music.svelte";
   import SquareImage from "~/components/square-image.svelte";
   import VirtualScroll from "~/components/virtual-scroll.svelte";
   import type { AlbumObject, ArtistObject, TrackObject, StatusEnum } from "~/graphql/types";
@@ -84,6 +89,22 @@
     <CenterItem>
       <SquareImage src={convertImageUrl({ px: 300 })} />
     </CenterItem>
+    <LoadingItems count={6} />
+  {/if}
+
+  <ItemDivider title="Music Services" />
+  {#if album}
+    <!-- {#if album.appleMusicPlayable}
+      <AppleMusic id={album.appleMusicId} />
+    {:else}
+      <Itunes id={album.appleMusicId} {status} />
+    {/if} -->
+    <Spotify name={album.name} />
+    <AmazonMusic name={album.name} />
+    <YoutubeMusic name={album.name} />
+    <LineMusic name={album.name} />
+  {:else}
+    <LoadingItems count={6} />
   {/if}
 
   <ItemDivider title="Tracks" />
