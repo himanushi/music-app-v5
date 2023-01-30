@@ -6,6 +6,8 @@
   import ItemDivider from "~/components/item-divider/item-divider.svelte";
   import LoadingItems from "~/components/loading-items.svelte";
   import AmazonMusic from "~/components/music-service-buttons/amazon-music.svelte";
+  import AppleMusic from "~/components/music-service-buttons/apple-music.svelte";
+  import Itunes from "~/components/music-service-buttons/itunes.svelte";
   import LineMusic from "~/components/music-service-buttons/line-music.svelte";
   import Spotify from "~/components/music-service-buttons/spotify.svelte";
   import YoutubeMusic from "~/components/music-service-buttons/youtube-music.svelte";
@@ -94,17 +96,17 @@
 
   <ItemDivider title="Music Services" />
   {#if album}
-    <!-- {#if album.appleMusicPlayable}
+    {#if album.appleMusicPlayable}
       <AppleMusic id={album.appleMusicId} />
     {:else}
-      <Itunes id={album.appleMusicId} {status} />
-    {/if} -->
+      <Itunes id={album.appleMusicId} />
+    {/if}
     <Spotify name={album.name} />
     <AmazonMusic name={album.name} />
     <YoutubeMusic name={album.name} />
     <LineMusic name={album.name} />
   {:else}
-    <LoadingItems count={6} />
+    <LoadingItems count={5} />
   {/if}
 
   <ItemDivider title="Tracks" />
