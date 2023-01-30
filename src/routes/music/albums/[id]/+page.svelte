@@ -23,6 +23,7 @@
   export let data: PageData;
 
   let album: AlbumObject | undefined;
+  let libraryAlbum: MusicKit.LibraryAlbums | undefined;
   let tracks: TrackObject[] = [];
   let artists: ArtistObject[] = [];
   const status: StatusEnum[] = ["ACTIVE"];
@@ -31,6 +32,7 @@
     data.getItems({
       callback: (items) => {
         album = items.album;
+        libraryAlbum = items.libraryAlbum;
         tracks = items.tracks;
         artists = items.artists;
       },
@@ -99,7 +101,7 @@
     {#if album.appleMusicPlayable}
       <AppleMusic id={album.appleMusicId} />
     {:else}
-      <Itunes id={album.appleMusicId} />
+      <Itunes id={album.appleMusicId} {libraryAlbum} />
     {/if}
     <Spotify name={album.name} />
     <AmazonMusic name={album.name} />

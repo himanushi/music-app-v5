@@ -1,3 +1,4 @@
+import { CapacitorMusicKit } from "capacitor-plugin-musickit";
 import type { PageLoad } from "./$types";
 import { client } from "~/graphql/client";
 import {
@@ -19,10 +20,12 @@ export const load: PageLoad = ({ params }) => {
     status: StatusEnum[];
     callback: ({
       album,
+      libraryAlbum,
       tracks,
       artists,
     }: {
       album?: AlbumObject;
+      libraryAlbum?: MusicKit.LibraryAlbums;
       tracks: TrackObject[];
       artists: ArtistObject[];
     }) => void;
@@ -57,9 +60,22 @@ export const load: PageLoad = ({ params }) => {
       ).data.items as ArtistObject[];
     }
 
+    let libraryAlbum: MusicKit.LibraryAlbums | undefined;
+
+    if (album) {
+      try {
+        [libraryAlbum] = (
+          await CapacitorMusicKit.getLibraryAlbums({ catalogId: album.appleMusicId })
+        ).data;
+      } catch {
+        // nothing
+      }
+    }
+
     callback({
       album,
       artists,
+      libraryAlbum,
       tracks,
     });
   };
