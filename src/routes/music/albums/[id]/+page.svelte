@@ -3,6 +3,7 @@
   import type { PageData } from "./$types";
   import AlbumMenu from "./album-menu.svelte";
   import CenterItem from "~/components/center-item.svelte";
+  import FavoriteButton from "~/components/favorite-button.svelte";
   import ItemDivider from "~/components/item-divider/item-divider.svelte";
   import LoadingItems from "~/components/loading-items.svelte";
   import AmazonMusic from "~/components/music-service-buttons/amazon-music.svelte";
@@ -80,6 +81,11 @@
       <ion-note slot="end">
         {album ? convertTime(toMs(album.tracks)) : ""}
       </ion-note>
+    </ion-item>
+    <ion-item>
+      <ion-buttons slot="end">
+        <FavoriteButton id={album.id} />
+      </ion-buttons>
     </ion-item>
     {#if album.status !== "ACTIVE"}
       <ion-item>
