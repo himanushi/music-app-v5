@@ -20,6 +20,9 @@
     type = id.startsWith("r.") ? "library-artists" : "artists";
   }
 
+  $: console.log({ id,
+    type });
+
   const changeFavorite = async () => {
     if (!id) {
       return;
