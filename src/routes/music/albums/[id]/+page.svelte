@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onDestroy } from "svelte";
   import ArtistItem from "../../artists/artist-item.svelte";
   import type { PageData } from "./$types";
   import AlbumMenu from "./album-menu.svelte";
@@ -22,25 +23,30 @@
   import TrackItem from "~/routes/music/tracks/track-item.svelte";
 
   export let data: PageData;
+  const { librarySongsService, getItems, stopServices, id } = data;
 
   let album: AlbumObject | undefined;
   let libraryAlbum: MusicKit.LibraryAlbums | undefined;
   let tracks: TrackObject[] = [];
   let artists: ArtistObject[] = [];
   const status: StatusEnum[] = ["ACTIVE"];
+  let librarySongs: MusicKit.LibrarySongs[] = [];
+  $: librarySongs = $librarySongsService.context.items;
 
   $: if (!album && $accountService && $accountService.matches("authorized")) {
-    data.getItems({
-      callback: (items) => {
-        album = items.album;
-        libraryAlbum = items.libraryAlbum;
-        tracks = items.tracks;
-        artists = items.artists;
+    getItems({
+      callback: (event) => {
+        album = event.album;
+        libraryAlbum = event.libraryAlbum;
+        tracks = event.tracks;
+        artists = event.artists;
       },
-      id: data.id,
+      id,
       status,
     });
   }
+
+  onDestroy(() => stopServices());
 </script>
 
 <ion-item-group>
@@ -106,9 +112,8 @@
   {#if album}
     {#if album.appleMusicPlayable}
       <AppleMusic id={album.appleMusicId} />
-    {:else}
-      <Itunes id={album.appleMusicId} {libraryAlbum} />
     {/if}
+    <Itunes id={album.appleMusicId} {libraryAlbum} />
     <Spotify name={album.name} />
     <AmazonMusic name={album.name} />
     <YoutubeMusic name={album.name} />
@@ -118,14 +123,29 @@
   {/if}
 
   <ItemDivider title="Tracks" />
-  <VirtualScroll items={tracks} let:index let:item>
-    <TrackItem
-      ids={tracks.map((track) => track.appleMusicId)}
-      {index}
-      item={toTrackItem(item)}
-      viewImage={false}
-    />
-  </VirtualScroll>
+  {#if libraryAlbum}
+    {#if librarySongs.length > 0}
+      <VirtualScroll items={librarySongs} let:index let:item>
+        <TrackItem
+          ids={librarySongs.map((track) => track.id)}
+          {index}
+          item={toTrackItem(item)}
+          viewImage={false}
+        />
+      </VirtualScroll>
+    {:else}
+      <LoadingItems count={10} />
+    {/if}
+  {:else}
+    <VirtualScroll items={tracks} let:index let:item>
+      <TrackItem
+        ids={tracks.map((track) => track.appleMusicId)}
+        {index}
+        item={toTrackItem(item)}
+        viewImage={false}
+      />
+    </VirtualScroll>
+  {/if}
 
   <ItemDivider title="Artists" />
   <VirtualScroll items={artists} thumbnail={true} let:item>

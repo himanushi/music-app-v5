@@ -1,4 +1,5 @@
 import { CapacitorMusicKit } from "capacitor-plugin-musickit";
+import { interpret } from "xstate";
 import type { PageLoad } from "./$types";
 import { client } from "~/graphql/client";
 import {
@@ -9,8 +10,16 @@ import {
   type StatusEnum,
   type TrackObject,
 } from "~/graphql/types";
+import { getRatings } from "~/lib/getRatings";
+import { createLibraryItemsMachine as createMachine } from "~/machines/apple-music-library-items-machine";
 
 export const load: PageLoad = ({ params }) => {
+  const librarySongsService = interpret(createMachine(CapacitorMusicKit.getLibrarySongs)).start();
+
+  const stopServices = () => {
+    librarySongsService.stop();
+  };
+
   const getItems = async ({
     id,
     status,
@@ -70,6 +79,21 @@ export const load: PageLoad = ({ params }) => {
       } catch {
         // nothing
       }
+
+      if (libraryAlbum) {
+        librarySongsService.send({
+          props: {
+            albumId: libraryAlbum.id,
+            limit: 100,
+          },
+          type: "SET_PROPS",
+        });
+        librarySongsService.subscribe((service) => {
+          if (service.matches("done")) {
+            getRatings({ ids: service.context.items.map((item) => item.id) });
+          }
+        });
+      }
     }
 
     callback({
@@ -83,5 +107,7 @@ export const load: PageLoad = ({ params }) => {
   return {
     getItems,
     id: params.id,
+    librarySongsService,
+    stopServices,
   };
 };
